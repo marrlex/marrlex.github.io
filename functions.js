@@ -139,7 +139,7 @@ if(ord==classtd) nochange = "(未変更)";
       Lstorage.removeItem(key);
     }
 }
-if(('localStorage' in window) && (Lstorage !== null))Lstorage.setItem('yourclass',sel.selectedIndex);
+if(Lstorage !== null) Lstorage.setItem('yourclass',sel.selectedIndex);
 else window.alert('ローカルストレージが使えません。');
 }
 
