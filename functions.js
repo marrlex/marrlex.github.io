@@ -47,7 +47,7 @@ var sel = document.forms.selectclass.tblclass;
 MakeTbl(sel);
 ResetStorage();
 jsmolbox.addEventListener('change', function(){dispjsmol(); jsmolbox.blur();});
-sel.addEventListener('change', function(){SaveClass(sel); MakeTbl(sel);});
+sel.addEventListener('change', function(){ MakeTbl(sel) });
 txtel.addEventListener('keyup', function(){SaveMemo(txtel.value,0)});
 svel.addEventListener('click', function(){SaveMemo(txtel.value,1)});
 rstel.addEventListener('click', function(){txtel.value=''});
@@ -139,9 +139,6 @@ if(ord==classtd) nochange = "(未変更)";
       Lstorage.removeItem(key);
     }
 }
-}
-
-function SaveClass(sel){
 if(('localStorage' in window) && (Lstorage !== null))Lstorage.setItem('yourclass',sel.selectedIndex);
 else window.alert('ローカルストレージが使えません。');
 }
