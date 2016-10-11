@@ -47,7 +47,7 @@ var sel = document.forms.selectclass.tblclass;
 MakeTbl(sel);
 ResetStorage();
 jsmolbox.addEventListener('change', function(){dispjsmol(); jsmolbox.blur();});
-sel.addEventListener('change', function(){SaveClass(sel);MakeTbl(sel);});
+sel.addEventListener('change', function(){SaveClass(sel); MakeTbl(sel);});
 txtel.addEventListener('keyup', function(){SaveMemo(txtel.value,0)});
 svel.addEventListener('click', function(){SaveMemo(txtel.value,1)});
 rstel.addEventListener('click', function(){txtel.value=''});
