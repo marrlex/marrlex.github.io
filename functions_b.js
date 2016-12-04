@@ -14,10 +14,7 @@
   var nabjudge = Addweek(nab);
     var i;
     var j;
-sel.addEventListener('change', function(){SaveClass(sel);MakeTbl(sel);});
-txtel.addEventListener('keyup', function(){SaveMemo(txtel.value,0)});
-svel.addEventListener('click', function(){SaveMemo(txtel.value,1)});
-rstel.addEventListener('click', function(){txtel.value=''});
+
 window.onload = function() {
 
 /*イベントリスナー*/
@@ -33,9 +30,11 @@ var sel = document.forms.selectclass.tblclass;
  }
 
 MakeTbl(sel);
-
-
 ResetStorage();
+sel.addEventListener('change', function(){SaveClass(sel);MakeTbl(sel);});
+txtel.addEventListener('keyup', function(){SaveMemo(txtel.value,0)});
+svel.addEventListener('click', function(){SaveMemo(txtel.value,1)});
+rstel.addEventListener('click', function(){txtel.value=''});
 
 var dispel=document.getElementsByClassName("ABdisp");
 var psgel=document.getElementsByClassName("ABpsg");
