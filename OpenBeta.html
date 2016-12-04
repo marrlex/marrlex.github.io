@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+ <html lang="ja">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>今日は何週だ？ オープンβ版</title>
+<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+</meta>
+<link rel="apple-touch-icon" href="/imaginary.jpg" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<script src="./DBaccess.js"></script>
+<script src="./functions_b.js"></script>
+</head>
+<body>
+<br/>
+<div id="wrapper">
+<div class="ABpsg">
+    <span class="ABdisp"></span>です。
+</div>
+<div class="ABpsg">
+    <span class="ABdisp"></span>です。
+</div>
+
+<p>明後日以降の日程</p>
+<table id="schedule"><!--onload--></table>
+
+<table id="ttable" >
+    <tr>
+	<th>&nbsp;</th>
+	<th>今日</th>
+	<th>明日</th>
+    </tr>
+<p>時間割</p>
+<form name="selectclass">
+<select name = "tblclass">
+<option value ="国文①">国公立文系①</option>
+<option value ="国文②">国公立文系②</option>
+<option value ="私文①">私立文系①</option>
+<option value ="私文②">私立文系②</option>
+<option value ="国理①">国公立理系①</option>
+<option value ="国理②">国公立理系②</option>
+<option value ="私理①">私立理系①</option>
+</select></form></table><br />
+
+<form name="Memo">
+<font size="0.06">メモ欄(今後の予定などにどうぞ。一応自動保存です。)</font><br />
+<textarea name="Mdetail" rows="4" cols="40" placeholder="ここに入力してください。"></textarea><br />
+<input type="button" id="Save" value="保存" />
+<input type="button" id="reset" value="リセット" />
+</form>
+<br />
+<div id="signature">Made by Alex</div>
+<br /><br /><br /><br />
+</div>
+</style>
+</body>
+</html>
