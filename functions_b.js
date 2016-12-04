@@ -16,16 +16,14 @@
     var j;
 
 window.onload = function() {
-
-/*イベントリスナー*/
 var txtel=document.Memo.Mdetail;
 var svel=document.getElementById("Save");
 var rstel=document.getElementById("reset");
 var sel = document.forms.selectclass.tblclass;
-  if (Lstorage != null){
+  if (Lstorage !== null){
  var storaged = Lstorage.getItem('yourclass')||0;
  sel.options[storaged].selected = true;
- var SavedMemo = Lstorage.getItem('AlexMemo')||"";
+ var SavedMemo=Lstorage.getItem('AlexMemo')||"";
  txtel.innerHTML=SavedMemo;
  }
 
@@ -56,7 +54,6 @@ schelm.rows[i].cells[1].innerHTML=Addweek(DBSearch(csvfile, nday[i].month, nday[
 	}
 }
 
-//時間割表作成
 function MakeTbl(sel){
   var str;
   var str_y;
@@ -68,11 +65,6 @@ function MakeTbl(sel){
   var rowcnt = Math.max(timeTbl.length, ntimeTbl.length);
 var table = document.getElementById( "ttable" );
 
-for (i=0 ; i<rowcnt ; i++){
-if(timeTbl[i] == undefined)timeTbl[i]="&nbsp;";
-if(ntimeTbl[i] == undefined)ntimeTbl[i]="&nbsp;";
-}
-
 for ( i=1 ; i<rowcnt+1 ; i++ ){
    table.insertRow( -1 );
    var cellcnt = table.rows[i].cells.length;
@@ -81,14 +73,14 @@ for ( i=1 ; i<rowcnt+1 ; i++ ){
 	table.rows[i].insertCell();
 	cellcnt = table.rows[i].cells.length;
   }
-  i_t = (tab == "B") ? i+2 : i-1;
+  i_t  = (tab == "B") ? i+2 : i-1;
   i_n = (nab == "B") ? i+2 : i-1;
-  timeTbl[i_t]    = timeTbl[i_t]||"&nbsp;";
-  ntimeTbl[i_n] = ntimeTbl[i_n]||"&nbsp;";
+  timeTbl[i_t]    = timeTbl[i_t]    || "&nbsp;";
+  ntimeTbl[i_n] = ntimeTbl[i_n] || "&nbsp;";
 
   table.rows[i].cells[0].innerHTML = i;
   table.rows[i].cells[1].innerHTML = timeTbl[i_t];
- table.rows[i].cells[2].innerHTML=ntimeTbl[i_n];
+  table.rows[i].cells[2].innerHTML = ntimeTbl[i_n];
 
 for(j = 1 ; j<3 ; j++){
   table.rows[i].cells[j].addEventListener("click", prmpt);
@@ -135,7 +127,6 @@ function nextday(year, nmonth, today){
 function Addweek(ab){
   return (ab.length == 1) ? (ab+"週") : ab;
 }
-
 function SaveClass(sel){
 if(('localStorage' in window) && (Lstorage !== null))Lstorage.setItem('yourclass',sel.selectedIndex);
 else window.alert('ローカルストレージが使えません。');
@@ -146,7 +137,7 @@ Lstorage.setItem('AlexMemo', txt);
 	if(btn)alert("保存しました。\n“"+(txt||"(内容が無いようです)")+"”");
 }
 
-function ResetStorage(){
+function ResetStorage(){/*
 var strg=[];
 var arr={a:[], b:[], c:[], d:[]};
 var arr_y=[arr.a,arr.b];
@@ -155,23 +146,23 @@ var tstrg=[arr_y,arr_t];
 var key;
   strg[0]=Lstorage.getItem('AlexMemo');
   strg[1]=Lstorage.getItem('yourclass');
-for (i=1;i<7;i++){
-for (j=1;j<3;j++){
+   for (i=1;i<7;i++){
+   for (j=1;j<3;j++){
 key=(i+"")+(j+"");
   tstrg[0][j-1][i]=Lstorage.getItem(key+((today-1)+""));
   tstrg[1][j-1][i]=Lstorage.getItem(key+(today+""));
-}
-}
+   }
+   }
 Object.freeze(strg);
 Object.freeze(tstrg);
   Lstorage.clear();
   if(strg[0])Lstorage.setItem('AlexMemo', strg[0]);
   if(strg[1])Lstorage.setItem('yourclass', strg[1]);
-for (i=1;i<7;i++){
-for (j=1;j<3;j++){
+   for (i=1;i<7;i++){
+   for (j=1;j<3;j++){
 key=(i+"")+(j+"");
   if(tstrg[0][j-1][i])Lstorage.setItem((key+((today-1)+"")), tstrg[0][j-1][i]);
   if(tstrg[1][j-1][i])Lstorage.setItem((key+(today+"")), tstrg[1][j-1][i]);
-}
-}
+   }
+   }*/
 }
