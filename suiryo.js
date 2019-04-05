@@ -1,5 +1,6 @@
 const hostname = "s-yoyaku.mie-u.ac.jp";
 (location.host !== hostname) && (location.href="http://m068:Jk2Zax00@" + hostname + "/cgi-bin/webcalc3-mieu/schedulec3.cgi");
+
 if (location.title&&~location.title.indexOf("一覧")) {
 const groupName = "管弦楽団";
 scheduleTD = document.querySelectorAll("td.schedT");
@@ -22,7 +23,7 @@ for (let e of scheduleTD) {
       b.nextElementSibling.remove();
       b.remove();
     } else {
-      b.textContent = b.textContent.replace(/第|集会室|会議室|楽|賞室/g, "").replace(/一|二|三|四/, str => {return "〇一二三四".split("").indexOf(str)});
+      b.textContent = b.textContent.replace(/第|集会室|会議室|楽|賞室/g, "").replace(/一|二|三|四/, str => {return [..."〇一二三四"].indexOf(str)});
     }
   }
 }
@@ -155,8 +156,8 @@ img {
 function HourInput() {
     document.form1.hour_e.selectedIndex = document.form1.hour_s.selectedIndex+1;
 
-    if (document.form1.hour_e.selectedIndex == 14) {
-	    document.form1.min_e.selectedIndex = 1;
+  if (document.form1.hour_e.selectedIndex == 14) {
+    document.form1.min_e.selectedIndex = 1;
 	}
     if (document.form1.hour_s.selectedIndex == 1) {
 	    document.form1.min_s.selectedIndex = 4;
@@ -341,7 +342,7 @@ reader.onload = () => {
   showResult(result, loopTime);
 };
 reader.readAsText(blob, "shift-jis");
-}).catch(err=>console.log(err))
+}).catch(err => console.log(err))
       }).catch(error => {
         console.log(error);
         result.error++;
@@ -372,14 +373,13 @@ const InputVals = [
   ""
 ];
 
-let DateElms = getElmsById(["year", "mon"]);
-let dateElm = document.getElementById("date");
+let [dateElm, ...DateElms] = getElmsById(["date", "year", "mon"]);
 let year = d.getFullYear();
 let month =  d.getMonth() + 1;
 DateElms[0].value = year;
 DateElms[1].value = month;
 const lastDay = new Date(year, month, 0);
-const weeks = "日月火水木金土".split("");
+const weeks = [..."日月火水木金土"];
 for (let i = 1; i <= lastDay.getDate(); i++) {
   dateElm.add(new Option(`${i}（${weeks[(i + lastDay.getDay() + (7 - lastDay.getDate() % 7)) % 7]}）`, i, 0, 0));
 }
@@ -468,22 +468,17 @@ function showResult(result, time) {
   document.getElementById("result").textContent = `書込${Object.values(result).reduce((sum, item) => sum + item) < time ? "中" : "完了"}：成功${result.success}, 重複${result.duplicate}, 回線混雑${result.busy}, エラー${result.error}`;
 }
 
-function getElms(Names) {
-  let Elements = [];
-  for (let i = 0 ; i < Names.length ; i++) {
-    var ElmArr = document.getElementsByName(Names[i]);
-      Elements[i] = ElmArr[ElmArr.length-1];
-    }
-  return Elements;
+function getElms(names) {
+  let elements = [];
+  for (let name of names) {
+    let elmList = document.getElementsByName(name);
+    elements.push([...elmList].pop());
+  }
+  return elements;
 }
 
 function getElmsById(Ids) {
-  let Elements = [];
-  for (var i = 0 ; i < Ids.length ; i++) {
-    let ElmArr = document.getElementById(Ids[i]);
-      Elements.push(ElmArr);
-    }
-  return Elements;
+  return Ids.map(e => document.getElementById(e))
 }
 
 
