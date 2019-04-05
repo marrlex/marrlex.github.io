@@ -383,7 +383,7 @@ const weeks = "日月火水木金土".split("");
 for (let i = 1; i <= lastDay.getDate(); i++) {
   dateElm.add(new Option(`${i}（${weeks[(i + lastDay.getDay() + (7 - lastDay.getDate() % 7)) % 7]}）`, i, 0, 0));
 }
-const comfirmUrl = `http://m068:Jk2Zax00@s-yoyaku.mie-u.ac.jp/cgi-bin/webcalc3-mieu/schedulec3.cgi&year=${formElm.year.value}&mon=${formElm.mon.value}`;
+const comfirmUrl = `http://m068:Jk2Zax00@s-yoyaku.mie-u.ac.jp/cgi-bin/webcalc3-mieu/schedulec3.cgi?form=2&year=${formElm.year.value}&mon=${formElm.mon.value}`;
 document.getElementById("comfirmReserving").href = comfirmUrl;
 
 DateElms.forEach((e, i, a)=>{
