@@ -1,6 +1,6 @@
 const hostname = "s-yoyaku.mie-u.ac.jp";
-location.host !== hostname && (location.href="http://m068:Jk2Zax00@" + hostname + "/cgi-bin/webcalc3-mieu/schedulec3.cgi");
-if (location.title&&~location.title.indexOf("一覧")) {
+(location.host !== hostname) && (location.href="http://m068:Jk2Zax00@" + hostname + "/cgi-bin/webcalc3-mieu/schedulec3.cgi");
+if (false&&location.title&&~location.title.indexOf("一覧")) {
 const groupName = "管弦楽団";
 scheduleTD = document.querySelectorAll("td.schedT");
 for (let e of scheduleTD) {
@@ -31,8 +31,7 @@ schedTH.textContent = groupName + "の" + schedTH.textContent;
 document.querySelectorAll("td").forEach(e => {
   e.style.fontSize="18px";
 });
-stop();
-}
+} else {
 document.documentElement.innerHTML=`<head>
 <title>翠陵会館スケジュール登録</title>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -146,12 +145,13 @@ img {
 </td></tr>
 </tbody></table>
 <input value="書　込" type="submit" class="submitter">&nbsp;<input value="9時に書込" type="button" onclick="AutoReserve();" class="submitter">&nbsp;<input value="クリア" type="reset"><p></p></form>
-<p id="result">結果：</p>
+<p id="result">必要事項を入力して「書込」または「9時に書込」を押してください。</p>
 <a href="http://m068:Jk2Zax00@s-yoyaku.mie-u.ac.jp/cgi-bin/webcalc3-mieu/webcalc3.cgi?form=2" id="comfirmReserving">予約の確認(予約状況へ)</a>
 <hr>
 <div id="SubmitLeft"></div>
 </center>
 </body>`;
+}
 function HourInput() {
     document.form1.hour_e.selectedIndex = document.form1.hour_s.selectedIndex+1;
 
@@ -236,13 +236,14 @@ img.onerror = () => {
   resultElm.textContent = "学内ネットワークに未接続…クリックで再確認";
   disableSubmit();
   resultElm.ontouchstart = () => {
+    resultElm.textContent = "確認中…";
     img.src = img.src;
   };
 };
 img.onload = () => {
   disableSubmit(false);
   const resultElm = document.getElementById("result");
-  resultElm.textContent = "結果：";
+  resultElm.textContent = "学内ネットワークへの接続 確認済み";
   resultElm.ontouchstart = null;
 };
 
@@ -259,11 +260,14 @@ for (let e of getElmsById(["monday", "wednesday", "saturday"])) {
 var intID;
 var isReserved = false;
 function AutoReserve() {
-  new Date().setHours(0, 0, 0, 0);
+  const reserveDate = new Date();
+  reserveDate.setHours(9, 0, 0, 0);
+  const reserveTime = reserveDate.getTime();
   isReserved = true;
-  const d = new Date();
-  setTimeout(submitter, 9* 60 * 60 * 1000 - ((d.getHours() * 60 + d.getMinutes()) * 60 + d.getSeconds() + d.getUTCMilliseconds()));
-  disableSubmit();
+  if (reserveTime > Date.now()) {
+    setTimeout(submitter, reserveTime - Date.now());
+    disableSubmit();
+  }
 }
 
 function submitter() {
@@ -379,13 +383,13 @@ const weeks = "日月火水木金土".split("");
 for (let i = 1; i <= lastDay.getDate(); i++) {
   dateElm.add(new Option(`${i}（${weeks[(i + lastDay.getDay() + (7 - lastDay.getDate() % 7)) % 7]}）`, i, 0, 0));
 }
+const comfirmUrl = `http://m068:Jk2Zax00@s-yoyaku.mie-u.ac.jp/cgi-bin/webcalc3-mieu/schedulec3.cgi&year=${formElm.year.value}&mon=${formElm.mon.value}`;
+document.getElementById("comfirmReserving").href = comfirmUrl;
 
 DateElms.forEach((e, i, a)=>{
   document.getElementsByName(e.id)[0].value = e.value;
   e.onkeyup = event => {
     if (event.target.value) {
-      const comfirmUrl = `http://m068:Jk2Zax00@s-yoyaku.mie-u.ac.jp/cgi-bin/webcalc3-mieu/schedulec3.cgi&year=${formElm.year.value}&mon=${formElm.mon.value}`;
-     document.getElementById("comfirmReserving").href = comfirmUrl;
       document.getElementsByName(event.target.id)[0].value = event.target.value;
       dateElm.textContent = "";
       let end = new Date(a[0].value, a[1].value, 0);
@@ -436,10 +440,10 @@ function timer() {
   let string = "";
   let n = 9* 60 * 60 - ((Hour * 60 + Min) * 60 + Sec);
   if (n <= 0) {
-    string = "既に９時を過ぎています。「書込」を押してください。";
+    string = "既に９時を過ぎています。「書込」を押してください";
   }
   if (n > 0) {
-    string = n + "秒後に書き込みます。";
+    string = n + "秒後に書き込みます。そのまま操作しないでください";
   }
   document.getElementById("SubmitLeft").innerHTML = `現在 ${Hour}時 ${Min} 分 ${Sec}秒 です。`;
   if (isReserved) {
@@ -449,7 +453,14 @@ function timer() {
 
 document.forms.form1.addEventListener("submit", event => {
   event.preventDefault();
-  submitter();
+  const formElm = document.forms.form1;
+  const roomElm = formElm.shubetsu;
+  const dateElm = document.getElementById("date");
+  if (~roomElm.options.selectedIndex && ~dateElm.options.selectedIndex) {
+    submitter();
+  } else {
+    document.getElementById("result").textContent = "予約日または部屋を一つ以上選択してください";
+  }
 });
 
 function showResult(result, time) {
