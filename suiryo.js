@@ -1,7 +1,7 @@
 const hostname = "s-yoyaku.mie-u.ac.jp";
 (location.host !== hostname) && (location.href="http://m068:Jk2Zax00@" + hostname + "/cgi-bin/webcalc3-mieu/schedulec3.cgi");
 
-if (location.title&&~location.title.indexOf("一覧")) {
+if (document.title&&~document.title.indexOf("一覧")) {
 const groupName = "管弦楽団";
 scheduleTD = document.querySelectorAll("td.schedT");
 for (let e of scheduleTD) {
