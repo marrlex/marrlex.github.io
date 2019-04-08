@@ -28,7 +28,7 @@ for (let e of scheduleTD) {
       b.nextElementSibling.remove();
       b.remove();
     } else {
-      b.textContent = b.textContent.replace(/第|集会室|会議室|楽|賞室/g, "").replace(/一|二|三|四/, str => [..."〇一二三四"].indexOf(str).replace(/[2-4]/g, s=>s+"　");
+      b.textContent = b.textContent.replace(/第|集会室|会議室|楽|賞室/g, "").replace(/一|二|三|四/, str => [..."〇一二三四"].indexOf(str)).replace(/[2-4]/g, s=>s+"　");
     }
   }
 }
