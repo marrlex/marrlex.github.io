@@ -3,7 +3,13 @@ const hostname = "s-yoyaku.mie-u.ac.jp";
 
 if (document.title&&~document.title.indexOf("一覧")) {
 const groupName = "管弦楽団";
-scheduleTD = document.querySelectorAll("td.schedT");
+/* vieport指定
+var meta = document.createElement('meta');
+meta.setAttribute('name', 'viewport');
+meta.setAttribute('content', 'width=device-width,initial-scale=1.0');
+document.getElementsByTagName('head')[0].appendChild(meta);
+*/
+  const scheduleTD = document.querySelectorAll("td.schedT");
 for (let e of scheduleTD) {
   if (!~e.textContent.indexOf(groupName)) e.parentNode.remove();
 }
@@ -14,7 +20,6 @@ for (let e of timeSpan) {
     e.remove();
   } else {
     e.textContent = e.textContent.substring(0, 12);
-    e.style.fontSize = "18px";
   }
 }
 for (let e of scheduleTD) {
@@ -23,15 +28,16 @@ for (let e of scheduleTD) {
       b.nextElementSibling.remove();
       b.remove();
     } else {
-      b.textContent = b.textContent.replace(/第|集会室|会議室|楽|賞室/g, "").replace(/一|二|三|四/, str => {return [..."〇一二三四"].indexOf(str)});
+      b.textContent = b.textContent.replace(/第|集会室|会議室|楽|賞室/g, "").replace(/一|二|三|四/, str => [..."〇一二三四"].indexOf(str).replace(/[2-4]/g, s=>s+"　");
     }
   }
 }
-const schedTH = document.querySelectorAll("th.schedTH")[2];
-schedTH.textContent = groupName + "の" + schedTH.textContent;
-document.querySelectorAll("td").forEach(e => {
-  e.style.fontSize="18px";
-});
+  const schedTH = document.querySelectorAll("th.schedTH")[2];
+  schedTH.textContent = groupName + "の" + schedTH.textContent;
+  document.querySelectorAll("td, th, table span").forEach(e => {
+    e.style.fontSize="35px";
+  });
+  document.querySelectorAll("table").forEach(e=>e.style.width="100%");
 } else {
 document.documentElement.innerHTML=`<head>
 <title>翠陵会館スケジュール登録</title>
