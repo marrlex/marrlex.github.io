@@ -1,1 +1,702 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta http-equiv="Content-Type" content="text/htm;charset=UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>鱧ディレクター</title>
+<link rel="apple-touch-icon" href="/harmony.png" />
+<body>
+<style>
+body {
+    font-family: "HG明朝E", serif;
+    margin: 0;
+    background-color: #BED9C2; <!--淡緑-->
+}
+h1 {
+    position: relative;
+    background: -webkit-linear-gradient(top, turquoise 0%, black 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-box-reflect: below -10px -webkit-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0) 10%,rgba(0, 0, 0, 0.6));
+    margin: 4px;
+    margin-bottom: 1em;
+    font-size: 1.7em;
+}
+/*table {
+    border-collapse: collapse;
+    border-spacing: 10px 5px;
+    box-sizing: content-box;
+}*/
+table, td {
+    border-collapse: collapse;
+}td:first-child{
+    text-align: right;
+}
+td input:first-child, td label {
+    margin-left: 10px;
+}
+td.range-td {
+    text-align: right;
+    display: block;
+}
+.piano {
+    position: relative;
+    height: 160px;
+    margin: 0px;
+}
+
+.white-key-set {
+    position: absolute;
+    left: 0px;
+    display: flex;
+}
+
+.white-key-set .keyboard {
+    box-sizing: border-box;
+    width: 44px;
+    height: 150px;
+    border: solid 1px black;
+    background-color: white;
+    border-bottom: solid 4px #eee;
+}
+
+.black-key-set {
+    display: flex;
+    position:absolute;
+    top: 0px;
+    left: 30px;
+}
+
+.black-key-set .keyboard {
+    box-sizing: border-box;
+    width: 30px;
+    height: 70px;
+    border: solid 1px black;
+    margin-right:  14px;
+    background-color: black;
+    border-bottom: solid 4px #333;
+}
+
+.keyboard {
+    border-radius: 0 0 3px 3px;
+    box-shadow: 1px 2px 5px rgba(0,0,0,0.6);
+}
+
+.keyboard-press {
+    background-color: #ccc !important;
+    border-bottom: solid 1px black !important;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.4) inset;
+}
+label {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+}
+input[type="checkbox"] {
+    display: none;
+}
+.switch-label {
+    position: relative;
+    padding: 5px 5px 5px 45px;
+    transition: .2s;
+    border-radius: 8px;
+    border: 1px solid #dfd;
+    display: inline-block;
+    line-height: 1;
+}
+input[type="checkbox"]:checked + .switch-label {
+    background: turquoise;
+    color: black;
+    border: 1px solid turquoise;
+    text-shadow: 1px 1px 2px white;
+}
+input[type="checkbox"]:checked + .switch-label:before {
+    border: 1px solid turquoise;
+}
+input[type="checkbox"]:checked + .switch-label:after {
+    left: 26px;
+    background: turquoise;
+}
+
+.switch-label:before {
+    content: "";
+    display: block;
+    left: 9px;
+    width: 30px;
+    height: 15px;
+    border-radius: 15px;
+    border: 1px solid #aaa;
+    background: white;
+    position: absolute;
+}
+.switch-label:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 7px;
+    left: 11px;
+    width: 13px;
+    height: 13px;
+    background: #aaa;
+    border-radius: 50%;
+    transition: .2s;
+    display: block;
+}
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: turquoise;
+    box-shadow: 1px 1px 4px #dfd;
+    height: 2px;
+    width: 70%;
+    border-radius: 6px;
+    display: inline-block;
+}
+input[type="range"]:focus,input[type="range"]:active {
+    outline: none;
+}
+
+input[type="range"]:-webkit-slider-thumb,input[type="range"]:-moz-range-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    display: block;
+    border: 2px solid #dfd;
+    background-color: white;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+}
+.wrapSelect {
+  overflow: hidden;
+  width: 90%;
+  text-align: center;
+}
+.wrapSelect select {
+  width: 90%;
+  padding: 4px 15px 4px 4px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  border: none;
+  outline: none;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.wrapSelect select:-ms-expand {
+  display: none;
+}
+.wrapSelect {
+  position: relative;
+  border-radius: 2px;
+  border: 2px solid turquoise;
+  border-radius: 50px;
+  background: #dfd;
+}
+.wrapSelect:before {
+  position: absolute;
+  top: 0.8em;
+  right: 0.8em;
+  width: 0;
+  height: 0;
+  padding: 0;
+  content: '';
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid turquoise;
+  pointer-events: none;
+}
+.plus-button, .minus-button {
+  padding: 0 2px;
+  display: inline-block;
+  font-weight: bold;
+  border: 1px solid #dfd;
+  border-radius: 4px;
+  color: white;
+  background-image: linear-gradient(darkturquoise 0%, turquoise 100%);
+  width: 10%;
+}
+.minus-button {
+    margin-left: 0;
+}
+.plus-button:active, .minus-button:active {
+  -webkit-transform: translateY(2px);
+  transform: translateY(2px);
+  border-bottom: none;
+}
+</style>
+<h1>鱧ディレクター</h1>
+<span id="chordView"></span>
+<div class="piano">
+    <div class="white-key-set">
+        <div class="keyboard" name="C1"></div>
+        <div class="keyboard" name="D1"></div>
+        <div class="keyboard" name="E1"></div>
+        <div class="keyboard" name="F1"></div>
+        <div class="keyboard" name="G1"></div>
+        <div class="keyboard" name="A1"></div>
+        <div class="keyboard" name="H1"></div>
+        <div class="keyboard" name="C2"></div>
+        <div class="keyboard" name="D2"></div>
+        <div class="keyboard" name="E2"></div>
+        <div class="keyboard" name="F2"></div>
+        <div class="keyboard" name="G2"></div>
+        <div class="keyboard" name="A2"></div>
+        <div class="keyboard" name="H2"></div>
+        <div class="keyboard" name="C3"></div>
+    </div>
+    <div class="black-key-set">
+        <div class="keyboard" name="Cis1"></div>
+        <div class="keyboard" name="Es1"></div>
+        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
+        <div class="keyboard" name="Fis1"></div>
+        <div class="keyboard" name="As1"></div>
+        <div class="keyboard" name="B1"></div>
+        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
+        <div class="keyboard" name="Cis2"></div>
+        <div class="keyboard" name="Es2"></div>
+        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
+        <div class="keyboard" name="Fis2"></div>
+        <div class="keyboard" name="As2"></div>
+        <div class="keyboard" name="B2"></div>
+    </div>
+</div>
+<div class="piano">
+    <div class="white-key-set">
+        <div class="keyboard" name="C3"></div>
+        <div class="keyboard" name="D3"></div>
+        <div class="keyboard" name="E3"></div>
+        <div class="keyboard" name="F3"></div>
+        <div class="keyboard" name="G3"></div>
+        <div class="keyboard" name="A3"></div>
+        <div class="keyboard" name="H3"></div>
+        <div class="keyboard" name="C4"></div>
+        <div class="keyboard" name="D4"></div>
+        <div class="keyboard" name="E4"></div>
+        <div class="keyboard" name="F4"></div>
+        <div class="keyboard" name="G4"></div>
+        <div class="keyboard" name="A4"></div>
+        <div class="keyboard" name="H4"></div>
+        <div class="keyboard" name="C5"></div>
+    </div>
+    <div class="black-key-set">
+        <div class="keyboard" name="Cis3"></div>
+        <div class="keyboard" name="Es3"></div>
+        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
+        <div class="keyboard" name="Fis3"></div>
+        <div class="keyboard" name="As3"></div>
+        <div class="keyboard" name="B3"></div>
+        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
+        <div class="keyboard" name="Cis4"></div>
+        <div class="keyboard" name="Es4"></div>
+        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
+        <div class="keyboard" name="Fis4"></div>
+        <div class="keyboard" name="As4"></div>
+        <div class="keyboard" name="B4"></div>
+    </div>
+</div>
+<table>
+<tr><th>持続</th>
+    <td><label for="sustein"><input type="checkbox" id="sustein" name ="sustein"/><span class="switch-label">持続する</span></label>
+</td>
+</tr>
+<tr><th>基準周波数</th>
+    <td class="range-td"><input type="range" id="stdFreq" min="435" max="445" value="442"/></td>
+    <td id="stdFreqVal" class="showParameter"></td>
+</tr>
+<tr><th>調</th>
+    <td><div class="wrapSelect"><select id="scale">
+        <option value="ave" selected="">平均律</option>
+        <option value="C">C</option>
+        <option value="Es">E♭</option>
+        <option value="F">F</option>
+        <option value="B">B♭</option>
+        <option value="D">D</option>
+        <option value="A">A</option>
+        <option value="G">G</option>
+        <option value="As">A♭</option>
+        <option value="auto">自動(試験的)</option>
+    </select></div></td>
+<tr><th>音色</th>
+<td><div class="wrapSelect"><select id="toneColor">
+    <option value="sine" selected="">正弦波</option>
+    <option value="square">矩形波</option>
+    <option value="sawtooth">鋸波</option>
+    <option value="triangle">三角波</option>
+    <option value="custom" disabled="">その他</option>
+</select></div></td>
+
+<tr><th>メトロノーム</th>
+    <td><div class="switch">
+        <label for="metro"><input type="checkbox" id="metro" name="metro"/><span class="switch-label">再生する</span></label>
+    </div></td>
+</tr>
+<tr>
+    <td>テンポ</td>
+    <td class="range-td"><input type="range" id="tempo" min="40" max="300" value="120"/></td>
+    <td id="tempoVal" class="showParameter"></td>
+</tr>
+<tr><td>強拍</td>
+    <td class="range-td"><input type="range" id="stressVol" min="0" max="100" value="50"/></td>
+    <td id="stressVal" class="showParameter"></td>
+</tr>
+<tr><td>四分音符</td>
+    <td class="range-td"><input type="range" id="fourVol" min="0" max="100" value="50"/></td>
+    <td id="fourVal" class="showParameter"></td>
+</tr>
+<tr><td>八分音符</td>
+    <td class="range-td"><input type="range" id="eightVol" min="0" max="100" value="50"/></td>
+    <td id="eightVal" class="showParameter"></td>
+</tr>
+</table>
+<br/>
+<script>
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioctx = new AudioContext();
+const keyboards = document.getElementsByClassName("keyboard");
+const stdFreqElm = document.getElementById("stdFreq");
+const colorElm = document.getElementById("toneColor");
+const scale = document.getElementById("scale");
+const key_list = [
+    'A', 'S', 'D', 'F',"G", "H", 'J', 'K', 'L', ';',
+    'W', 'None', 'R', "T", "Y", 'U', 'O', "P"
+];
+const freqRatio = [1, 16/15, 9/8, 6/5, 5/4, 4/3, 7/5, 3/2, 8/5, 5/3, 16/9, 15/8];
+const keyMapping = {};
+const toneNames = [
+    "A0", "B0", "H0",
+    "C1","Cis1", "D1", "Es1", "E1", "F1", "Fis1", "G1", "As1", "A1", "B1", "H1",
+    "C2","Cis2", "D2", "Es2", "E2", "F2", "Fis2", "G2", "As2", "A2", "B2", "H2",
+    "C3","Cis3", "D3", "Es3", "E3", "F3", "Fis3", "G3", "As3", "A3", "B3", "H3",
+    "C4","Cis4", "D4", "Es4", "E4", "F4", "Fis4", "G4", "As4", "A4", "B4", "H4", "C5"
+];
+const scales = ["A", "B", "H", "C","Cis", "D", "Es", "E", "F", "Fis", "G", "As"];
+const tone = {};
+for (let i = 0; i < key_list.length; i++) {
+    keyMapping[key_list[i]] = keyboards[i];
+}
+const playing = {};
+let isLongtone = false;
+document.onkeydown = (e) => {
+	const keyMap = keyMapping[e.key.toUpperCase()];
+	if (keyMap) {
+		playTone(keyMapping[e.key.toUpperCase()].getAttribute("name"));
+	}
+}
+document.ontouchstart = (e) => {
+	const toneName = e.target.getAttribute("name");
+    if (toneNames.includes(toneName)) {
+	e.preventDefault();
+		playTone(toneName, e.target);
+       e.target.classList.add("keyboard-press");
+    }
+}
+function playTone(toneName, e) {
+    if (isLongtone) {
+        stopPlay();
+    }
+    if (!playing[toneName]) {
+	    const osc = audioctx.createOscillator();
+	    const i = toneNames.indexOf(toneName);
+        let keyScale = scale.value;
+        let playingTones = [...Object.keys(playing).filter(key => playing[key]), toneName];
+        playingTones = playingTones.map(str => str.slice(0, -1));
+        playingTones = [...new Set(playingTones)];
+        if (playingTones.length === 3) {
+            const chord = chordCheck(playingTones);
+            document.getElementById("chordView").textContent = chord.string;
+            if (keyScale === "auto" && chord) {
+                keyScale = chord.name;
+                changeToneFreq(keyScale)
+            }
+        }
+
+        const freq = getFreqByScaleInterval(keyScale, i);
+	    osc.frequency.value = freq;
+        osc.type = colorElm.value;
+	    osc.connect(audioctx.destination);
+	    playing[toneName] = {osc, elm: e};
+        osc.start();
+    }
+}
+colorElm.onchange = () => {
+    changeToneType(colorElm.value);
+}
+scale.onchange = () => changeToneFreq();
+
+function changeToneType(type) {
+    for (let osc of Object.keys(playing)) {
+        playing[osc].osc.type = type;
+    }
+}
+function changeToneFreq(key = scale.value) {
+    for (let osc of Object.keys(playing)) {
+        const freq = getFreqByScaleInterval(key, toneNames.indexOf(osc));
+        playing[osc].osc.frequency.value = freq;
+    }
+}
+function chordCheck(tones) {
+    for (let i = 0; i < 3; i++) {
+        const [base, third, fifth] = [tones[i], tones[(i + 1) % 3], tones[(i + 2) % 3]];
+        const notes = {};
+        [base, third, fifth].forEach(note => {
+            notes[note] = scales.indexOf(note);
+        });
+        const checkTriad = (basename, base, third, fifth) => {
+            if (fifth - base === 7 || 12 + fifth - base === 7) {
+                if (third - base === 3 || 12 + third - base === 3) {
+                    console.log(basename + "minor");
+                    return {
+                        string: basename + " minor",
+                        name: basename
+                    }
+                }
+                if (third - base === 4 || 12 + third - base === 4) {
+                    console.log(basename + "major");
+                    return {
+                        string: basename + " major",
+                        name: basename
+                    }
+                }
+            }
+            return false;
+        }
+        let chord = checkTriad(base, ...Object.values(notes));
+        if (!chord) {
+            [notes[fifth], notes[third]] = [notes[third], notes[fifth]];
+            chord = checkTriad(base, ...Object.values(notes));
+        }
+        return chord || "";
+    }
+}
+function getFreqByScaleInterval(scale, interval) {
+	const stdInterval = scales.indexOf(scale);
+	const stdFreq = stdFreqElm.value / 2;
+	if (~stdInterval) {
+        const referFreq = stdFreq * (2 ** (stdInterval / 12));
+		if (interval < stdInterval) {
+			return referFreq * freqRatio[freqRatio.length - (stdInterval - interval)] / 2;
+		} else {
+			return referFreq * freqRatio[(interval - stdInterval) % freqRatio.length] * 2 ** ~~((interval - stdInterval) / freqRatio.length);
+		}
+	} else {
+		return stdFreq * (2 ** (interval / 12));
+	}
+
+}
+document.onkeyup = (e) => {
+    const key = e.key.toUpperCase();
+    if (keyMapping[key]) {
+		const toneName = keyMapping[key].getAttribute("name");
+    	stopPlay(toneName, e);
+    }	
+}
+document.ontouchend = (e) => {
+    const toneName = e.target.getAttribute("name");
+    if (toneName) {
+        e.preventDefault();
+        stopPlay(toneName, e);
+    }	
+}
+const susteinElm = document.getElementById("sustein");
+susteinElm.onchange = () => {
+    if (!susteinElm.checked) {
+        stopPlay();
+    }
+}
+function stopPlay(toneName, event){
+    if(!toneName) {
+        for (let osc of Object.keys(playing)) {
+            playing[osc].osc.stop();
+            playing[osc].elm.classList.remove("keyboard-press");
+            delete playing[osc];
+        }
+        isLongtone = false;
+    }
+    if (susteinElm.checked) {
+        if(event) {
+            isLongtone = !event.touches[0];
+        }
+    } else if(playing[toneName]) {
+        playing[toneName].osc.stop();
+        playing[toneName].elm. classList.remove("keyboard-press");
+        delete playing[toneName];
+    }
+}
+stdFreqElm.addEventListener("input", showFreq);
+showFreq();
+function showFreq() {
+    showParam(stdFreqElm, "stdFreqVal");
+    if (Object.keys(playing).length) {
+        changeToneFreq();
+    }
+}
+function showParam(elm, name) {
+	document.getElementById(name).textContent = elm.value;
+}
+const metroElm = document.getElementById("metro");
+const tempoElm = document.getElementById("tempo");
+const stressElm = document.getElementById("stressVol");
+const fourElm = document.getElementById("fourVol");
+const eightElm = document.getElementById("eightVol");
+const metroKeys = ["stress", "four", "eight"];
+let metroctx;
+let metroLevel = {};
+let metroTempo = tempoElm.value;
+let isTempoChanged = false;
+metroElm.onchange = metroHandler;
+metroElm.checked = false;
+function metroHandler() {
+    if (metroElm.checked) {
+        metroLevel = {
+            stress: stressElm.value,
+            four: fourElm.value,
+            eight: eightElm.value
+        };
+        metroctx = startMetronome(metroTempo, metroLevel);
+    } else if (metroctx) {
+        metroctx.ctx.close();
+        clearInterval(metroctx.id);
+        metroctx = null;
+    }
+}
+
+showParam(tempoElm, "tempoVal");
+showParam(stressElm, "stressVal");
+showParam(fourElm, "fourVal");
+showParam(eightElm, "eightVal");
+tempoElm.oninput = () => {
+    metroTempo = tempoElm.value;
+    showParam(tempoElm, "tempoVal");
+    if (metroctx) {
+        isTempochAnged = true;
+    }
+}
+stressElm.oninput = () => {
+    const level = stressElm.value;
+    showParam(stressElm, "stressVal");
+    metroLevel.stress = level;
+}
+fourElm.oninput = () => {
+    const level = fourElm.value;
+    showParam(fourElm, "fourVal");
+    metroLevel.four = level;
+}
+eightElm.oninput = () => {
+    const level = eightElm.value;
+    showParam(eightElm, "eightVal");
+    metroLevel.eight = level;
+}
+function startMetronome(level) {
+    const ctx = new AudioContext();
+    const baseTimeStamp = performance.now() - ctx.currentTime * 1000;
+    let current16Note = 0;
+    const oscs = {
+        stress: ctx.createOscillator(),
+        four: ctx.createOscillator(),
+        eight: ctx.createOscillator()        
+    };
+    const gains = {
+        stress: ctx.createGain(),
+        four: ctx.createGain(),
+        eight: ctx.createGain()        
+    };
+    oscs.stress.frequency.value = 2400;
+    oscs.four.frequency.value = 1200;
+    oscs.eight.frequency.value = 1200;
+    for(let key of metroKeys) {
+        gains[key].gain.value = 0;
+        oscs[key].connect(gains[key]);
+        gains[key].connect(ctx.destination);
+        oscs[key].start();
+    }
+    function currentTimeStamp() {
+        return baseTimeStamp + ctx.currentTime * 1000;
+    }
+    function timeStampToAudioContextTime(timeStamp) {
+        return (timeStamp - baseTimeStamp) / 1000;
+    }
+    const nowTime = performance.now();
+    let lastClickTimeStamp = nowTime;
+    let nextClickTimeStamp = lastClickTimeStamp;
+    function scheduler() {
+        const now = currentTimeStamp();
+        while (nextClickTimeStamp < now + 700) {
+            let next16ClickTime = timeStampToAudioContextTime(nextClickTimeStamp);
+            reserveNote(current16Note, next16ClickTime);
+            nextNote();
+        }
+    }
+    scheduler();
+    const intervalId = setInterval(scheduler, 500);
+    return {
+        ctx,
+        osc: oscs,
+        gain: gains,
+        id : intervalId
+    };
+    function reserveBeat(key, nextClickTime) {
+        gains[key].gain.setValueAtTime(metroLevel[key] / 50, nextClickTime);
+        gains[key].gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+    }
+    function reserveNote(beater, time) {
+        if (beater === 0) {
+            // ダウンビート
+            reserveBeat("stress", time);
+            reserveBeat("four", time);
+            reserveBeat("eight", time);
+        } else if (beater % 2 === 0) {
+            //裏拍
+            reserveBeat("eight", time);
+        }
+    }
+    function nextNote() {
+        const beatTick = 60 * 1000 / metroTempo;
+        nextClickTimeStamp += beatTick / 4;
+
+        current16Note++;
+        current16Note %= 4;
+    }
+}
+for (let elm of document.querySelectorAll("input[type='range']")) {
+    const beforeElm = document.createElement("input");
+    with (beforeElm) {
+        type = "button";
+        classList.add("minus-button");
+        value = "ー";
+        onclick = prevent;
+        ontouchstart = handler;
+    }
+    const afterElm = document.createElement("input");
+    afterElm.type = "button";
+    afterElm.classList.add("plus-button");
+    afterElm.value = "＋";
+    afterElm.onclick = prevent;
+    afterElm.ontouchstart = handler;
+    elm.insertAdjacentElement("beforebegin", beforeElm);
+    elm.insertAdjacentElement("afterend", afterElm);
+    function handler(e) {
+        let elm;
+        switch (e.target.value) {
+            case "＋":
+                elm = e.target.previousElementSibling;
+                elm.value++;
+                break;
+            case "ー":
+                elm = e.target.nextElementSibling;
+                elm.value--;
+                break;
+        }
+        elm.dispatchEvent(new Event("input"));
+    }
+    function prevent(e){
+        e.preventDefault();
+    }
+}
+</script>
+</body>
+</html>
