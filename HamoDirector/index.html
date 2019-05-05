@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/htm;charset=UTF-8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>鱧ディレクター</title>
-<link rel="apple-touch-icon" href="./harmony.png" />
+<link rel="apple-touch-icon" href="/harmony.png" />
 <body>
 <style>
 body {
@@ -14,10 +14,10 @@ body {
 }
 h1 {
     position: relative;
-    background: -webkit-linear-gradient(top, turquoise 0%, black 100%);
+    background-image: linear-gradient(to bottom, turquoise 0%, black 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    -webkit-box-reflect: below -18px -webkit-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0) 10%,rgba(0, 0, 0, 0.6));
+    -webkit-box-reflect: below -18px linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,0) 5%,rgba(0, 0, 0, 0.6));
     margin: 4px;
     margin-bottom: 1em;
     font-size: 1.7em;
@@ -29,7 +29,8 @@ h1 {
 }*/
 table, td {
     border-collapse: collapse;
-}td:first-child{
+}
+td:first-child{
     text-align: right;
 }
 td input:first-child, td label {
@@ -44,14 +45,12 @@ td.range-td {
     height: 160px;
     margin: 0px;
 }
-
-.white-key-set {
+.white-keys {
     position: absolute;
     left: 0px;
     display: flex;
 }
-
-.white-key-set .keyboard {
+.white-keys .keyboards {
     box-sizing: border-box;
     width: 44px;
     height: 150px;
@@ -59,15 +58,13 @@ td.range-td {
     background-color: white;
     border-bottom: solid 4px #eee;
 }
-
-.black-key-set {
+.black-keys {
     display: flex;
     position:absolute;
     top: 0px;
     left: 30px;
 }
-
-.black-key-set .keyboard {
+.black-keys .keyboards {
     box-sizing: border-box;
     width: 30px;
     height: 70px;
@@ -76,12 +73,13 @@ td.range-td {
     background-color: black;
     border-bottom: solid 4px #333;
 }
-
-.keyboard {
+.keyboards {
     border-radius: 0 0 3px 3px;
     box-shadow: 1px 2px 5px rgba(0,0,0,0.6);
 }
-
+.key-space {
+    visibility: hidden;
+}
 .keyboard-press {
     background-color: #ccc !important;
     border-bottom: solid 1px black !important;
@@ -117,7 +115,6 @@ input[type="checkbox"]:checked + .switch-label:after {
     left: 26px;
     background: turquoise;
 }
-
 .switch-label:before {
     content: "";
     display: block;
@@ -155,7 +152,6 @@ input[type="range"] {
 input[type="range"]:focus,input[type="range"]:active {
     outline: none;
 }
-
 input[type="range"]:-webkit-slider-thumb,input[type="range"]:-moz-range-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -170,143 +166,156 @@ input[type="range"]:-webkit-slider-thumb,input[type="range"]:-moz-range-thumb {
     -webkit-border-radius: 50%;
 }
 .wrapSelect {
-  overflow: hidden;
-  width: 90%;
-  text-align: center;
+    overflow: hidden;
+    width: 90%;
+    text-align: center;
 }
 .wrapSelect select {
-  width: 90%;
-  padding: 4px 15px 4px 4px;
-  cursor: pointer;
-  text-overflow: ellipsis;
-  border: none;
-  outline: none;
-  background: transparent;
-  background-image: none;
-  box-shadow: none;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.wrapSelect select:-ms-expand {
-  display: none;
+    width: 90%;
+    padding: 4px 15px 4px 4px;
+    cursor: pointer;
+    text-overflow: ellipsis;
+    border: none;
+    outline: none;
+    background: transparent;
+    background-image: none;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
 }
 .wrapSelect {
-  position: relative;
-  border-radius: 2px;
-  border: 2px solid turquoise;
-  border-radius: 50px;
-  background: #dfd;
+    position: relative;
+    border-radius: 2px;
+    border: 2px solid turquoise;
+    border-radius: 50px;
+    background: #dfd;
 }
 .wrapSelect:before {
-  position: absolute;
-  top: 0.8em;
-  right: 0.8em;
-  width: 0;
-  height: 0;
-  padding: 0;
-  content: '';
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid turquoise;
-  pointer-events: none;
+    position: absolute;
+    top: 0.8em;
+    right: 0.8em;
+    width: 0;
+    height: 0;
+    padding: 0;
+    content: '';
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid turquoise;
 }
 .plus-button, .minus-button {
-  padding: 0 2px;
-  display: inline-block;
-  font-weight: bold;
-  border: 1px solid #dfd;
-  border-radius: 4px;
-  color: white;
-  background-image: linear-gradient(darkturquoise 0%, turquoise 100%);
-  width: 10%;
+    padding: 0 2px;
+    display: inline-block;
+    font-weight: bold;
+    border: 1px solid #dfd;
+    border-radius: 4px;
+    color: white;
+    background-image: linear-gradient(darkturquoise 0%, turquoise 100%);
+    width: 10%;
 }
 .minus-button {
     margin-left: 0;
 }
 .plus-button:active, .minus-button:active {
-  -webkit-transform: translateY(2px);
-  transform: translateY(2px);
-  border-bottom: none;
+    -webkit-transform: translateY(2px);
+    transform: translateY(2px);
+    border-bottom: none;
 }
+input[type="radio"] {
+    opacity: 0;
+    position: absolute;
+}
+.radio-label {
+    display: flex;
+    padding: 0.2em 0.5em;
+    border: 1px solid #dfd;
+    border-radius: 3px;
+    transition: all .2s;
+}
+input[type="radio"]:checked + .radio-label {
+    background: #dfd;
+    background-image: linear-gradient(darkturquoise 0%, turquoise 100%);
+    color: black;
+    text-shadow: 1px 1px 2px white;
+}
+
 </style>
 <h1>鱧ディレクター</h1>
 <span id="chordView"></span>
 <div class="piano">
-    <div class="white-key-set">
-        <div class="keyboard" name="C1"></div>
-        <div class="keyboard" name="D1"></div>
-        <div class="keyboard" name="E1"></div>
-        <div class="keyboard" name="F1"></div>
-        <div class="keyboard" name="G1"></div>
-        <div class="keyboard" name="A1"></div>
-        <div class="keyboard" name="H1"></div>
-        <div class="keyboard" name="C2"></div>
-        <div class="keyboard" name="D2"></div>
-        <div class="keyboard" name="E2"></div>
-        <div class="keyboard" name="F2"></div>
-        <div class="keyboard" name="G2"></div>
-        <div class="keyboard" name="A2"></div>
-        <div class="keyboard" name="H2"></div>
-        <div class="keyboard" name="C3"></div>
+    <div class="white-keys">
+        <div class="keyboards" name="C1"></div>
+        <div class="keyboards" name="D1"></div>
+        <div class="keyboards" name="E1"></div>
+        <div class="keyboards" name="F1"></div>
+        <div class="keyboards" name="G1"></div>
+        <div class="keyboards" name="A1"></div>
+        <div class="keyboards" name="H1"></div>
+        <div class="keyboards" name="C2"></div>
+        <div class="keyboards" name="D2"></div>
+        <div class="keyboards" name="E2"></div>
+        <div class="keyboards" name="F2"></div>
+        <div class="keyboards" name="G2"></div>
+        <div class="keyboards" name="A2"></div>
+        <div class="keyboards" name="H2"></div>
+        <div class="keyboards" name="C3"></div>
     </div>
-    <div class="black-key-set">
-        <div class="keyboard" name="Cis1"></div>
-        <div class="keyboard" name="Es1"></div>
-        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
-        <div class="keyboard" name="Fis1"></div>
-        <div class="keyboard" name="As1"></div>
-        <div class="keyboard" name="B1"></div>
-        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
-        <div class="keyboard" name="Cis2"></div>
-        <div class="keyboard" name="Es2"></div>
-        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
-        <div class="keyboard" name="Fis2"></div>
-        <div class="keyboard" name="As2"></div>
-        <div class="keyboard" name="B2"></div>
+    <div class="black-keys">
+        <div class="keyboards" name="Cis1"></div>
+        <div class="keyboards" name="Es1"></div>
+        <div class="keyboards key-space"></div>
+        <div class="keyboards" name="Fis1"></div>
+        <div class="keyboards" name="As1"></div>
+        <div class="keyboards" name="B1"></div>
+        <div class="keyboards key-space"></div>
+        <div class="keyboards" name="Cis2"></div>
+        <div class="keyboards" name="Es2"></div>
+        <div class="keyboards key-space"></div>
+        <div class="keyboards" name="Fis2"></div>
+        <div class="keyboards" name="As2"></div>
+        <div class="keyboards" name="B2"></div>
     </div>
 </div>
 <div class="piano">
-    <div class="white-key-set">
-        <div class="keyboard" name="C3"></div>
-        <div class="keyboard" name="D3"></div>
-        <div class="keyboard" name="E3"></div>
-        <div class="keyboard" name="F3"></div>
-        <div class="keyboard" name="G3"></div>
-        <div class="keyboard" name="A3"></div>
-        <div class="keyboard" name="H3"></div>
-        <div class="keyboard" name="C4"></div>
-        <div class="keyboard" name="D4"></div>
-        <div class="keyboard" name="E4"></div>
-        <div class="keyboard" name="F4"></div>
-        <div class="keyboard" name="G4"></div>
-        <div class="keyboard" name="A4"></div>
-        <div class="keyboard" name="H4"></div>
-        <div class="keyboard" name="C5"></div>
+    <div class="white-keys">
+        <div class="keyboards" name="C3"></div>
+        <div class="keyboards" name="D3"></div>
+        <div class="keyboards" name="E3"></div>
+        <div class="keyboards" name="F3"></div>
+        <div class="keyboards" name="G3"></div>
+        <div class="keyboards" name="A3"></div>
+        <div class="keyboards" name="H3"></div>
+        <div class="keyboards" name="C4"></div>
+        <div class="keyboards" name="D4"></div>
+        <div class="keyboards" name="E4"></div>
+        <div class="keyboards" name="F4"></div>
+        <div class="keyboards" name="G4"></div>
+        <div class="keyboards" name="A4"></div>
+        <div class="keyboards" name="H4"></div>
+        <div class="keyboards" name="C5"></div>
     </div>
-    <div class="black-key-set">
-        <div class="keyboard" name="Cis3"></div>
-        <div class="keyboard" name="Es3"></div>
-        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
-        <div class="keyboard" name="Fis3"></div>
-        <div class="keyboard" name="As3"></div>
-        <div class="keyboard" name="B3"></div>
-        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
-        <div class="keyboard" name="Cis4"></div>
-        <div class="keyboard" name="Es4"></div>
-        <div class="keyboard" name="nameless" style="visibility:hidden;"></div>
-        <div class="keyboard" name="Fis4"></div>
-        <div class="keyboard" name="As4"></div>
-        <div class="keyboard" name="B4"></div>
+    <div class="black-keys">
+        <div class="keyboards" name="Cis3"></div>
+        <div class="keyboards" name="Es3"></div>
+        <div class="keyboards key-space"></div>
+        <div class="keyboards" name="Fis3"></div>
+        <div class="keyboards" name="As3"></div>
+        <div class="keyboards" name="B3"></div>
+        <div class="keyboards key-space"></div>
+        <div class="keyboards" name="Cis4"></div>
+        <div class="keyboards" name="Es4"></div>
+        <div class="keyboards key-space"></div>
+        <div class="keyboards" name="Fis4"></div>
+        <div class="keyboards" name="As4"></div>
+        <div class="keyboards" name="B4"></div>
     </div>
 </div>
 <table>
 <tr><th>持続</th>
-    <td><label for="sustein"><input type="checkbox" id="sustein" name ="sustein"/><span class="switch-label">持続する</span></label>
-</td>
+    <td><label for="sustein"><input type="checkbox" id="sustein" name ="sustein"/><span class="switch-label">持続する</span></label></td>
 </tr>
 <tr><th>基準周波数</th>
-    <td class="range-td"><input type="range" id="stdFreq" min="435" max="445" value="442"/></td>
-    <td id="stdFreqVal" class="showParameter"></td>
+    <td><input type="range" id="stdFreq" min="435" max="445" value="442"/></td>
+    <td id="stdFreqVal"></td>
 </tr>
 <tr><th>調</th>
     <td><div class="wrapSelect"><select id="scale">
@@ -320,7 +329,7 @@ input[type="range"]:-webkit-slider-thumb,input[type="range"]:-moz-range-thumb {
         <option value="G">G</option>
         <option value="As">A♭</option>
         <option value="auto">自動(試験的)</option>
-    </select></div></td>
+    </select></div></td></tr>
 <tr><th>音色</th>
 <td><div class="wrapSelect"><select id="toneColor">
     <option value="sine" selected="">正弦波</option>
@@ -328,8 +337,17 @@ input[type="range"]:-webkit-slider-thumb,input[type="range"]:-moz-range-thumb {
     <option value="sawtooth">鋸波</option>
     <option value="triangle">三角波</option>
     <option value="custom" disabled="">その他(未実装)</option>
-</select></div></td>
-
+</select></div></td></tr>
+<tr>
+    <th>アタック</th>
+    <td><input type="range" id="attack" min="0" max="100" value="25"/></td>
+    <td id="attackVal"></td>
+</tr>
+<tr>
+    <th>リリース</th>
+    <td><input type="range" id="release" min="0" max="100" value="50"/></td>
+    <td id="releaseVal"></td>
+</tr>
 <tr><th>メトロノーム</th>
     <td><div class="switch">
         <label for="metro"><input type="checkbox" id="metro" name="metro"/><span class="switch-label">再生する</span></label>
@@ -337,56 +355,66 @@ input[type="range"]:-webkit-slider-thumb,input[type="range"]:-moz-range-thumb {
 </tr>
 <tr>
     <td>テンポ</td>
-    <td class="range-td"><input type="range" id="tempo" min="40" max="300" value="120"/></td>
-    <td id="tempoVal" class="showParameter"></td>
+    <td><input type="range" id="tempo" min="40" max="300" value="100"/></td>
+    <td id="tempoVal"></td>
 </tr>
 <tr><td>強拍</td>
-    <td class="range-td"><input type="range" id="stressVol" min="0" max="100" value="50"/></td>
-    <td id="stressVal" class="showParameter"></td>
+    <td><input type="range" id="stressVol" min="0" max="100" value="100"/></td>
+    <td id="stressVal"></td>
 </tr>
-<tr><td>四分音符</td>
-    <td class="range-td"><input type="range" id="fourVol" min="0" max="100" value="50"/></td>
-    <td id="fourVal" class="showParameter"></td>
+<tr><td>4分音符</td>
+    <td><input type="range" id="fourVol" min="0" max="100" value="80"/></td>
+    <td id="fourVal"></td>
 </tr>
-<tr><td>八分音符</td>
-    <td class="range-td"><input type="range" id="eightVol" min="0" max="100" value="50"/></td>
-    <td id="eightVal" class="showParameter"></td>
+<tr><td>8分音符</td>
+    <td><input type="range" id="eightVol" min="0" max="100" value="20"/></td>
+    <td id="eightVal"></td>
+</tr>
+<tr><td>3連符</td>
+    <td><input type="range" id="tripletVol" min="0" max="100" value="0"/></td>
+    <td id="tripletVal"></td>
+</tr>
+<tr><td>16分音符</td>
+    <td><input type="range" id="sixteenVol" min="0" max="100" value="0"/></td>
+    <td id="sixteenVal"></td>
+</tr>
+<tr><td>拍子</td>
+<td><div class="signature" id="signature">
+    <div>
+    <label for="sign1"><input type="radio" name="signature-numerator" id="sign1" value="1" /><span class="radio-label">1</span></label>
+    <label for="sign2"><input type="radio" name="signature-numerator" id="sign2" value="2" /><span class="radio-label">2</span></label>
+    <label for="sign3"><input type="radio" name="signature-numerator" id="sign3" value="3" /><span class="radio-label">3</span></label>
+    <label for="sign4"><input type="radio" name="signature-numerator" id="sign4" value="4" checked="" /><span class="radio-label">4</span></label>
+    </div>
+    <label for="sign0"><input type="radio" name="signature-numerator" id="sign0" value="other" /><span class="radio-label">複合拍子</span></label>
+    <input type="text" id="compound-signature" placeholder="ex. 2+3, 4+2 etc..."></div>
+</div></td>
 </tr>
 </table>
-<br/>
 <script>
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioctx = new AudioContext();
-const keyboards = document.getElementsByClassName("keyboard");
+        const ana = audioctx.createAnalyser();
+const keyboards = document.getElementsByClassName("keyboards");
 const stdFreqElm = document.getElementById("stdFreq");
 const colorElm = document.getElementById("toneColor");
 const scale = document.getElementById("scale");
-const key_list = [
-    'A', 'S', 'D', 'F',"G", "H", 'J', 'K', 'L', ';',
-    'W', 'None', 'R', "T", "Y", 'U', 'O', "P"
-];
+const chordElm = document.getElementById("chordView");
+const attackElm = document.getElementById("attack");
+const releaseElm = document.getElementById("release");
 const freqRatio = [1, 16/15, 9/8, 6/5, 5/4, 4/3, 7/5, 3/2, 8/5, 5/3, 16/9, 15/8];
-const keyMapping = {};
 const toneNames = [
     "A0", "B0", "H0",
     "C1","Cis1", "D1", "Es1", "E1", "F1", "Fis1", "G1", "As1", "A1", "B1", "H1",
     "C2","Cis2", "D2", "Es2", "E2", "F2", "Fis2", "G2", "As2", "A2", "B2", "H2",
     "C3","Cis3", "D3", "Es3", "E3", "F3", "Fis3", "G3", "As3", "A3", "B3", "H3",
-    "C4","Cis4", "D4", "Es4", "E4", "F4", "Fis4", "G4", "As4", "A4", "B4", "H4", "C5"
+    "C4","Cis4", "D4", "Es4", "E4", "F4", "Fis4", "G4", "As4", "A4", "B4", "H4",
+    "C5"
 ];
 const scales = ["A", "B", "H", "C","Cis", "D", "Es", "E", "F", "Fis", "G", "As"];
 const tone = {};
-for (let i = 0; i < key_list.length; i++) {
-    keyMapping[key_list[i]] = keyboards[i];
-}
 const playing = {};
 let isLongtone = false;
-document.onkeydown = (e) => {
-	const keyMap = keyMapping[e.key.toUpperCase()];
-	if (keyMap) {
-		playTone(keyMapping[e.key.toUpperCase()].getAttribute("name"));
-	}
-}
 document.ontouchstart = (e) => {
 	const toneName = e.target.getAttribute("name");
     if (toneNames.includes(toneName)) {
@@ -395,20 +423,34 @@ document.ontouchstart = (e) => {
        e.target.classList.add("keyboard-press");
     }
 }
+showParam(attackElm, "attackVal");
+let attackTimeConst = (100 - attackElm.value) * 1e-3;
+attackElm.oninput = () => {
+    showParam(attackElm, "attackVal");
+    attackTimeConst = (100 - attackElm.value) * 1e-3;
+}
+showParam(releaseElm, "releaseVal");
+let releaseTimeConst = releaseElm.value * 1e-3;
+releaseElm.oninput = () => {
+    showParam(releaseElm, "releaseVal");
+    releaseTimeConst = releaseElm.value * 1e-3;
+}
 function playTone(toneName, e) {
     if (isLongtone) {
         stopPlay();
     }
     if (!playing[toneName]) {
-	    const osc = audioctx.createOscillator();
+        const osc = audioctx.createOscillator();
+        const gain = audioctx.createGain();
+        //const ana = audioctx.createAnalyser();
 	    const i = toneNames.indexOf(toneName);
         let keyScale = scale.value;
         let playingTones = [...Object.keys(playing).filter(key => playing[key]), toneName];
         playingTones = playingTones.map(str => str.slice(0, -1));
         playingTones = [...new Set(playingTones)];
-        if (playingTones.length === 3) {
+        if (playingTones.length >= 3) {
             const chord = chordCheck(playingTones);
-            document.getElementById("chordView").textContent = chord.string;
+            chordElm.textContent = chord.string;
             if (keyScale === "auto" && chord) {
                 keyScale = chord.name;
                 changeToneFreq(keyScale)
@@ -418,9 +460,13 @@ function playTone(toneName, e) {
         const freq = getFreqByScaleInterval(keyScale, i);
 	    osc.frequency.value = freq;
         osc.type = colorElm.value;
-	    osc.connect(audioctx.destination);
-	    playing[toneName] = {osc, elm: e};
+        gain.gain.value = 0;
+        osc.connect(gain);
+        gain.connect(ana);
+	    ana.connect(audioctx.destination);
+	    playing[toneName] = {osc, gain, ana, elm: e};
         osc.start();
+        gain.gain.setTargetAtTime(1, audioctx.currentTime, attackTimeConst);
     }
 }
 colorElm.onchange = () => {
@@ -440,38 +486,53 @@ function changeToneFreq(key = scale.value) {
     }
 }
 function chordCheck(tones) {
-    for (let i = 0; i < 3; i++) {
-        const [base, third, fifth] = [tones[i], tones[(i + 1) % 3], tones[(i + 2) % 3]];
+    for (let i = 0; i < tones.length; i++) {
+        let [base, third, fifth] = [tones[i], tones[(i + 1) % 3], tones[(i + 2) % 3]];
         const notes = {};
         [base, third, fifth].forEach(note => {
             notes[note] = scales.indexOf(note);
         });
-        const checkTriad = (basename, base, third, fifth) => {
-            if (fifth - base === 7 || 12 + fifth - base === 7) {
-                if (third - base === 3 || 12 + third - base === 3) {
-                    console.log(basename + "minor");
-                    return {
-                        string: basename + " minor",
-                        name: basename
+        const toneDistance = (higher, lower) => {
+            return (higher > lower) ? higher - lower : 12 + higher - lower;
+        }
+        const checkTriad = (base, third, fifth) => {
+            const baseToneName = scales[base];
+            switch (toneDistance(fifth, base)) {
+                case 7:
+                    switch (toneDistance(third, base)) {
+                        case 3:
+                            return {
+                                string: baseToneName + " minor",
+                                name: baseToneName
+                            }
+                            break;
+                        case 4:
+                            return {
+                                string: baseToneName + " major",
+                                name: baseToneName
+                            }
                     }
-                }
-                if (third - base === 4 || 12 + third - base === 4) {
-                    console.log(basename + "major");
-                    return {
-                        string: basename + " major",
-                        name: basename
+                    break;
+                case 6:
+                    if (toneDistance(third, base) === 3) {
+                        return {
+                            string: baseToneName + " diminish",
+                            name: baseToneName
+                        }
                     }
-                }
             }
             return false;
         }
-        let chord = checkTriad(base, ...Object.values(notes));
+        let chord = checkTriad(...Object.values(notes));
         if (!chord) {
             [notes[fifth], notes[third]] = [notes[third], notes[fifth]];
-            chord = checkTriad(base, ...Object.values(notes));
+            chord = checkTriad(...Object.values(notes));
         }
-        return chord || "";
+        if (chord) {
+            return chord;
+        }
     }
+    return "";
 }
 function getFreqByScaleInterval(scale, interval) {
 	const stdInterval = scales.indexOf(scale);
@@ -487,13 +548,6 @@ function getFreqByScaleInterval(scale, interval) {
 		return stdFreq * (2 ** (interval / 12));
 	}
 
-}
-document.onkeyup = (e) => {
-    const key = e.key.toUpperCase();
-    if (keyMapping[key]) {
-		const toneName = keyMapping[key].getAttribute("name");
-    	stopPlay(toneName, e);
-    }	
 }
 document.ontouchend = (e) => {
     const toneName = e.target.getAttribute("name");
@@ -511,7 +565,8 @@ susteinElm.onchange = () => {
 function stopPlay(toneName, event){
     if(!toneName) {
         for (let osc of Object.keys(playing)) {
-            playing[osc].osc.stop();
+            playing[osc].gain.gain.setTargetAtTime(0, audioctx.currentTime, releaseTimeConst);
+            playing[osc].osc.stop(audioctx.currentTime + 0.05);
             playing[osc].elm.classList.remove("keyboard-press");
             delete playing[osc];
         }
@@ -522,7 +577,8 @@ function stopPlay(toneName, event){
             isLongtone = !event.touches[0];
         }
     } else if(playing[toneName]) {
-        playing[toneName].osc.stop();
+        playing[toneName].gain.gain.setTargetAtTime(0, audioctx.currentTime, releaseTimeConst);
+        playing[toneName].osc.stop(audioctx.currentTime + 5);
         playing[toneName].elm. classList.remove("keyboard-press");
         delete playing[toneName];
     }
@@ -535,99 +591,173 @@ function showFreq() {
         changeToneFreq();
     }
 }
+class MetronomeNote {
+    constructor(beatInt, name, elmId, pElmId, freq) {
+        this.beatInterval = beatInt;
+        this.noteName = name;
+        this.element = document.getElementById(elmId);
+        this.paramElement = document.getElementById(pElmId);
+        this.frequency = freq;
+        this.level = this.element.value;
+
+        this.element.oninput = this.showParam.bind(this);
+    }
+    init() {/*
+        const real = new Float32Array(17);
+        const imag = new Float32Array(17);
+        for (let i = 1; i < real.length; i++) {
+            real[i] = 0;
+            imag[i] = !(i & (i - 1)) ? 1 / (i ** 2) : 0;
+        }
+        console.log(imag);
+
+        const steps = 2;
+        let curve = new Float32Array(100);
+        for(let i = 0; i < 100; ++i) {
+            curve[i] = (((i/100) * steps)|0)/(steps-1)*2-1;
+        }
+        const shaper = this.ctx.createWaveShaper();
+        shaper.curve = curve; 
+        const wavtable = this.ctx.createPeriodicWave(real, imag);*/
+        this.osc = this.ctx.createOscillator();
+        this.gain = this.ctx.createGain();
+
+        this.osc.frequency.value = this.frequency;
+        //this.osc.setPeriodicWave(wavtable);
+        this.gain.gain.value = 0;
+        this.osc.connect(this.gain);
+        this.gain.connect(this.ctx.destination);
+            if (false && this.buffer) {
+                this.source = this.ctx.createBufferSource();
+                this.source.buffer = AudioBuffer;
+                this.source.connect(this.gain);  
+                this.gain.connect(this.ctx.destination);  
+                this.source.start();
+                console.log(this.source)
+            }  
+        this.osc.start();
+    }
+    showParam() {
+        this.paramElement.textContent = this.element.value;
+        this.level = this.element.value;
+    }
+    reserveBeat(current48Beat, nextBeatTime, currentTimeSignature) {
+        if (this.beatInterval) {
+            if (current48Beat % this.beatInterval === 0) {
+                this.gain.gain.setValueAtTime(this.level / 50, nextBeatTime);
+                this.gain.gain.linearRampToValueAtTime(0, nextBeatTime + 0.05);
+            }
+        } else if (!currentTimeSignature && !current48Beat) {
+            this.gain.gain.setValueAtTime(this.level / 50, nextBeatTime);
+            this.gain.gain.linearRampToValueAtTime(0, nextBeatTime + 0.05);   
+        }
+    }
+    set audioContext(ctx) {
+        this.ctx = ctx;
+        this.init();
+    }
+    set arrayBuffer(buffer) {
+        this.buffer = buffer;
+        this.init();
+    }
+}
+const ctx = new AudioContext();
+const stressBase64Data = "data:audio/wav;base64,UklGRuAAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YbwAAAAnAEn8rfeB8tTs1ObX4Ejb6tWw0IfLQMaZwGq68rMWrd2laJ6Al/GR640EjpiTIJzep8q2aceN2ADpaPjHAloGYAcQBhkDRgDj/sX/MgKRCJUT/SAfMPk/s05tWLhbD1zMVrVKgzphJVgN8veC7uTy+/rxAOsBIwA0/ab6AvnU93r2xPTy8mjxKPB671vve+8a8Crxd/Le82n14fYg+Av53vly+uL6N/t++7D75/s8/Lr8U/0m/jX/bwD3AQ==";
+let AudioBuffer;
+function base64dataToArrayBuffer(data) {  
+    /*
+  var byteString = atob(data.split(',')[1])
+  var len = byteString.length;
+  var buffer = new Uint8Array(len);
+  for (var i=0; i<len; ++i) {
+    buffer[i] = byteString.charCodeAt(i);
+  }*/
+  return Uint8Array.from(atob(data.split(",")[1]), data => data.charCodeAt(0)).buffer
+  //return buffer.buffer;
+};
+const stress = new MetronomeNote(0, "stress", "stressVol", "stressVal", 2400);
+const four = new MetronomeNote(12, "four", "fourVol", "fourVal", 1200);
+const eight = new MetronomeNote(6, "eight", "eightVol", "eightVal", 1200);
+const triplet = new MetronomeNote(4, "triplet", "tripletVol", "tripletVal", 1200);
+const sixteen = new MetronomeNote(3, "sixteen", "sixteenVol", "sixteenVal", 1200);
+
+const metronomeNotes = {
+    stress, four, eight, triplet, sixteen
+};
+for (let note of Object.values(metronomeNotes)) {
+    note.showParam();
+}
 function showParam(elm, name) {
 	document.getElementById(name).textContent = elm.value;
 }
 const metroElm = document.getElementById("metro");
 const tempoElm = document.getElementById("tempo");
-const stressElm = document.getElementById("stressVol");
-const fourElm = document.getElementById("fourVol");
-const eightElm = document.getElementById("eightVol");
-const metroKeys = ["stress", "four", "eight"];
-let metroctx;
-let metroLevel = {};
+let metroIntervalId, metroctx;
 let metroTempo = tempoElm.value;
-let isTempoChanged = false;
 metroElm.onchange = metroHandler;
 metroElm.checked = false;
 function metroHandler() {
     if (metroElm.checked) {
-        metroLevel = {
-            stress: stressElm.value,
-            four: fourElm.value,
-            eight: eightElm.value
-        };
-        metroctx = startMetronome(metroTempo, metroLevel);
+        const obj = {id: metroIntervalId, ctx: metroctx} = startMetronome();
     } else if (metroctx) {
-        metroctx.ctx.close();
-        clearInterval(metroctx.id);
-        metroctx = null;
+        metroctx.close();
+        clearInterval(metroIntervalId);
+        metroIntervalId = null;
     }
 }
 
 showParam(tempoElm, "tempoVal");
-showParam(stressElm, "stressVal");
-showParam(fourElm, "fourVal");
-showParam(eightElm, "eightVal");
 tempoElm.oninput = () => {
     metroTempo = tempoElm.value;
     showParam(tempoElm, "tempoVal");
-    if (metroctx) {
-        isTempochAnged = true;
+}
+
+const timeSignatureElm = document.getElementById("signature");
+function getTimeSignatureNumerator() {    
+    let resultElm;
+    for (let elm of timeSignatureElm.querySelectorAll("input")) {
+        if (elm.checked) {
+            resultElm = elm;
+        }
+    }
+    if (!(resultElm.value - 0)) {
+        const compoundElm = document.getElementById("compound-signature");
+        return compoundElm.value.split(/\+|,| /);
+    }
+    return [resultElm.value - 0];
+}
+let signature = getTimeSignatureNumerator();
+for (let elm of timeSignatureElm.querySelectorAll("input")) {
+    elm.onchange = () => {
+        signature = getTimeSignatureNumerator();
+        console.log(signature)
     }
 }
-stressElm.oninput = () => {
-    const level = stressElm.value;
-    showParam(stressElm, "stressVal");
-    metroLevel.stress = level;
-}
-fourElm.oninput = () => {
-    const level = fourElm.value;
-    showParam(fourElm, "fourVal");
-    metroLevel.four = level;
-}
-eightElm.oninput = () => {
-    const level = eightElm.value;
-    showParam(eightElm, "eightVal");
-    metroLevel.eight = level;
-}
-function startMetronome(level) {
+
+function startMetronome() {
     const ctx = new AudioContext();
+    for (let note of Object.values(metronomeNotes)) {
+        note.audioContext = ctx;
+    }
+    /*ctx.decodeAudioData(base64dataToArrayBuffer(stressBase64Data)).then(function(buffer) {  
+        AudioBuffer = buffer;
+        stress.arrayBuffer = buffer;
+    });*/
     const baseTimeStamp = performance.now() - ctx.currentTime * 1000;
-    let current16Note = 0;
-    const oscs = {
-        stress: ctx.createOscillator(),
-        four: ctx.createOscillator(),
-        eight: ctx.createOscillator()        
-    };
-    const gains = {
-        stress: ctx.createGain(),
-        four: ctx.createGain(),
-        eight: ctx.createGain()        
-    };
-    oscs.stress.frequency.value = 2400;
-    oscs.four.frequency.value = 1200;
-    oscs.eight.frequency.value = 1200;
-    for(let key of metroKeys) {
-        gains[key].gain.value = 0;
-        oscs[key].connect(gains[key]);
-        gains[key].connect(ctx.destination);
-        oscs[key].start();
-    }
-    function currentTimeStamp() {
-        return baseTimeStamp + ctx.currentTime * 1000;
-    }
-    function timeStampToAudioContextTime(timeStamp) {
-        return (timeStamp - baseTimeStamp) / 1000;
-    }
+    let current48Beat = 0;
+    let currentTimeSignature = 0;
+    let currentSignatureIndex = 0;
+
     const nowTime = performance.now();
-    let lastClickTimeStamp = nowTime;
-    let nextClickTimeStamp = lastClickTimeStamp;
+    let lastBeatTimeStamp = nowTime;
+    let nextBeatTimeStamp = lastBeatTimeStamp;
     function scheduler() {
         const now = currentTimeStamp();
-        while (nextClickTimeStamp < now + 700) {
-            let next16ClickTime = timeStampToAudioContextTime(nextClickTimeStamp);
-            reserveNote(current16Note, next16ClickTime);
+        while (nextBeatTimeStamp < now + 700) {
+            let next48BeatTime = timeStampToAudioContextTime(nextBeatTimeStamp);
+            for (let note of Object.values(metronomeNotes)) {
+                note.reserveBeat(current48Beat, next48BeatTime, currentTimeSignature);
+            }
             nextNote();
         }
     }
@@ -635,36 +765,33 @@ function startMetronome(level) {
     const intervalId = setInterval(scheduler, 500);
     return {
         ctx,
-        osc: oscs,
-        gain: gains,
-        id : intervalId
+        id: intervalId
     };
-    function reserveBeat(key, nextClickTime) {
-        gains[key].gain.setValueAtTime(metroLevel[key] / 50, nextClickTime);
-        gains[key].gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-    }
-    function reserveNote(beater, time) {
-        if (beater === 0) {
-            // ダウンビート
-            reserveBeat("stress", time);
-            reserveBeat("four", time);
-            reserveBeat("eight", time);
-        } else if (beater % 2 === 0) {
-            //裏拍
-            reserveBeat("eight", time);
-        }
-    }
     function nextNote() {
         const beatTick = 60 * 1000 / metroTempo;
-        nextClickTimeStamp += beatTick / 4;
-
-        current16Note++;
-        current16Note %= 4;
+        nextBeatTimeStamp += beatTick / 12;
+        current48Beat++;
+        current48Beat %= 12;
+        if (!current48Beat) {
+            currentTimeSignature++;
+            currentTimeSignature %= signature[currentSignatureIndex];
+            if (!currentTimeSignature) {
+                currentSignatureIndex++;
+                currentSignatureIndex %= signature.length;
+            }
+        }
+    }
+    function currentTimeStamp() {
+        return baseTimeStamp + ctx.currentTime * 1000;
+    }
+    function timeStampToAudioContextTime(timeStamp) {
+        return (timeStamp - baseTimeStamp) / 1000;
     }
 }
+
 for (let elm of document.querySelectorAll("input[type='range']")) {
     const beforeElm = document.createElement("input");
-    with (beforeElm) {
+     with (beforeElm) {
         type = "button";
         classList.add("minus-button");
         value = "ー";
@@ -677,6 +804,7 @@ for (let elm of document.querySelectorAll("input[type='range']")) {
     afterElm.value = "＋";
     afterElm.onclick = prevent;
     afterElm.ontouchstart = handler;
+
     elm.insertAdjacentElement("beforebegin", beforeElm);
     elm.insertAdjacentElement("afterend", afterElm);
     function handler(e) {
