@@ -14,10 +14,10 @@ body {
 }
 h1 {
     position: relative;
-    background-image: linear-gradient(to bottom, turquoise 0%, black 100%);
+    background: linear-gradient(to bottom, turquoise 0%, black 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    -webkit-box-reflect: below -18px linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,0) 5%,rgba(0, 0, 0, 0.6));
+    -webkit-box-reflect: below -18px linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,0) 10%,rgba(0, 0, 0, 0.6));
     margin: 4px;
     margin-bottom: 1em;
     font-size: 1.7em;
@@ -167,13 +167,12 @@ input[type="range"]:-webkit-slider-thumb,input[type="range"]:-moz-range-thumb {
 }
 .wrapSelect {
     overflow: hidden;
-    width: 90%;
+    width: 40%;
     text-align: center;
 }
 .wrapSelect select {
     width: 90%;
-    padding: 4px 15px 4px 4px;
-    cursor: pointer;
+    padding: 0.1em 15px 0.1em 0.2em;
     text-overflow: ellipsis;
     border: none;
     outline: none;
@@ -185,10 +184,12 @@ input[type="range"]:-webkit-slider-thumb,input[type="range"]:-moz-range-thumb {
 }
 .wrapSelect {
     position: relative;
-    border-radius: 2px;
+    height: 1.4em;
     border: 2px solid turquoise;
     border-radius: 50px;
     background: #dfd;
+    display: inline-table;
+    border-collapse: separate;
 }
 .wrapSelect:before {
     position: absolute;
@@ -225,10 +226,12 @@ input[type="radio"] {
     position: absolute;
 }
 .radio-label {
-    display: flex;
-    padding: 0.2em 0.5em;
+    display: inline-block;
+    margin: auto;
+    padding: 2px .4em;
     border: 1px solid #dfd;
-    border-radius: 3px;
+    border-radius: .5em;
+    border-collapse: collapse;
     transition: all .2s;
 }
 input[type="radio"]:checked + .radio-label {
@@ -318,29 +321,36 @@ input[type="radio"]:checked + .radio-label {
     <td id="stdFreqVal"></td>
 </tr>
 <tr><th>調</th>
-    <td><div class="wrapSelect"><select id="scale">
+    <td><div><div class="wrapSelect"><select id="scale">
         <option value="ave" selected="">平均律</option>
         <option value="C">C</option>
-        <option value="Es">E♭</option>
-        <option value="F">F</option>
-        <option value="B">B♭</option>
+        <option value="Cis">C♯</option>
         <option value="D">D</option>
-        <option value="A">A</option>
+        <option value="Es">E♭</option>
+        <option value="E">E</option>
+        <option value="F">F</option>
+        <option value="Fis">F♯</option>
         <option value="G">G</option>
         <option value="As">A♭</option>
-        <option value="auto">自動(試験的)</option>
-    </select></div></td></tr>
+        <option value="A">A</option>
+        <option value="B">B♭</option>
+        <option value="H">B</option>
+    </select></div>
+    <label for="major"><input type="radio" name="key" id="major" value="major" checked="" /><span class="radio-label">長調</span></label>
+    <label for="minor"><input type="radio" name="key" id="minor" value="minor" /><span class="radio-label">短調</span></label></div>
+    <label for="keyAuto"><input type="checkbox" id="keyAuto" name ="keyAuto"/><span class="switch-label">自動</span></label>
+</td></tr>
 <tr><th>音色</th>
 <td><div class="wrapSelect"><select id="toneColor">
     <option value="sine" selected="">正弦波</option>
     <option value="square">矩形波</option>
     <option value="sawtooth">鋸波</option>
     <option value="triangle">三角波</option>
-    <option value="custom" disabled="">その他(未実装)</option>
+    <!--option value="custom" disabled="">その他(未実装)</option-->
 </select></div></td></tr>
 <tr>
     <th>アタック</th>
-    <td><input type="range" id="attack" min="0" max="100" value="25"/></td>
+    <td><input type="range" id="attack" min="0" max="100" value="80"/></td>
     <td id="attackVal"></td>
 </tr>
 <tr>
@@ -348,6 +358,13 @@ input[type="radio"]:checked + .radio-label {
     <td><input type="range" id="release" min="0" max="100" value="50"/></td>
     <td id="releaseVal"></td>
 </tr>
+<tr><th>音域</th>
+    <td><div id="range-of-octave">
+    <label for="low"><input type="radio" name="range-of-octave" id="low" value="2" /><span class="radio-label">低音</span></label>
+    <label for="midium"><input type="radio" name="range-of-octave" id="midium" value="1" checked="" /><span class="radio-label">中音</span></label>
+    <label for="high"><input type="radio" name="range-of-octave" id="high" value="0" /><span class="radio-label">高音</span></label>
+    </div>
+</td></tr>
 <tr><th>メトロノーム</th>
     <td><div class="switch">
         <label for="metro"><input type="checkbox" id="metro" name="metro"/><span class="switch-label">再生する</span></label>
@@ -394,7 +411,7 @@ input[type="radio"]:checked + .radio-label {
 <script>
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioctx = new AudioContext();
-        const ana = audioctx.createAnalyser();
+const ana = audioctx.createAnalyser();
 const keyboards = document.getElementsByClassName("keyboards");
 const stdFreqElm = document.getElementById("stdFreq");
 const colorElm = document.getElementById("toneColor");
@@ -402,7 +419,14 @@ const scale = document.getElementById("scale");
 const chordElm = document.getElementById("chordView");
 const attackElm = document.getElementById("attack");
 const releaseElm = document.getElementById("release");
-const freqRatio = [1, 16/15, 9/8, 6/5, 5/4, 4/3, 7/5, 3/2, 8/5, 5/3, 16/9, 15/8];
+const keyElm = document.querySelectorAll("input[name='key']");
+const rangeElm = document.getElementById("range-of-octave").querySelectorAll("input");
+const autoElm = document.getElementById("keyAuto");
+let majorOrMinor;
+let currentOctave;
+const freqRatio = {};
+freqRatio.major = [1, 25/24, 9/8, 6/5, 5/4, 4/3, 25/18, 3/2, 25/16, 5/3, 9/5, 15/8, 2];
+freqRatio.minor = [1, 27/25, 9/8, 6/5, 5/4, 4/3, 36/25, 3/2, 8/5, 5/3, 9/5, 15/8, 2];
 const toneNames = [
     "A0", "B0", "H0",
     "C1","Cis1", "D1", "Es1", "E1", "F1", "Fis1", "G1", "As1", "A1", "B1", "H1",
@@ -415,6 +439,10 @@ const scales = ["A", "B", "H", "C","Cis", "D", "Es", "E", "F", "Fis", "G", "As"]
 const tone = {};
 const playing = {};
 let isLongtone = false;
+
+
+setMajorOrMinor();
+setRangeOctave();
 document.ontouchstart = (e) => {
 	const toneName = e.target.getAttribute("name");
     if (toneNames.includes(toneName)) {
@@ -445,15 +473,18 @@ function playTone(toneName, e) {
         //const ana = audioctx.createAnalyser();
 	    const i = toneNames.indexOf(toneName);
         let keyScale = scale.value;
-        let playingTones = [...Object.keys(playing).filter(key => playing[key]), toneName];
-        playingTones = playingTones.map(str => str.slice(0, -1));
-        playingTones = [...new Set(playingTones)];
-        if (playingTones.length >= 3) {
-            const chord = chordCheck(playingTones);
-            chordElm.textContent = chord.string;
-            if (keyScale === "auto" && chord) {
-                keyScale = chord.name;
-                changeToneFreq(keyScale)
+        if (autoElm.checked) {
+            let playingTones = [...Object.keys(playing).filter(key => playing[key]), toneName];
+            playingTones = playingTones.map(str => str.slice(0, -1));
+            playingTones = [...new Set(playingTones)];
+            if (playingTones.length >= 3) {
+                const chord = chordCheck(playingTones);
+                chordElm.textContent = chord.string;
+                if (chord) {
+                    keyScale = chord.name;
+                    changeToneFreq(keyScale);
+                    scale.value = keyScale;
+                }
             }
         }
 
@@ -535,19 +566,44 @@ function chordCheck(tones) {
     return "";
 }
 function getFreqByScaleInterval(scale, interval) {
-	const stdInterval = scales.indexOf(scale);
-	const stdFreq = stdFreqElm.value / 2;
+	let stdInterval = scales.indexOf(scale);
+	const stdFreq = stdFreqElm.value / (2 ** currentOctave);
+    const currentFreq = freqRatio[majorOrMinor];
 	if (~stdInterval) {
-        const referFreq = stdFreq * (2 ** (stdInterval / 12));
-		if (interval < stdInterval) {
-			return referFreq * freqRatio[freqRatio.length - (stdInterval - interval)] / 2;
-		} else {
-			return referFreq * freqRatio[(interval - stdInterval) % freqRatio.length] * 2 ** ~~((interval - stdInterval) / freqRatio.length);
-		}
+        const referFreq = stdFreq / 2 * 2 ** (stdInterval / 12);// / currentFreq[12 - stdInterval];
+        const degree = (12 + interval - stdInterval) % 12;
+        const octave = ~~((12 + interval - stdInterval) / 12);
+		return (referFreq * currentFreq[degree]) * 2 ** octave;
 	} else {
 		return stdFreq * (2 ** (interval / 12));
 	}
+}
 
+function setMajorOrMinor() {
+    for (let elm of keyElm) {
+        if (elm.checked) {
+            majorOrMinor = elm.value;
+        }
+    }
+}
+function setRangeOctave() {
+    for (let elm of rangeElm) {
+        if (elm.checked) {
+            currentOctave = elm.value - 0;
+        }
+    }
+}
+for (let elm of keyElm) {
+    elm.oninput = () => {
+        setMajorOrMinor();
+        changeToneFreq();
+    }
+}
+for (let elm of rangeElm) {
+    elm.oninput = () => {
+        setRangeOctave();
+        changeToneFreq();
+    }
 }
 document.ontouchend = (e) => {
     const toneName = e.target.getAttribute("name");
@@ -730,7 +786,6 @@ let signature = getTimeSignatureNumerator();
 for (let elm of timeSignatureElm.querySelectorAll("input")) {
     elm.onchange = () => {
         signature = getTimeSignatureNumerator();
-        console.log(signature)
     }
 }
 
@@ -739,10 +794,10 @@ function startMetronome() {
     for (let note of Object.values(metronomeNotes)) {
         note.audioContext = ctx;
     }
-    /*ctx.decodeAudioData(base64dataToArrayBuffer(stressBase64Data)).then(function(buffer) {  
+    ctx.decodeAudioData(base64dataToArrayBuffer(stressBase64Data)).then(function(buffer) {  
         AudioBuffer = buffer;
         stress.arrayBuffer = buffer;
-    });*/
+    });
     const baseTimeStamp = performance.now() - ctx.currentTime * 1000;
     let current48Beat = 0;
     let currentTimeSignature = 0;
