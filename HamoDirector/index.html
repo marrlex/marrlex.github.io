@@ -246,6 +246,7 @@ input[type="radio"]:checked + .radio-label {
 </style>
 <h1>鱧ディレクター</h1>
 <span id="chordView"></span>
+<div id="piano-wrapper">
 <div class="piano">
     <div class="white-keys">
         <div class="keyboards" name="C1"></div>
@@ -313,7 +314,7 @@ input[type="radio"]:checked + .radio-label {
         <div class="keyboards" name="As4"></div>
         <div class="keyboards" name="B4"></div>
     </div>
-</div>
+</div></div>
 <table>
 <tr><th>持続</th>
     <td><label for="sustein"><input type="checkbox" id="sustein" name ="sustein"/><span class="switch-label">持続する</span></label></td>
@@ -415,6 +416,7 @@ input[type="radio"]:checked + .radio-label {
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioctx = new AudioContext();
 const ana = audioctx.createAnalyser();
+const pianoElm = document.getElementById("piano-wrapper");
 const keyboards = document.getElementsByClassName("keyboards");
 const stdFreqElm = document.getElementById("stdFreq");
 const colorElm = document.getElementById("toneColor");
@@ -446,12 +448,12 @@ let isLongtone = false;
 
 setMajorOrMinor();
 setRangeOctave();
-document.ontouchstart = (e) => {
+pianoElm.ontouchstart = (e) => {
     const toneName = e.target.getAttribute("name");
     if (toneNames.includes(toneName)) {
-    e.preventDefault();
+        e.preventDefault();
         playTone(toneName, e.target);
-       e.target.classList.add("keyboard-press");
+        e.target.classList.add("keyboard-press");
     }
 }
 showParam(attackElm, "attackVal");
@@ -597,18 +599,18 @@ function setRangeOctave() {
     }
 }
 for (let elm of keyElm) {
-    elm.oninput = () => {
+    elm.onchange = () => {
         setMajorOrMinor();
         changeToneFreq();
     }
 }
 for (let elm of rangeElm) {
-    elm.oninput = () => {
+    elm.onchange = () => {
         setRangeOctave();
         changeToneFreq();
     }
 }
-document.ontouchend = (e) => {
+pianoElm.ontouchend = (e) => {
     const toneName = e.target.getAttribute("name");
     if (toneName) {
         e.preventDefault();
@@ -790,9 +792,11 @@ function getTimeSignatureNumerator() {
     return [resultElm.value - 0];
 }
 let signature = getTimeSignatureNumerator();
+let isChangedSignature = false;
 for (let elm of timeSignatureElm.querySelectorAll("input")) {
     elm.onchange = () => {
         signature = getTimeSignatureNumerator();
+        isChangedSignature = true;
     }
 }
 
@@ -833,6 +837,10 @@ function startMetronome() {
     };
     function nextNote() {
         const beatTick = 60 * 1000 / metroTempo;
+        if (isChangedSignature) {
+            currentSignatureIndex = 0;
+            isChangedSignature = false;
+        }
         nextBeatTimeStamp += beatTick / 12;
         current48Beat++;
         current48Beat %= 12;
