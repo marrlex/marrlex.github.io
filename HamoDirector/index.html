@@ -407,7 +407,7 @@ input[type="radio"]:checked + .radio-label {
     <label for="sign4"><input type="radio" name="signature-numerator" id="sign4" value="4" checked="" /><span class="radio-label">4</span></label>
     </div>
     <label for="sign0"><input type="radio" name="signature-numerator" id="sign0" value="other" /><span class="radio-label">複合拍子</span></label>
-    <input type="text" id="compound-signature" placeholder="ex. 2+3, 4+2 etc..."></div>
+    <input type="tel" id="compound-signature" placeholder="ex. 2+3, 4+2 etc..."></div>
 </div></td>
 </tr>
 </table>
@@ -821,7 +821,7 @@ function startMetronome() {
     let nextBeatTimeStamp = lastBeatTimeStamp;
     function scheduler() {
         const now = currentTimeStamp();
-        while (nextBeatTimeStamp < now + 700) {
+        while (nextBeatTimeStamp < now + 800) {
             let next48BeatTime = timeStampToAudioContextTime(nextBeatTimeStamp);
             for (let note of Object.values(metronomeNotes)) {
                 note.reserveBeat(current48Beat, next48BeatTime, currentTimeSignature);
