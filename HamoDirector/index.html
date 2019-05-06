@@ -447,10 +447,10 @@ let isLongtone = false;
 setMajorOrMinor();
 setRangeOctave();
 document.ontouchstart = (e) => {
-	const toneName = e.target.getAttribute("name");
+    const toneName = e.target.getAttribute("name");
     if (toneNames.includes(toneName)) {
-	e.preventDefault();
-		playTone(toneName, e.target);
+    e.preventDefault();
+        playTone(toneName, e.target);
        e.target.classList.add("keyboard-press");
     }
 }
@@ -474,7 +474,7 @@ function playTone(toneName, e) {
         const osc = audioctx.createOscillator();
         const gain = audioctx.createGain();
         //const ana = audioctx.createAnalyser();
-	    const i = toneNames.indexOf(toneName);
+        const i = toneNames.indexOf(toneName);
         let keyScale = scale.value;
         if (autoElm.checked) {
             let playingTones = [...Object.keys(playing).filter(key => playing[key]), toneName];
@@ -492,13 +492,13 @@ function playTone(toneName, e) {
         }
 
         const freq = getFreqByScaleInterval(keyScale, i);
-	    osc.frequency.value = freq;
+        osc.frequency.value = freq;
         osc.type = colorElm.value;
         gain.gain.value = 0;
         osc.connect(gain);
         gain.connect(ana);
-	    ana.connect(audioctx.destination);
-	    playing[toneName] = {osc, gain, ana, elm: e};
+        ana.connect(audioctx.destination);
+        playing[toneName] = {osc, gain, ana, elm: e};
         osc.start();
         gain.gain.setTargetAtTime(1, audioctx.currentTime, attackTimeConst);
     }
@@ -569,17 +569,17 @@ function chordCheck(tones) {
     return "";
 }
 function getFreqByScaleInterval(scale, interval) {
-	let stdInterval = scales.indexOf(scale);
-	const stdFreq = stdFreqElm.value / (2 ** currentOctave);
+    let stdInterval = scales.indexOf(scale);
+    const stdFreq = stdFreqElm.value / (2 ** currentOctave);
     const currentFreq = freqRatio[majorOrMinor];
-	if (~stdInterval) {
+    if (~stdInterval) {
         const referFreq = stdFreq / 2 * 2 ** (stdInterval / 12);// / currentFreq[12 - stdInterval];
         const degree = (12 + interval - stdInterval) % 12;
         const octave = ~~((12 + interval - stdInterval) / 12);
-		return (referFreq * currentFreq[degree]) * 2 ** octave;
-	} else {
-		return stdFreq * (2 ** (interval / 12));
-	}
+        return (referFreq * currentFreq[degree]) * 2 ** octave;
+    } else {
+        return stdFreq * (2 ** (interval / 12));
+    }
 }
 
 function setMajorOrMinor() {
@@ -613,7 +613,7 @@ document.ontouchend = (e) => {
     if (toneName) {
         e.preventDefault();
         stopPlay(toneName, e);
-    }	
+    }   
 }
 const susteinElm = document.getElementById("sustein");
 susteinElm.onchange = () => {
@@ -686,14 +686,16 @@ class MetronomeNote {
         this.gain.gain.value = 0;
         this.osc.connect(this.gain);
         this.gain.connect(this.ctx.destination);
-            if (false && this.buffer) {
+        /*
+            if (this.buffer) {
                 this.source = this.ctx.createBufferSource();
                 this.source.buffer = AudioBuffer;
                 this.source.connect(this.gain);  
                 this.gain.connect(this.ctx.destination);  
                 this.source.start();
                 console.log(this.source)
-            }  
+            }
+            */
         this.osc.start();
     }
     showParam() {
@@ -721,6 +723,7 @@ class MetronomeNote {
     }
 }
 const ctx = new AudioContext();
+/*
 const stressBase64Data = "data:audio/wav;base64,UklGRuAAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YbwAAAAnAEn8rfeB8tTs1ObX4Ejb6tWw0IfLQMaZwGq68rMWrd2laJ6Al/GR640EjpiTIJzep8q2aceN2ADpaPjHAloGYAcQBhkDRgDj/sX/MgKRCJUT/SAfMPk/s05tWLhbD1zMVrVKgzphJVgN8veC7uTy+/rxAOsBIwA0/ab6AvnU93r2xPTy8mjxKPB671vve+8a8Crxd/Le82n14fYg+Av53vly+uL6N/t++7D75/s8/Lr8U/0m/jX/bwD3AQ==";
 let AudioBuffer;
 function base64dataToArrayBuffer(data) {  
@@ -730,10 +733,11 @@ function base64dataToArrayBuffer(data) {
   var buffer = new Uint8Array(len);
   for (var i=0; i<len; ++i) {
     buffer[i] = byteString.charCodeAt(i);
-  }*/
+  }
   return Uint8Array.from(atob(data.split(",")[1]), data => data.charCodeAt(0)).buffer
   //return buffer.buffer;
 };
+*/
 const stress = new MetronomeNote(0, "stress", "stressVol", "stressVal", 2400);
 const four = new MetronomeNote(12, "four", "fourVol", "fourVal", 1200);
 const eight = new MetronomeNote(6, "eight", "eightVol", "eightVal", 1200);
@@ -747,7 +751,7 @@ for (let note of Object.values(metronomeNotes)) {
     note.showParam();
 }
 function showParam(elm, name) {
-	document.getElementById(name).textContent = elm.value;
+    document.getElementById(name).textContent = elm.value;
 }
 const metroElm = document.getElementById("metro");
 const tempoElm = document.getElementById("tempo");
@@ -797,10 +801,12 @@ function startMetronome() {
     for (let note of Object.values(metronomeNotes)) {
         note.audioContext = ctx;
     }
+    /*
     ctx.decodeAudioData(base64dataToArrayBuffer(stressBase64Data)).then(function(buffer) {  
         AudioBuffer = buffer;
         stress.arrayBuffer = buffer;
     });
+    */
     const baseTimeStamp = performance.now() - ctx.currentTime * 1000;
     let current48Beat = 0;
     let currentTimeSignature = 0;
