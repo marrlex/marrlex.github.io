@@ -81,6 +81,7 @@ td.range-td {
 }
 .key-space {
     visibility: hidden;
+    z-index: -9999;
 }
 .keyboard-press {
     background-color: #ccc !important;
@@ -407,10 +408,16 @@ input[type="radio"]:checked + .radio-label {
     <label for="sign4"><input type="radio" name="signature-numerator" id="sign4" value="4" checked="" /><span class="radio-label">4</span></label>
     </div>
     <label for="sign0"><input type="radio" name="signature-numerator" id="sign0" value="other" /><span class="radio-label">複合拍子</span></label>
-    <input type="tel" id="compound-signature" placeholder="ex. 2+3, 4+2 etc..."></div>
+    <input type="text" id="compound-signature" placeholder="ex. 2+3, 4+2 etc..."></div>
 </div></td>
 </tr>
 </table>
+<br />
+<!--
+<p>自動再生</p>
+<label for="auto-player"><input type="checkbox" id="auto-player" /><span class="switch-label">再生／停止</span></label>
+<textarea id="auto-play-text" placeholder="c,c,e,g|ceg|c"></textarea>
+-->
 <br />
 <script>
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -475,18 +482,25 @@ function playTone(toneName, e) {
     if (!playing[toneName]) {
         const osc = audioctx.createOscillator();
         const gain = audioctx.createGain();
-        //const ana = audioctx.createAnalyser();
+        const ana = audioctx.createAnalyser();
         const i = toneNames.indexOf(toneName);
+        playing[toneName] = {osc, gain, ana, elm: e, i};
         let keyScale = scale.value;
         if (autoElm.checked) {
-            let playingTones = [...Object.keys(playing).filter(key => playing[key]), toneName];
+            let playingTones = Object.keys(playing).filter(key => playing[key]);
             playingTones = playingTones.map(str => str.slice(0, -1));
             playingTones = [...new Set(playingTones)];
             if (playingTones.length >= 3) {
-                const chord = chordCheck(playingTones);
-                chordElm.textContent = chord.string;
+                let lowest = 88;
+                for (let j = 0; j < Object.keys(playing).length; j++) {
+                    if (playing[Object.keys(playing)[j]].i < lowest) {
+                        lowest = playing[Object.keys(playing)[j]].i;
+                    }
+                }
+                const chord = chordCheck(playingTones, toneNames[lowest].slice(0, -1));
                 if (chord) {
-                    keyScale = chord.name;
+                    keyScale = chord.key;
+                    chordElm.textContent = keyScale + " " + chord.chordStr;
                     changeToneFreq(keyScale);
                     scale.value = keyScale;
                 }
@@ -500,7 +514,6 @@ function playTone(toneName, e) {
         osc.connect(gain);
         gain.connect(ana);
         ana.connect(audioctx.destination);
-        playing[toneName] = {osc, gain, ana, elm: e};
         osc.start();
         gain.gain.setTargetAtTime(1, audioctx.currentTime, attackTimeConst);
     }
@@ -521,61 +534,75 @@ function changeToneFreq(key = scale.value) {
         playing[osc].osc.frequency.value = freq;
     }
 }
-function chordCheck(tones) {
-    for (let i = 0; i < tones.length; i++) {
-        let [base, third, fifth] = [tones[i], tones[(i + 1) % 3], tones[(i + 2) % 3]];
-        const notes = {};
-        [base, third, fifth].forEach(note => {
-            notes[note] = scales.indexOf(note);
-        });
-        const toneDistance = (higher, lower) => {
-            return (higher > lower) ? higher - lower : 12 + higher - lower;
+function chordCheck(tones, lowest) {
+    if (tones.length > 4) {
+        return false;
+    }
+    console.log(lowest)
+    let notes = [];
+    const n = tones.length;
+    tones.forEach(note => {
+        notes.push(scales.indexOf(note));
+    });
+    notes.sort((a, b) => {
+        return (a > b) ? 1 : -1;
+    });
+
+    const lowestNum = scales.indexOf(lowest);
+    let splitIndex = 0;
+    while (notes[splitIndex++] < lowestNum) continue;
+    splitIndex--;
+    notes = [...notes.slice(splitIndex, n), ...notes.slice(0, splitIndex)];
+    console.log(notes)
+    const toneDistance = (base, higher) => {
+        return (higher > base) ? higher - base : (12 + higher - base) % 12;
+    }
+
+    for (let i = 0; i < n; i++) {
+        const distances = [];
+        for (let j = 0; j < n; j++) {
+            distances.push(toneDistance(notes[0], notes[j]));
         }
-        const checkTriad = (base, third, fifth) => {
-            const baseToneName = scales[base];
-            switch (toneDistance(fifth, base)) {
-                case 7:
-                    switch (toneDistance(third, base)) {
-                        case 3:
-                            return {
-                                string: baseToneName + " minor",
-                                name: baseToneName
-                            }
-                            break;
-                        case 4:
-                            return {
-                                string: baseToneName + " major",
-                                name: baseToneName
-                            }
-                    }
-                    break;
-                case 6:
-                    if (toneDistance(third, base) === 3) {
-                        return {
-                            string: baseToneName + " diminish",
-                            name: baseToneName
-                        }
-                    }
+        const baseToneName = scales[notes[0]];
+        const chordList = {
+            "0,4,7": "major",
+            "0,3,7": "minor",
+            "0,5,7": "sus4",
+            "0,2,7": "sus2",
+            "0,4,7,10": "7",
+            "0,3,7,10": "m7",
+            "0,4,7,11": "M7",
+            "0,3,6,10": "m7-5",
+            "0,5,7,10": "7sus4",
+            "0,4,8": "aug",
+            "0,3,6": "diminish",
+            "0,3,7,11": "mM7",
+            "0,4,7,9": "6",
+            "0,3,7,9": "m6",
+            "0,4,6,10": "7-5",
+
+            // "0,2,4,7": "I on II"
+        }
+        const prop = distances.join();
+        if (prop in chordList) {
+            return {
+                key: baseToneName,
+                chordStr: chordList[prop]
             }
-            return false;
-        }
-        let chord = checkTriad(...Object.values(notes));
-        if (!chord) {
-            [notes[fifth], notes[third]] = [notes[third], notes[fifth]];
-            chord = checkTriad(...Object.values(notes));
-        }
-        if (chord) {
-            return chord;
+        } else {
+            notes.push(notes[0]);
+            notes.shift();
         }
     }
     return "";
 }
+
 function getFreqByScaleInterval(scale, interval) {
     let stdInterval = scales.indexOf(scale);
     const stdFreq = stdFreqElm.value / (2 ** currentOctave);
     const currentFreq = freqRatio[majorOrMinor];
     if (~stdInterval) {
-        const referFreq = stdFreq / 2 * 2 ** (stdInterval / 12);// / currentFreq[12 - stdInterval];
+        const referFreq = stdFreq / 2 * 2 ** (stdInterval / 12);
         const degree = (12 + interval - stdInterval) % 12;
         const octave = ~~((12 + interval - stdInterval) / 12);
         return (referFreq * currentFreq[degree]) * 2 ** octave;
@@ -663,28 +690,11 @@ class MetronomeNote {
 
         this.element.oninput = this.showParam.bind(this);
     }
-    init() {/*
-        const real = new Float32Array(17);
-        const imag = new Float32Array(17);
-        for (let i = 1; i < real.length; i++) {
-            real[i] = 0;
-            imag[i] = !(i & (i - 1)) ? 1 / (i ** 2) : 0;
-        }
-        console.log(imag);
-
-        const steps = 2;
-        let curve = new Float32Array(100);
-        for(let i = 0; i < 100; ++i) {
-            curve[i] = (((i/100) * steps)|0)/(steps-1)*2-1;
-        }
-        const shaper = this.ctx.createWaveShaper();
-        shaper.curve = curve; 
-        const wavtable = this.ctx.createPeriodicWave(real, imag);*/
+    init() {
         this.osc = this.ctx.createOscillator();
         this.gain = this.ctx.createGain();
 
         this.osc.frequency.value = this.frequency;
-        //this.osc.setPeriodicWave(wavtable);
         this.gain.gain.value = 0;
         this.osc.connect(this.gain);
         this.gain.connect(this.ctx.destination);
@@ -724,7 +734,6 @@ class MetronomeNote {
         this.init();
     }
 }
-const ctx = new AudioContext();
 /*
 const stressBase64Data = "data:audio/wav;base64,UklGRuAAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YbwAAAAnAEn8rfeB8tTs1ObX4Ejb6tWw0IfLQMaZwGq68rMWrd2laJ6Al/GR640EjpiTIJzep8q2aceN2ADpaPjHAloGYAcQBhkDRgDj/sX/MgKRCJUT/SAfMPk/s05tWLhbD1zMVrVKgzphJVgN8veC7uTy+/rxAOsBIwA0/ab6AvnU93r2xPTy8mjxKPB671vve+8a8Crxd/Le82n14fYg+Av53vly+uL6N/t++7D75/s8/Lr8U/0m/jX/bwD3AQ==";
 let AudioBuffer;
@@ -755,6 +764,85 @@ for (let note of Object.values(metronomeNotes)) {
 function showParam(elm, name) {
     document.getElementById(name).textContent = elm.value;
 }
+const timeSignatureElm = document.getElementById("signature");
+class MetronomeBeater {
+    constructor() {   
+    }
+    start () {
+        this.ctx = new AudioContext();
+        this.currentTimeSignature = 0;
+        this.current48Beat = 0;
+        this.currentSignatureIndex = 0;
+        this.isChangedSignature = false;
+        const nowTimeStamp = performance.now();
+        this.lastBeatTimeStamp = nowTimeStamp;
+        this.nextBeatTimeStamp = nowTimeStamp;
+        this.nextTimeSignature = this.nextNote.bind(this);
+        this.baseTimeStamp = nowTimeStamp - this.ctx.currentTime * 1000;
+        for (let note of Object.values(metronomeNotes)) {
+            note.audioContext = this.ctx;
+        }
+        this.setTimeSignatureNumerator();
+        (this.scheduler.bind(this))();
+        this.intervalId = setInterval(this.scheduler.bind(this), 500);
+        return {
+            ctx: this.ctx,
+            id: this.intervalId
+        };
+    }
+    currentTimeStamp() {
+        return this.baseTimeStamp + this.ctx.currentTime * 1000;
+    }
+    timeStampToAudioContextTime(timeStamp) {
+        return (timeStamp - this.baseTimeStamp) / 1000;
+    }
+    nextNote() {
+        const beatTick = 60 * 1000 / metroTempo;
+        if (this.isChangedSignature) {
+            this.currentSignatureIndex = 0;
+            this.isChangedSignature = false;
+        }
+        this.nextBeatTimeStamp += beatTick / 12;
+        this.current48Beat++;
+        this.current48Beat %= 12;
+        if (!this.current48Beat) {
+            this.currentTimeSignature++;
+            if (this.currentTimeSignature === this.signature[this.currentSignatureIndex]) {
+                this.currentTimeSignature = 0;
+                this.currentSignatureIndex++;
+                this.currentSignatureIndex %= this.signature.length;
+            }
+        }
+        return this;
+    }
+    setTimeSignatureNumerator() {
+        (() => {
+            let resultElm;
+            for (let elm of timeSignatureElm.querySelectorAll("input")) {
+                if (elm.checked) {
+                    resultElm = elm;
+                }
+            }
+            if (!(resultElm.value - 0)) {
+                const compoundElm = document.getElementById("compound-signature");
+                this.signature = compoundElm.value.split(/\+|,| /);
+            }
+            this.signature = [resultElm.value - 0];
+        })()
+    }
+    scheduler() {
+        const now = this.currentTimeStamp();
+        while (this.nextBeatTimeStamp < now + 700) {
+            let next48BeatTime = this.timeStampToAudioContextTime(this.nextBeatTimeStamp);
+            for (let note of Object.values(metronomeNotes)) {
+                note.reserveBeat(this.current48Beat, next48BeatTime, this.currentTimeSignature);
+            }
+            this.nextNote();
+        }
+    }
+}
+
+const beat = new MetronomeBeater();
 const metroElm = document.getElementById("metro");
 const tempoElm = document.getElementById("tempo");
 let metroIntervalId, metroctx;
@@ -763,7 +851,7 @@ metroElm.onchange = metroHandler;
 metroElm.checked = false;
 function metroHandler() {
     if (metroElm.checked) {
-        const obj = {id: metroIntervalId, ctx: metroctx} = startMetronome();
+        const obj = {id: metroIntervalId, ctx: metroctx} = beat.start();
     } else if (metroctx) {
         metroctx.close();
         clearInterval(metroIntervalId);
@@ -777,90 +865,16 @@ tempoElm.oninput = () => {
     showParam(tempoElm, "tempoVal");
 }
 
-const timeSignatureElm = document.getElementById("signature");
-function getTimeSignatureNumerator() {    
-    let resultElm;
-    for (let elm of timeSignatureElm.querySelectorAll("input")) {
-        if (elm.checked) {
-            resultElm = elm;
-        }
-    }
-    if (!(resultElm.value - 0)) {
-        const compoundElm = document.getElementById("compound-signature");
-        return compoundElm.value.split(/\+|,| /);
-    }
-    return [resultElm.value - 0];
-}
-let signature = getTimeSignatureNumerator();
-let isChangedSignature = false;
 for (let elm of timeSignatureElm.querySelectorAll("input")) {
     elm.onchange = () => {
-        signature = getTimeSignatureNumerator();
-        isChangedSignature = true;
+        beat.setTimeSignatureNumerator();
+        beat.isChangedSignature = true;
     }
 }
 
-function startMetronome() {
-    const ctx = new AudioContext();
-    for (let note of Object.values(metronomeNotes)) {
-        note.audioContext = ctx;
-    }
-    /*
-    ctx.decodeAudioData(base64dataToArrayBuffer(stressBase64Data)).then(function(buffer) {  
-        AudioBuffer = buffer;
-        stress.arrayBuffer = buffer;
-    });
-    */
-    const baseTimeStamp = performance.now() - ctx.currentTime * 1000;
-    let current48Beat = 0;
-    let currentTimeSignature = 0;
-    let currentSignatureIndex = 0;
-
-    const nowTime = performance.now();
-    let lastBeatTimeStamp = nowTime;
-    let nextBeatTimeStamp = lastBeatTimeStamp;
-    function scheduler() {
-        const now = currentTimeStamp();
-        while (nextBeatTimeStamp < now + 800) {
-            let next48BeatTime = timeStampToAudioContextTime(nextBeatTimeStamp);
-            for (let note of Object.values(metronomeNotes)) {
-                note.reserveBeat(current48Beat, next48BeatTime, currentTimeSignature);
-            }
-            nextNote();
-        }
-    }
-    scheduler();
-    const intervalId = setInterval(scheduler, 500);
-    return {
-        ctx,
-        id: intervalId
-    };
-    function nextNote() {
-        const beatTick = 60 * 1000 / metroTempo;
-        if (isChangedSignature) {
-            currentSignatureIndex = 0;
-            isChangedSignature = false;
-        }
-        nextBeatTimeStamp += beatTick / 12;
-        current48Beat++;
-        current48Beat %= 12;
-        if (!current48Beat) {
-            currentTimeSignature++;
-            currentTimeSignature %= signature[currentSignatureIndex];
-            if (!currentTimeSignature) {
-                currentSignatureIndex++;
-                currentSignatureIndex %= signature.length;
-            }
-        }
-    }
-    function currentTimeStamp() {
-        return baseTimeStamp + ctx.currentTime * 1000;
-    }
-    function timeStampToAudioContextTime(timeStamp) {
-        return (timeStamp - baseTimeStamp) / 1000;
-    }
-}
-
+/**
+* range関連
+*/
 for (let elm of document.querySelectorAll("input[type='range']")) {
     const beforeElm = document.createElement("input");
      with (beforeElm) {
@@ -897,6 +911,99 @@ for (let elm of document.querySelectorAll("input[type='range']")) {
         e.preventDefault();
     }
 }
+
+/* 自動再生関連
+const tonesArr = ["A", "B", "H", "C","Cis", "D", "Es", "E", "F", "Fis", "G", "As"];
+const stdPitch = 442;
+const tempo = 60;
+
+const controler = document.getElementById("auto-player");
+const textareaElm = document.getElementById("auto-play-text");
+textareaElm.textContent = "c|cg|ceg,"
+let obj;
+let playDataByBar, playDataByNote, playDataByTone;
+controler.onchange = () => {
+    if (controler.checked) {
+        // a|a,b,c|abc -> ["a","a,b,c","abc"]
+        playDataByBar = textareaElm.textContent.split("|");
+        // ->[["a"], ["a", "b", "c"], ["abc"]]
+        playDataByNote = playDataByBar.map(notes => notes.split(","));
+        // ->[[[a]], [[a],[b],[c]], [[a,b,c]]]
+        playDataByTone = playDataByNote.map(note => note.map(tones => tones.split("")));
+
+        obj = startAutoPlay();
+    } else {
+        obj.ctx.close();
+        clearInterval(obj.id);
+    }
+}
+
+function startAutoPlay() { 
+    const ctx = new AudioContext(); 
+    const baseTimeStamp = performance.now() - ctx.currentTime * 1000; 
+    let currentBar = 0; 
+    let currentIndex = 0; 
+ 
+    const nowTime = performance.now(); 
+    let lastNoteTimeStamp = nowTime; 
+    let nextNoteTimeStamp = lastNoteTimeStamp;
+    let nextNoteTime = timeStampToAudioContextTime(nextNoteTimeStamp);
+
+ 
+    function scheduler() { 
+        const now = currentTimeStamp(); 
+        while (nextNoteTimeStamp < now + 800) { 
+            for (let tone of playDataByTone) { 
+                nextNoteTime = reserveNote(nextNoteTime); 
+            } 
+        } 
+    } 
+    scheduler(); 
+    const intervalId = setInterval(scheduler, 500); 
+    return { 
+        ctx, 
+        id: intervalId 
+    };
+
+    function reserveNote(nextNoteTime) {
+        const tonesReserve = playDataByTone[currentBar][currentIndex]
+        nextNote();
+        const nextnextNoteTime = timeStampToAudioContextTime(nextNoteTimeStamp);
+        for (const tone of tonesReserve) {
+            const freq = stdPitch * (2 ** (tonesArr.indexOf(tone.toUpperCase()) / 12)); 
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain(); 
+            osc.frequency.value = freq;
+            gain.gain.value = 0;
+            gain.gain.setValueAtTime(1, nextNoteTime);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(nextnextNoteTime);
+        }
+        return nextnextNoteTime;
+    } 
+    function nextNote() { 
+        const beatTick = 60 * 1000 / tempo;
+        const notesInBar = playDataByNote[currentBar].length; 
+        nextNoteTimeStamp += beatTick / notesInBar; 
+        currentIndex++; 
+        if (currentIndex === notesInBar) { 
+            currentIndex = 0; 
+            currentBar++;
+            if(currentBar === playDataByBar.length) {
+                currentBar = 0;
+            }
+        } 
+    } 
+    function currentTimeStamp() { 
+        return baseTimeStamp + ctx.currentTime * 1000; 
+    } 
+    function timeStampToAudioContextTime(timeStamp) { 
+        return (timeStamp - baseTimeStamp) / 1000; 
+    } 
+}
+*/
 </script>
 </body>
 </html>
