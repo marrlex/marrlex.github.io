@@ -168,7 +168,7 @@ input[type="range"] {
 }
 .wrapSelect {
     overflow: hidden;
-    width: 40%;
+    width: 8em;
     text-align: center;
 }
 .wrapSelect select {
@@ -248,26 +248,61 @@ input[type="radio"]:checked + .radio-label {
     top: -1.5em;
     left: 1em;
 }
-#metronome {
+#tuner, #tone-color, #metronome {
     width: 22em;
+    max-width: 95%;
     margin-top: 1.5em;
     margin-left: 1em;
-    position: relative;
+    position: fixed;
     padding: 1em 1%;
     border: solid 2px darkturquoise;
     border-radius: 10px;
+    background-color: #BED9C2;
+    left: 0;
+    top: 0;
+    transform: translateX(-110%);
+    transition: .2s;
+}
+#metronome input[type="range"] {
+    width: 60%;
+}
+#tuner.show, #tone-color.show, #metronome.show {
+    transform: translateX(0%);
 }
 #metronome .th {
     padding-left: 1em;
     height: 1.5em;
     min-width: 4em;
 }
-#metronome input[type="text"] {
-    width: ;
+#metronome .td {
+    width: 80%;
+}
+#control-button {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+}
+.close-window {
+    position: absolute;
+    right: 1em;
+    bottom: 0.1em;
+}
+#tuner {
+    height: 40vw;
+    width: 90vw;
+}
+canvas {
+    height: 90%;
+    width: 90%;
 }
 </style>
 <h1>鱧ディレクター</h1>
-<span id="chordView"></span>
+<div id="chordView"></div>
+<div id="control-button">
+    <button onclick="showFromLeft('metronome')">メトロノーム</button>
+    <button onclick="showFromLeft('tone-color')">音色</button>
+    <button onclick="showFromLeft('tuner')">チューナー</button>
+</div>
 <div id="piano-wrapper">
     <div class="piano">
         <div class="white-keys">
@@ -338,6 +373,7 @@ input[type="radio"]:checked + .radio-label {
         </div>
     </div>
 </div>
+
 <div id="control-panel">
 <div id="keyboard-size" class="block">
     <div class="th">キーボードサイズ</div>
@@ -400,53 +436,58 @@ input[type="radio"]:checked + .radio-label {
         </div>
     </div>
 </div>
-<div class="block">
-    <div class="th">音色</div>
-    <div class="td">
-        <div class="wrapSelect">
-            <select id="toneColor">
-            <option value="sine" selected="">正弦波</option>
-            <option value="square">矩形波</option>
-            <option value="sawtooth">鋸波</option>
-            <option value="triangle">三角波</option>
-            <!--option value="custom" disabled="">その他(未実装)</option-->
-            </select>
+<div id="tone-color">
+    <div class="block">
+        <div class="th">音色</div>
+        <div class="td">
+            <div class="wrapSelect">
+                <select id="toneColor">
+                <option value="sine" selected="">正弦波</option>
+                <option value="square">矩形波</option>
+                <option value="sawtooth">鋸波</option>
+                <option value="triangle">三角波</option>
+                <!--option value="custom" disabled="">その他(未実装)</option-->
+                </select>
+            </div>
         </div>
     </div>
-</div>
-<div id="attack" class="block">
-    <div class="th">アタック</div>
-    <div class="td">
-        <input type="range" v-model="attackVal" v-on:input="changeValue" min="0" max="100" value="80"/>
-    </div><div class="td">
-        {{ attackVal }}
-    </div>
-</div>
-<div id="release" class="block">
-    <div class="th">リリース</div>
-    <div class="td">
-        <input type="range" v-model="releaseVal" v-on:input="changeValue" min="0" max="100" value="50"/>
-    </div><div class="td">
-        {{releaseVal}}
-    </div>
-</div>
-<div class="block">
-    <div class="th">音域</div>
-    <div class="td">
-        <div id="range-of-octave">
-            <label for="low">
-                <input type="radio" name="range-of-octave" id="low" value="2" />
-                <span class="radio-label">低音</span>
-            </label>
-            <label for="midium">
-                <input type="radio" name="range-of-octave" id="midium" value="1" checked="" />
-                <span class="radio-label">中音</span>
-            </label>
-            <label for="high">
-                <input type="radio" name="range-of-octave" id="high" value="0" />
-                <span class="radio-label">高音</span>
-            </label>
+    <div id="attack" class="block">
+        <div class="th">アタック</div>
+        <div class="td">
+            <input type="range" v-model="attackVal" v-on:input="changeValue" min="0" max="100" value="80"/>
+        </div><div class="td">
+            {{ attackVal }}
         </div>
+    </div>
+    <div id="release" class="block">
+        <div class="th">リリース</div>
+        <div class="td">
+            <input type="range" v-model="releaseVal" v-on:input="changeValue" min="0" max="100" value="50"/>
+        </div><div class="td">
+            {{releaseVal}}
+        </div>
+    </div>
+    <div class="block">
+        <div class="th">音域</div>
+        <div class="td">
+            <div id="range-of-octave">
+                <label for="low">
+                    <input type="radio" name="range-of-octave" id="low" value="2" />
+                    <span class="radio-label">低音</span>
+                </label>
+                <label for="midium">
+                    <input type="radio" name="range-of-octave" id="midium" value="1" checked="" />
+                    <span class="radio-label">中音</span>
+                </label>
+                <label for="high">
+                    <input type="radio" name="range-of-octave" id="high" value="0" />
+                    <span class="radio-label">高音</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="block">
+        <button class="close-window" onclick="showFromLeft('tone-color')">閉じる</button>
     </div>
 </div>
 </div>
@@ -537,6 +578,15 @@ input[type="radio"]:checked + .radio-label {
                 </div>
             </div>
         </div>
+        <div class="block">
+            <button class="close-window" onclick="showFromLeft('metronome')">閉じる</button>
+        </div>
+    </div> 
+</div>
+<div id="tuner">
+    <canvas id="freq-spectrum"></canvas>
+    <div class="block">
+        <button class="close-window" onclick="showFromLeft('tuner')">閉じる</button>
     </div>
 </div>
 
@@ -549,6 +599,7 @@ input[type="radio"]:checked + .radio-label {
 <textarea id="auto-play-text" placeholder="c,c,e,g|ceg|c"></textarea>
 -->
 <br />
+<script src="./vue.js"></script>
 <script src="https://jp.vuejs.org/js/vue.min.js"></script>
 <script>
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -620,7 +671,9 @@ pianoElm.addEventListener("touchstart", (e) => {
         e.target.classList.add("keyboard-press");
     }
 });
-
+function showFromLeft(id) {
+    document.getElementById(id).classList.toggle("show");
+}
 let attackTimeConst = 20 * 1e-3;
 const attack = new Vue({
     el: "#attack",
@@ -867,10 +920,9 @@ class MetronomeNote {
         });
         //this.paramElement = document.getElementById(pElmId);
         this.frequency = freq;
-        this.level = this.element.value;
+        this.level = this.element.volume;
 
         this.element.oninput = this.showParam.bind(this);
-
     }
     init() {
         this.osc = this.ctx.createOscillator();
@@ -894,7 +946,7 @@ class MetronomeNote {
     }
     showParam() {
         //this.paramElement.textContent = this.element.value;
-        this.level = this.element.value;
+        this.level = this.element.volume;
     }
     reserveBeat(current48Beat, nextBeatTime, currentTimeSignature) {
         if (this.beatInterval) {
@@ -946,6 +998,17 @@ for (let note of Object.values(metronomeNotes)) {
 function showParam(elm, name) {
     document.getElementById(name).textContent = elm.value;
 }
+const tempo = new Vue({
+    el: "#tempo",
+    data: {
+        tempoVal: 100
+    },
+    methods: {
+        changeTempo: () => {
+
+        }
+    }
+})
 const timeSignatureElm = document.getElementById("signature");
 class MetronomeBeater {
     constructor() {   
@@ -979,7 +1042,7 @@ class MetronomeBeater {
         return (timeStamp - this.baseTimeStamp) / 1000;
     }
     nextNote() {
-        const beatTick = 60 * 1000 / metroTempo;
+        const beatTick = 60 * 1000 / tempo.tempoVal;
         if (this.isChangedSignature) {
             this.currentSignatureIndex = 0;
             this.isChangedSignature = false;
@@ -989,7 +1052,7 @@ class MetronomeBeater {
         this.current48Beat %= 12;
         if (!this.current48Beat) {
             this.currentTimeSignature++;
-            if (this.currentTimeSignature === this.signature[this.currentSignatureIndex]) {
+            if (this.currentTimeSignature == this.signature[this.currentSignatureIndex]) {
                 this.currentTimeSignature = 0;
                 this.currentSignatureIndex++;
                 this.currentSignatureIndex %= this.signature.length;
@@ -998,19 +1061,18 @@ class MetronomeBeater {
         return this;
     }
     setTimeSignatureNumerator() {
-        (() => {
-            let resultElm;
-            for (let elm of timeSignatureElm.querySelectorAll("input")) {
-                if (elm.checked) {
-                    resultElm = elm;
-                }
+        let selectedSignatureElm;
+        for (let elm of timeSignatureElm.querySelectorAll("input")) {
+            if (elm.checked) {
+            selectedSignatureElm = elm;
             }
-            if (!(resultElm.value - 0)) {
-                const compoundElm = document.getElementById("compound-signature");
-                this.signature = compoundElm.value.split(/\+|,| /);
-            }
-            this.signature = [resultElm.value - 0];
-        })()
+        }
+        if (!(selectedSignatureElm.value - 0)) {
+            const compoundElm = document.getElementById("compound-signature");
+            this.signature = compoundElm.value.split(/\+|,| /) || 1;
+        } else {
+            this.signature = [selectedSignatureElm.value - 0];   
+        }
     }
     scheduler() {
         const now = this.currentTimeStamp();
@@ -1028,7 +1090,6 @@ const beat = new MetronomeBeater();
 const metroElm = document.getElementById("metro");
 const tempoElm = document.getElementById("tempo");
 let metroIntervalId, metroctx;
-let metroTempo = tempoElm.value;
 metroElm.onchange = metroHandler;
 metroElm.checked = false;
 function metroHandler() {
@@ -1039,17 +1100,6 @@ function metroHandler() {
         clearInterval(metroIntervalId);
         metroIntervalId = null;
     }
-}
-
-const tempo = new Vue({
-    el: "#tempo",
-    data: {
-        tempoVal: 100
-    }
-})
-tempoElm.oninput = () => {
-    metroTempo = tempoElm.value;
-    showParam(tempoElm, "tempoVal");
 }
 
 for (let elm of timeSignatureElm.querySelectorAll("input")) {
@@ -1195,6 +1245,72 @@ function startAutoPlay() {
     } 
 }
 */
+
+/* チューナー作る */
+const spectrumCanvas = document.getElementById("freq-spectrum");
+const canvasCtx = spectrumCanvas.getContext("2d");
+canvasCtx.fillStyle = 'rgba(0, 0, 0, 1)';
+canvasCtx.fillRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+const tunerCtx = new AudioContext();
+navigator.mediaDevices.getUserMedia({audio: true, video: false}).then((stream) => {
+    const ana = tunerCtx.createAnalyser();
+    const filter = tunerCtx.createBiquadFilter();
+    const source = tunerCtx.createMediaStreamSource(stream);
+    const processor = tunerCtx.createScriptProcessor(2048, 1, 1);
+    ana.fftSize = 2048;
+    const bufferLength = ana.frequencyBinCount;
+    let dataArray = new Uint8Array(bufferLength);
+
+    ana.smoothingTimeConstant = 0.5;
+    //filter.type = "lowpass";
+    //filter.frequency = 1760;
+    filter.gain.value = 2;
+    source.connect(filter);
+    filter.connect(ana);
+    ana.connect(processor);
+    processor.connect(tunerCtx.destination);
+
+    const barWidth = spectrumCanvas.width / bufferLength;
+    processor.onaudioprocess = e => {
+        ana.getByteFrequencyData(dataArray);
+        canvasCtx.clearRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+
+        canvasCtx.beginPath();
+
+        for (var i = 0, len = dataArray.length / 2; i < len; i++) {
+            var x = (i / len) * spectrumCanvas.width;
+            var y = (1 - (dataArray[i] / 255)) * spectrumCanvas.height;
+            if (i === 0) {
+                canvasCtx.moveTo(x, y);
+            } else {
+                canvasCtx.lineTo(x, y);
+            }
+            var f = Math.floor(i * tunerCtx.sampleRate / ana.fftSize);
+
+            // 500 Hz単位にy軸の線とラベル出力
+            if ((f % 500) === 0) {
+                var text = (f < 1000) ? (f + ' Hz') : ((f / 1000) + ' kHz');
+                // Draw grid (X)
+                canvasCtx.fillRect(x, 0, 1, spectrumCanvas.height);
+                // Draw text (X)
+                canvasCtx.fillText(text, x, spectrumCanvas.height);
+            }
+        }
+
+        canvasCtx.stroke();
+
+        // x軸の線とラベル出力
+        var textYs = ['1.00', '0.50', '0.00'];
+        for (var i = 0, len = textYs.length; i < len; i++) {
+            var text = textYs[i];
+            var gy   = (1 - parseFloat(text)) * spectrumCanvas.height;
+            // Draw grid (Y)
+            canvasCtx.fillRect(0, gy, spectrumCanvas.width, 1);
+            // Draw text (Y)
+            canvasCtx.fillText(text, 0, gy);
+        }
+    }
+});
 </script>
 </body>
 </html>
