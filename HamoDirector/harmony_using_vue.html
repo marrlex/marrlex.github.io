@@ -14,6 +14,10 @@ body {
     margin: 0;
     background-color: #BED9C2; <!--淡緑-->
 }
+#top-menu {
+    position: relative;
+    height: 2em;
+}
 h1 {
     position: relative;
     background: linear-gradient(to bottom, turquoise 0%, black 100%);
@@ -51,6 +55,7 @@ table, td {
 }
 .th, .td {
     display: table-cell;
+    height: 1.6em;
 }
 .th {
     text-align: center;
@@ -241,6 +246,14 @@ input[type="radio"]:checked + .radio-label {
     color: black;
     text-shadow: 1px 1px 2px white;
 }
+button {
+    color: black;
+    padding: 0.1em 0.5em;
+    background: transparent;
+    border-radius: 30px;
+    border: 2px solid turquoise;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+}
 #metro-title {
     position: absolute;
     background-color: #BED9C2;
@@ -248,11 +261,11 @@ input[type="radio"]:checked + .radio-label {
     top: -1.5em;
     left: 1em;
 }
-#tuner, #tone-color, #metronome {
+.drawer {
     width: 22em;
-    max-width: 95%;
+    max-width: 94vw;
     margin-top: 1.5em;
-    margin-left: 1em;
+    margin-left: 2vw;
     position: fixed;
     padding: 1em 1%;
     border: solid 2px darkturquoise;
@@ -263,15 +276,17 @@ input[type="radio"]:checked + .radio-label {
     transform: translateX(-110%);
     transition: .2s;
 }
+.drawer.show {
+    transform: translateX(0%);
+}
 #metronome input[type="range"] {
     width: 60%;
 }
-#tuner.show, #tone-color.show, #metronome.show {
-    transform: translateX(0%);
+#metronome input[type="text"] {
+    width: 5em;
 }
 #metronome .th {
     padding-left: 1em;
-    height: 1.5em;
     min-width: 4em;
 }
 #metronome .td {
@@ -279,7 +294,7 @@ input[type="radio"]:checked + .radio-label {
 }
 #control-button {
     position: absolute;
-    top: 1em;
+    top: 0;
     right: 1em;
 }
 .close-window {
@@ -292,16 +307,19 @@ input[type="radio"]:checked + .radio-label {
     width: 90vw;
 }
 canvas {
+    display: block;
     height: 90%;
     width: 90%;
 }
 </style>
 <h1>鱧ディレクター</h1>
-<div id="chordView"></div>
-<div id="control-button">
-    <button onclick="showFromLeft('metronome')">メトロノーム</button>
-    <button onclick="showFromLeft('tone-color')">音色</button>
-    <button onclick="showFromLeft('tuner')">チューナー</button>
+<div id="top-menu">
+    <span id="chordView">&nbsp;</span>
+    <div id="control-button">
+        <button onclick="showFromLeft('metronome')">メトロノーム</button>
+        <button onclick="showFromLeft('tone-color')">音色</button>
+        <button onclick="showFromLeft('tuner')">チューナー</button>
+    </div>
 </div>
 <div id="piano-wrapper">
     <div class="piano">
@@ -436,7 +454,8 @@ canvas {
         </div>
     </div>
 </div>
-<div id="tone-color">
+</div>
+<div class="drawer" id="tone-color">
     <div class="block">
         <div class="th">音色</div>
         <div class="td">
@@ -486,12 +505,11 @@ canvas {
             </div>
         </div>
     </div>
-    <div class="block">
+    <div>&nbsp;
         <button class="close-window" onclick="showFromLeft('tone-color')">閉じる</button>
     </div>
 </div>
-</div>
-<div id="metronome">
+<div class="drawer" id="metronome">
     <span id="metro-title">メトロノーム
             <div class="switch" style="display: inline-block">
                 <label for="metro">
@@ -574,7 +592,7 @@ canvas {
                         <input type="radio" name="signature-numerator" id="sign0" value="other" />
                         <span class="radio-label">複合拍子</span>
                     </label>
-                    <input type="text" id="compound-signature" placeholder="ex. 2+3, 4+2 etc...">
+                    <input type="text" id="compound-signature" placeholder="2+3 etc...">
                 </div>
             </div>
         </div>
@@ -583,8 +601,15 @@ canvas {
         </div>
     </div> 
 </div>
-<div id="tuner">
+<div class="drawer" id="tuner">
+        <div class="switch" style="display: inline-block">
+            <label for="tuner-start">
+                <input type="checkbox" id="tuner-start" name="tuner-start" />
+                <span class="switch-label">開始する（PCのみ）</span>
+            </label>
+        </div>
     <canvas id="freq-spectrum"></canvas>
+    ピーク周波数<span id="peakFreq"></span> [Hz]
     <div class="block">
         <button class="close-window" onclick="showFromLeft('tuner')">閉じる</button>
     </div>
@@ -600,7 +625,7 @@ canvas {
 -->
 <br />
 <script src="./vue.js"></script>
-<script src="https://jp.vuejs.org/js/vue.min.js"></script>
+<!-- script src="https://jp.vuejs.org/js/vue.min.js"></script-->
 <script>
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioctx = new AudioContext();
@@ -1247,70 +1272,87 @@ function startAutoPlay() {
 */
 
 /* チューナー作る */
+const startTuning = document.getElementById("tuner-start");
+startTuning.checked = false;
 const spectrumCanvas = document.getElementById("freq-spectrum");
-const canvasCtx = spectrumCanvas.getContext("2d");
-canvasCtx.fillStyle = 'rgba(0, 0, 0, 1)';
-canvasCtx.fillRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
-const tunerCtx = new AudioContext();
-navigator.mediaDevices.getUserMedia({audio: true, video: false}).then((stream) => {
-    const ana = tunerCtx.createAnalyser();
-    const filter = tunerCtx.createBiquadFilter();
-    const source = tunerCtx.createMediaStreamSource(stream);
-    const processor = tunerCtx.createScriptProcessor(2048, 1, 1);
-    ana.fftSize = 2048;
-    const bufferLength = ana.frequencyBinCount;
-    let dataArray = new Uint8Array(bufferLength);
+    const canvasCtx = spectrumCanvas.getContext("2d");
+let mediaStream;
+document.getElementById("tuner-start").onchange = () => {
+    canvasCtx.fillStyle = 'rgba(0, 0, 0, 1)';
+    canvasCtx.fillRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+    if (!startTuning.checked && mediaStream) {
+        mediaStream.getAudioTracks().forEach((track) => {
+            track.stop();
+        })
+    } else {
+        navigator.mediaDevices.getUserMedia({audio: true, video: false}).then((stream) => {
+            mediaStream = stream;
+            const tunerCtx = new AudioContext();
+            // tunerCtx.sampleRate = 2 ** 14;
+            const ana = tunerCtx.createAnalyser();
+            const lowFilter = tunerCtx.createBiquadFilter();
+            const highFilter = tunerCtx.createBiquadFilter();
+            const source = tunerCtx.createMediaStreamSource(stream);
+            const processor = tunerCtx.createScriptProcessor(4096, 1, 1);
+            ana.fftSize = 2 ** 15;
+            ana.minDecibels = -60;
+            const bufferLength = ana.frequencyBinCount;
+            let dataArray = new Uint8Array(bufferLength);
 
-    ana.smoothingTimeConstant = 0.5;
-    //filter.type = "lowpass";
-    //filter.frequency = 1760;
-    filter.gain.value = 2;
-    source.connect(filter);
-    filter.connect(ana);
-    ana.connect(processor);
-    processor.connect(tunerCtx.destination);
+            ana.smoothingTimeConstant = 0.5;
+            lowFilter.type = "lowpass";
+            lowFilter.frequency = 1000;
+            //highFilter.type = "highpass";
+            //highFilter.frequency = 100;
+            highFilter.gain.value = 10;
+            source.connect(lowFilter);
+            lowFilter.connect(ana);
+            //highFilter.connect(ana);
+            ana.connect(processor);
+            // processor.connect(tunerCtx.destination);
 
-    const barWidth = spectrumCanvas.width / bufferLength;
-    processor.onaudioprocess = e => {
-        ana.getByteFrequencyData(dataArray);
-        canvasCtx.clearRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+            const barWidth = spectrumCanvas.width / bufferLength;
+            processor.onaudioprocess = e => {
+                ana.getByteFrequencyData(dataArray);
+                canvasCtx.clearRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+                canvasCtx.beginPath();
 
-        canvasCtx.beginPath();
+                let peakFreqIndex = 0;
+                for (var i = 0, len = dataArray.length / 8; i < len; i++) {
+                    var x = (i / len) * spectrumCanvas.width;
+                    var y = (1 - (dataArray[i] / 255)) * spectrumCanvas.height;
+                    if (i === 0) {
+                        canvasCtx.moveTo(x, y);
+                    } else {
+                        canvasCtx.lineTo(x, y);
+                    }
+                    var f = Math.floor(i * tunerCtx.sampleRate / ana.fftSize);
 
-        for (var i = 0, len = dataArray.length / 2; i < len; i++) {
-            var x = (i / len) * spectrumCanvas.width;
-            var y = (1 - (dataArray[i] / 255)) * spectrumCanvas.height;
-            if (i === 0) {
-                canvasCtx.moveTo(x, y);
-            } else {
-                canvasCtx.lineTo(x, y);
+                    if ((f % 500) === 0) {
+                        var text = (f < 1000) ? (f + ' Hz') : ((f / 1000) + ' kHz');
+                        canvasCtx.fillRect(x, 0, 1, spectrumCanvas.height);
+                        canvasCtx.fillText(text, x, spectrumCanvas.height);
+                    }
+                    if (dataArray[peakFreqIndex] < dataArray[i]) {
+                        peakFreqIndex = i;
+                    }
+                    document.getElementById("peakFreq").textContent = peakFreqIndex * tunerCtx.sampleRate / ana.fftSize;
+
+                }
+
+                canvasCtx.stroke();
+
+                var textYs = ['1.00', '0.50', '0.00'];
+                for (var i = 0, len = textYs.length; i < len; i++) {
+                    var text = textYs[i];
+                    var gy   = (1 - parseFloat(text)) * spectrumCanvas.height;
+                    canvasCtx.fillRect(0, gy, spectrumCanvas.width, 1);
+                    canvasCtx.fillText(text, 0, gy);
+                }
             }
-            var f = Math.floor(i * tunerCtx.sampleRate / ana.fftSize);
-
-            // 500 Hz単位にy軸の線とラベル出力
-            if ((f % 500) === 0) {
-                var text = (f < 1000) ? (f + ' Hz') : ((f / 1000) + ' kHz');
-                // Draw grid (X)
-                canvasCtx.fillRect(x, 0, 1, spectrumCanvas.height);
-                // Draw text (X)
-                canvasCtx.fillText(text, x, spectrumCanvas.height);
-            }
-        }
-
-        canvasCtx.stroke();
-
-        // x軸の線とラベル出力
-        var textYs = ['1.00', '0.50', '0.00'];
-        for (var i = 0, len = textYs.length; i < len; i++) {
-            var text = textYs[i];
-            var gy   = (1 - parseFloat(text)) * spectrumCanvas.height;
-            // Draw grid (Y)
-            canvasCtx.fillRect(0, gy, spectrumCanvas.width, 1);
-            // Draw text (Y)
-            canvasCtx.fillText(text, 0, gy);
-        }
+        });
     }
-});
+}
 </script>
 </body>
 </html>
