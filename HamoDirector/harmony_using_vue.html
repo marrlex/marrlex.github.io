@@ -60,7 +60,7 @@ table, td {
 .th {
     text-align: center;
     vertical-align: middle;
-    min-width: 8em;
+    padding: 0 0.5em;
 }
 .piano {
     position: relative;
@@ -167,14 +167,15 @@ input[type="range"] {
     background-color: turquoise;
     box-shadow: 1px 1px 4px #dfd;
     height: 2px;
-    width: 65%;
+    width: 9em;
     border-radius: 6px;
     display: inline-block;
 }
 .wrapSelect {
     overflow: hidden;
-    width: 8em;
+    width: 6em;
     text-align: center;
+    margin-left: 0.4em;
 }
 .wrapSelect select {
     width: 90%;
@@ -254,30 +255,33 @@ button {
     border: 2px solid turquoise;
     box-shadow: 1px 1px 1px rgba(0,0,0,0.4);
 }
-#metro-title {
-    position: absolute;
-    background-color: #BED9C2;
-    padding: 0.5em 0.5em 0 0.5em;
-    top: -1.5em;
-    left: 1em;
-}
 .drawer {
-    width: 22em;
+    min-width: 20em;
     max-width: 94vw;
-    margin-top: 1.5em;
-    margin-left: 2vw;
+ /*   margin-top: 1.5em;
+    margin-left: 2vw;*/
     position: fixed;
-    padding: 1em 1%;
+/*    padding: 1em 1%;*/
     border: solid 2px darkturquoise;
     border-radius: 10px;
     background-color: #BED9C2;
-    left: 0;
-    top: 0;
-    transform: translateX(-110%);
-    transition: .2s;
+    right: 100%;
+    top: 2em;
+    transition: .3s;
+    visibility: hidden;
+    opacity: 0;
 }
 .drawer.show {
-    transform: translateX(0%);
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(100%);
+}
+.drawer > div {
+    margin-left: auto;
+    margin-right: auto;
+}
+.dragging {
+    transition: 0s;
 }
 #metronome input[type="range"] {
     width: 60%;
@@ -298,12 +302,14 @@ button {
     right: 1em;
 }
 .close-window {
-    position: absolute;
-    right: 1em;
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: 1em;
     bottom: 0.1em;
 }
 #tuner {
-    height: 40vw;
+    height: 50vw;
     width: 90vw;
 }
 canvas {
@@ -596,22 +602,27 @@ canvas {
                 </div>
             </div>
         </div>
-        <div class="block">
+        <div>
             <button class="close-window" onclick="showFromLeft('metronome')">閉じる</button>
         </div>
     </div> 
 </div>
 <div class="drawer" id="tuner">
-        <div class="switch" style="display: inline-block">
-            <label for="tuner-start">
-                <input type="checkbox" id="tuner-start" name="tuner-start" />
-                <span class="switch-label">開始する（PCのみ）</span>
-            </label>
+    <div class="switch" style="display: inline-block">
+        <label for="tuner-start">
+            <input type="checkbox" id="tuner-start" name="tuner-start" />
+            <span class="switch-label">開始する（PCのみ）</span>
+        </label>
+    </div>
+    <div>
+        <canvas id="freq-spectrum"></canvas>
+    </div>
+    <div>
+        ピーク周波数<span id="peakFreq"></span> [Hz]
+        ピーク音名<span id="peakTone"></span>
+        <div>
+            <button class="close-window" onclick="showFromLeft('tuner')">閉じる</button>
         </div>
-    <canvas id="freq-spectrum"></canvas>
-    ピーク周波数<span id="peakFreq"></span> [Hz]
-    <div class="block">
-        <button class="close-window" onclick="showFromLeft('tuner')">閉じる</button>
     </div>
 </div>
 
@@ -696,7 +707,10 @@ pianoElm.addEventListener("touchstart", (e) => {
     }
 });
 function showFromLeft(id) {
-    document.getElementById(id).classList.toggle("show");
+    with (document.getElementById(id)) {
+        style.transition = "";
+        classList.toggle("show");
+    }
 }
 let attackTimeConst = 20 * 1e-3;
 const attack = new Vue({
@@ -1274,11 +1288,20 @@ function startAutoPlay() {
 const startTuning = document.getElementById("tuner-start");
 startTuning.checked = false;
 const spectrumCanvas = document.getElementById("freq-spectrum");
-    const canvasCtx = spectrumCanvas.getContext("2d");
+const canvasCtx = spectrumCanvas.getContext("2d");
+const pixelRatio = window.devicePixelRatio || 1;
 let mediaStream;
+const canvasWidth = spectrumCanvas.parentNode.clientWidth;
+const canvasHeight = spectrumCanvas.parentNode.clientHeight;
+spectrumCanvas.width = canvasWidth * pixelRatio;
+spectrumCanvas.height = canvasHeight * pixelRatio;
+canvasCtx.scale(pixelRatio, pixelRatio);
+spectrumCanvas.style.width = canvasWidth;
+spectrumCanvas.style.height = canvasHeight;
+
 document.getElementById("tuner-start").onchange = () => {
     canvasCtx.fillStyle = 'rgba(0, 0, 0, 1)';
-    canvasCtx.fillRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+    canvasCtx.fillRect(0, 0, canvasWidth, canvasHeight);
     if (!startTuning.checked && mediaStream) {
         mediaStream.getAudioTracks().forEach((track) => {
             track.stop();
@@ -1310,16 +1333,16 @@ document.getElementById("tuner-start").onchange = () => {
             ana.connect(processor);
             // processor.connect(tunerCtx.destination);
 
-            const barWidth = spectrumCanvas.width / bufferLength;
+            const barWidth = canvasWidth / bufferLength;
             processor.onaudioprocess = e => {
                 ana.getByteFrequencyData(dataArray);
-                canvasCtx.clearRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+                canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
                 canvasCtx.beginPath();
 
                 let peakFreqIndex = 0;
                 for (var i = 0, len = dataArray.length / 8; i < len; i++) {
-                    var x = (i / len) * spectrumCanvas.width;
-                    var y = (1 - (dataArray[i] / 255)) * spectrumCanvas.height;
+                    var x = (i / len) * canvasWidth;
+                    var y = (1 - (dataArray[i] / 255)) * canvasHeight;
                     if (i === 0) {
                         canvasCtx.moveTo(x, y);
                     } else {
@@ -1329,28 +1352,51 @@ document.getElementById("tuner-start").onchange = () => {
 
                     if ((f % 500) === 0) {
                         var text = (f < 1000) ? (f + ' Hz') : ((f / 1000) + ' kHz');
-                        canvasCtx.fillRect(x, 0, 1, spectrumCanvas.height);
-                        canvasCtx.fillText(text, x, spectrumCanvas.height);
+                        canvasCtx.fillRect(x, 0, 1, canvasHeight);
+                        canvasCtx.fillText(text, x, canvasHeight);
                     }
                     if (dataArray[peakFreqIndex] < dataArray[i]) {
                         peakFreqIndex = i;
                     }
-                    document.getElementById("peakFreq").textContent = peakFreqIndex * tunerCtx.sampleRate / ana.fftSize;
-
+                    const peakFreq = peakFreqIndex * tunerCtx.sampleRate / ana.fftSize;
+                    document.getElementById("peakFreq").textContent = peakFreq;
+                    let logFreq = (12 + Math.round(12 * Math.log2(peakFreq / stdFreqElm.stdFreqVal))) % 12;
+                    document.getElementById("peakTone").textContent = scales[logFreq];
                 }
 
                 canvasCtx.stroke();
 
-                var textYs = ['1.00', '0.50', '0.00'];
+                var textYs = ['1.00', '0.50', ''];
+                canvasCtx.font = "2em serif";
                 for (var i = 0, len = textYs.length; i < len; i++) {
                     var text = textYs[i];
-                    var gy   = (1 - parseFloat(text)) * spectrumCanvas.height;
-                    canvasCtx.fillRect(0, gy, spectrumCanvas.width, 1);
+                    var gy   = (1 - parseFloat(text)) * canvasHeight;
+                    canvasCtx.fillRect(0, gy, canvasWidth, 1);
                     canvasCtx.fillText(text, 0, gy);
                 }
             }
         });
     }
+}
+
+for (const drawerElm of document.querySelectorAll(".drawer")) {
+    let startX, startY;
+
+    drawerElm.addEventListener("touchstart", (e) => {
+        startX = e.changedTouches[0].pageX - drawerElm.offsetLeft;
+        startY = e.changedTouches[0].pageY - drawerElm.offsetTop;
+        drawerElm.classList.add("dragging");
+    })
+    drawerElm.addEventListener("touchmove", (e) => {
+        if (e.target.tagName == "DIV") {
+            e.preventDefault();
+            drawerElm.style.left = e.changedTouches[0].pageX - startX + "px";
+            drawerElm.style.top = e.changedTouches[0].pageY - startY + "px";   
+        }
+    });
+    drawerElm.addEventListener("touchend", (e) => {
+        drawerElm.classList.remove("dragging");     
+    })
 }
 </script>
 </body>
