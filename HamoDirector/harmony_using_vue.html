@@ -9,10 +9,21 @@
 <link rel="icon" type="image/svg+xml" sizes="any" href="./harmony.svg" />
 <body>
 <style>
+:root {
+    /* color set*/
+    --green: #C6DDAE;
+    --light-green: #EDEF9C;
+    --blue: #95BFE7;
+    --purple: #A9C;
+    --light-blue: #9BCAD0;
+    --red: #DD9DBF;
+    --pink: #F2DAE8;
+}
 body {
     font-family: "HG明朝E", serif;
     margin: 0;
-    background-color: #BED9C2; <!--淡緑-->
+
+    background-color: var(--green);
 }
 #top-menu {
     position: relative;
@@ -20,7 +31,7 @@ body {
 }
 h1 {
     position: relative;
-    background: linear-gradient(to bottom, turquoise 0%, black 100%);
+    background: linear-gradient(to bottom, var(--blue) 0%, black 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     -webkit-box-reflect: below -18px linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,0) 10%,rgba(0, 0, 0, 0.6));
@@ -38,9 +49,10 @@ table, td {
 }
 .td:first-child{
     text-align: right;
+    padding-left: 1em;
+    padding-right: 5px;
 }
 .td input:first-child, .td label {
-    margin-left: 10px;
 }
 .td.range-td {
     text-align: right;
@@ -60,7 +72,7 @@ table, td {
 .th {
     text-align: center;
     vertical-align: middle;
-    padding: 0 0.5em;
+    padding: 0;
 }
 .piano {
     position: relative;
@@ -120,22 +132,22 @@ input[type="checkbox"] {
     padding: 5px 5px 5px 45px;
     transition: .2s;
     border-radius: 8px;
-    border: 1px solid #dfd;
+    border: 1px solid var(--red);
     display: inline-block;
     line-height: 1;
 }
 input[type="checkbox"]:checked + .switch-label {
-    background: turquoise;
+    background: var(--blue);
     color: black;
-    border: 1px solid turquoise;
+    border: 1px solid var(--blue);
     text-shadow: 1px 1px 2px white;
 }
 input[type="checkbox"]:checked + .switch-label:before {
-    border: 1px solid turquoise;
+    border: 1px solid var(--blue);
 }
 input[type="checkbox"]:checked + .switch-label:after {
     left: 26px;
-    background: turquoise;
+    background: var(--blue);
 }
 .switch-label:before {
     content: "";
@@ -144,7 +156,7 @@ input[type="checkbox"]:checked + .switch-label:after {
     width: 30px;
     height: 15px;
     border-radius: 15px;
-    border: 1px solid #aaa;
+    border: 1px solid var(--red);
     background: white;
     position: absolute;
 }
@@ -164,10 +176,10 @@ input[type="checkbox"]:checked + .switch-label:after {
 input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
-    background-color: turquoise;
-    box-shadow: 1px 1px 4px #dfd;
+    background-color: var(--blue);
+    box-shadow: 1px 1px 4px var(--pink);
     height: 2px;
-    width: 9em;
+    width: calc(100% - (1em + 8px) * 2);
     border-radius: 6px;
     display: inline-block;
 }
@@ -192,9 +204,10 @@ input[type="range"] {
 .wrapSelect {
     position: relative;
     height: 1.4em;
-    border: 2px solid turquoise;
+    border: 1.5px solid var(--blue);
+    margin: 1px;
     border-radius: 50px;
-    background: #dfd;
+    background: var(--green);
     display: inline-table;
     border-collapse: separate;
 }
@@ -208,17 +221,17 @@ input[type="range"] {
     content: '';
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid turquoise;
+    border-top: 6px solid var(--blue);
 }
 .plus-button, .minus-button {
-    padding: 0 2px;
     display: inline-block;
     font-weight: bold;
-    border: 1px solid #dfd;
+    border: 1px solid var(--light-blue);
     border-radius: 4px;
     color: white;
-    background-image: linear-gradient(darkturquoise 0%, turquoise 100%);
-    width: 10%;
+    background-image: linear-gradient(var(--purple) 0%, var(--blue) 100%);
+    width: calc(1em + 6px);
+    padding: 0 2px;
 }
 .minus-button {
     margin-left: 0;
@@ -236,14 +249,14 @@ input[type="radio"] {
     display: inline-block;
     margin: auto;
     padding: 2px .4em;
-    border: 1px solid #dfd;
+    border: 1px solid var(--red);
     border-radius: .5em;
     border-collapse: collapse;
     transition: all .2s;
 }
 input[type="radio"]:checked + .radio-label {
-    background: #dfd;
-    background-image: linear-gradient(darkturquoise 0%, turquoise 100%);
+    background: var(--pink);
+    background-image: linear-gradient(var(--blue) 0%, var(--blue) 100%);
     color: black;
     text-shadow: 1px 1px 2px white;
 }
@@ -252,19 +265,16 @@ button {
     padding: 0.1em 0.5em;
     background: transparent;
     border-radius: 30px;
-    border: 2px solid turquoise;
+    border: 2px solid var(--blue);
     box-shadow: 1px 1px 1px rgba(0,0,0,0.4);
 }
 .drawer {
-    min-width: 20em;
-    max-width: 94vw;
- /*   margin-top: 1.5em;
-    margin-left: 2vw;*/
-    position: fixed;
-/*    padding: 1em 1%;*/
-    border: solid 2px darkturquoise;
+    width: 20em;
+    position: absolute;
+    padding: 1em 1em;
+    border: solid 2px var(--purple);
     border-radius: 10px;
-    background-color: #BED9C2;
+    background-color: var(--green);
     right: 100%;
     top: 2em;
     transition: .3s;
@@ -284,17 +294,25 @@ button {
     transition: 0s;
 }
 #metronome input[type="range"] {
-    width: 60%;
+    width: calc(100% - (1em + 8px) * 2);
 }
 #metronome input[type="text"] {
     width: 5em;
+    padding: 2px;
+    border: none;
+    border-radius: 0.5em;
+    box-shadow: 1px var(--pink);
+    transition: .3s;
+}
+#metronome input[type="text"]:focus {
+    box-shadow: 0 0 1px 1px var(--blue);
+    outline: 0;
 }
 #metronome .th {
-    padding-left: 1em;
     min-width: 4em;
 }
-#metronome .td {
-    width: 80%;
+#metronome .td:nth-child(2) {
+    width: calc(100% - 7em);
 }
 #control-button {
     position: absolute;
@@ -306,18 +324,25 @@ button {
     display: block;
     margin-left: auto;
     margin-right: 1em;
-    bottom: 0.1em;
 }
 #tuner {
-    height: 50vw;
-    width: 90vw;
+    width: 60vw;
+    height: auto;
+}
+.canvas-container {
+    height: 0;
+    padding-top: 56.25%;
+    position: relative;
 }
 canvas {
+    position: absolute;
+    top: 0;
     display: block;
-    height: 90%;
-    width: 90%;
+    width: 100%;
+    height: 100%;
 }
 </style>
+<script src="https://jp.vuejs.org/js/vue.min.js"></script>
 <h1>鱧ディレクター</h1>
 <div id="top-menu">
     <span id="chordView">&nbsp;</span>
@@ -525,7 +550,7 @@ canvas {
             </div>
     </span>
     <div id="tempo" class="block">
-        <div class="th">テンポ</div>
+        <div class="td">テンポ</div>
         <div class="td">
             <input type="range" v-model="tempoVal" min="40" max="300" value="100"/>
         </div><div class="td">
@@ -533,7 +558,7 @@ canvas {
         </div>
     </div>
     <div id="stressVol" class="block">
-        <div class="th">強拍</div>
+        <div class="td">強拍</div>
         <div class="td">
             <input type="range" v-model="volume" min="0" max="100" value="100"/>
         </div><div class="td">
@@ -541,7 +566,7 @@ canvas {
         </div>
     </div>
     <div id="fourVol" class="block">
-        <div class="th">4分音符</div>
+        <div class="td">4分音符</div>
         <div class="td">
             <input type="range" v-model="volume" min="0" max="100" value="80"/>
         </div><div class="td">
@@ -549,7 +574,7 @@ canvas {
         </div>
     </div>
     <div id="eightVol" class="block">
-        <div class="th">8分音符</div>
+        <div class="td">8分音符</div>
         <div class="td">
             <input type="range" v-model="volume" min="0" max="100" value="20"/>
         </div><div class="td">
@@ -557,7 +582,7 @@ canvas {
         </div>
     </div>
     <div id="tripletVol" class="block">
-        <div class="th">3連符</div>
+        <div class="td">3連符</div>
         <div class="td">
             <input type="range" v-model="volume" min="0" max="100" value="0"/>
         </div><div class="td">
@@ -565,7 +590,7 @@ canvas {
         </div>
     </div>
     <div id="sixteenVol" class="block">
-        <div class="th">16分音符</div>
+        <div class="td">16分音符</div>
         <div class="td">
             <input type="range" v-model="volume" min="0" max="100" value="0"/>
         </div><div class="td">
@@ -573,7 +598,7 @@ canvas {
         </div>
     </div>
     <div id="signature" class="block">
-        <div class="th">拍子</div>
+        <div class="td">拍子</div>
         <div class="td">
                 <div class="signature" id="signature">
                     <div>
@@ -597,7 +622,7 @@ canvas {
                     <label for="sign0">
                         <input type="radio" name="signature-numerator" id="sign0" value="other" />
                         <span class="radio-label">複合拍子</span>
-                    </label>
+                    </label>：
                     <input type="text" id="compound-signature" placeholder="2+3 etc...">
                 </div>
             </div>
@@ -614,13 +639,14 @@ canvas {
             <span class="switch-label">開始する（PCのみ）</span>
         </label>
     </div>
-    <div>
+    <div class="canvas-container">
         <canvas id="freq-spectrum"></canvas>
     </div>
     <div>
-        ピーク周波数<span id="peakFreq"></span> [Hz]
-        ピーク音名<span id="peakTone"></span>
-        <div>
+        <div>ピーク周波数<span id="peakFreq"></span> [Hz]</div>
+        <div>ピーク音名<span id="peakTone"></span></div>
+        <div>ズレ<span id="toneDiffrence"></span> [cent]</div>
+        <div>&nbsp;
             <button class="close-window" onclick="showFromLeft('tuner')">閉じる</button>
         </div>
     </div>
@@ -635,7 +661,6 @@ canvas {
 <textarea id="auto-play-text" placeholder="c,c,e,g|ceg|c"></textarea>
 -->
 <br />
-<script src="https://jp.vuejs.org/js/vue.min.js"></script>
 <script>
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioctx = new AudioContext();
@@ -720,8 +745,8 @@ const attack = new Vue({
     },
     methods: {
         changeValue: () => {
-            attackTimeConst = (100 - attack.value) * 1e-3;
-            window.localStorage.setItem("attack", attackTimeConst);
+            attackTimeConst = (100 - attack.attackVal) * 1e-3;
+            window.localStorage.setItem("attack", attack.attackVal);
         }
     }
 });
@@ -733,8 +758,8 @@ const release = new Vue({
     },
     methods: {
         changeValue: () => {
-            releaseTimeConst = release.value * 1e-3;
-            window.localStorage.setItem("release", releaseTimeConst);
+            releaseTimeConst = (100 - release.releaseVal) * 1e-3;
+            window.localStorage.setItem("release", release.releaseVal);
         }
     }
 });
@@ -761,11 +786,20 @@ function playTone(toneName, e) {
                     }
                 }
                 const chord = chordCheck(playingTones, toneNames[lowest].slice(0, -1));
-                if (chord) {
-                    keyScale = chord.key;
-                    chordElm.textContent = keyScale + " " + chord.chordStr;
+                if (chord[0]) {
+                    keyScale = chord[0].key;
+                    let chordListStr = "";
+                    for (const obj of chord) {
+                        chordListStr = obj.key + " " +obj.chordStr;
+                    }
+                    chordElm.textContent = chordListStr;
                     changeToneFreq(keyScale);
                     scale.value = keyScale;
+                    if (chord[0].secondTone == 3) {
+                        keyElm[1].checked = true;
+                    } else {
+                        keyElm[0].checked = true;
+                    }
                 }
             }
         }
@@ -818,7 +852,7 @@ function chordCheck(tones, lowest) {
     const toneDistance = (base, higher) => {
         return (higher > base) ? higher - base : (12 + higher - base) % 12;
     }
-
+    const result = [];
     for (let i = 0; i < n; i++) {
         const distances = [];
         for (let j = 0; j < n; j++) {
@@ -846,16 +880,17 @@ function chordCheck(tones, lowest) {
         }
         const prop = distances.join();
         if (prop in chordList) {
-            return {
+            result.push({
                 key: baseToneName,
-                chordStr: chordList[prop]
-            }
+                chordStr: chordList[prop],
+                secondTone: distances[1]
+            });
         } else {
             notes.push(notes[0]);
             notes.shift();
         }
     }
-    return "";
+    return result;
 }
 
 const stdFreqElm = new Vue({
@@ -954,6 +989,11 @@ class MetronomeNote {
             el: "#" + elmId,
             data: {
                 volume: initVol
+            },
+            methods: {
+                changeLevel() {
+                    this.level = this.element.volume;
+                }
             }
         });
         //this.paramElement = document.getElementById(pElmId);
@@ -989,11 +1029,11 @@ class MetronomeNote {
     reserveBeat(current48Beat, nextBeatTime, currentTimeSignature) {
         if (this.beatInterval) {
             if (current48Beat % this.beatInterval === 0) {
-                this.gain.gain.setValueAtTime(this.level / 50, nextBeatTime);
+                this.gain.gain.setValueAtTime(this.element.volume / 50, nextBeatTime);
                 this.gain.gain.linearRampToValueAtTime(0, nextBeatTime + 0.05);
             }
         } else if (!currentTimeSignature && !current48Beat) {
-            this.gain.gain.setValueAtTime(this.level / 50, nextBeatTime);
+            this.gain.gain.setValueAtTime(this.element.volume / 50, nextBeatTime);
             this.gain.gain.linearRampToValueAtTime(0, nextBeatTime + 0.05);   
         }
     }
@@ -1090,7 +1130,8 @@ class MetronomeBeater {
         this.current48Beat %= 12;
         if (!this.current48Beat) {
             this.currentTimeSignature++;
-            if (this.currentTimeSignature == this.signature[this.currentSignatureIndex]) {
+            this.currentSignatureIndex %= this.signature.length;
+            if (this.currentTimeSignature >= this.signature[this.currentSignatureIndex]) {
                 this.currentTimeSignature = 0;
                 this.currentSignatureIndex++;
                 this.currentSignatureIndex %= this.signature.length;
@@ -1102,12 +1143,15 @@ class MetronomeBeater {
         let selectedSignatureElm;
         for (let elm of timeSignatureElm.querySelectorAll("input")) {
             if (elm.checked) {
-            selectedSignatureElm = elm;
+                selectedSignatureElm = elm;
             }
         }
         if (!(selectedSignatureElm.value - 0)) {
             const compoundElm = document.getElementById("compound-signature");
-            this.signature = compoundElm.value.split(/\+|,| /) || 1;
+            this.signature = compoundElm.value.split(/\+|,| /);
+            if (!this.signature.length) {
+                this.signature = 1;
+            }
         } else {
             this.signature = [selectedSignatureElm.value - 0];   
         }
@@ -1259,7 +1303,7 @@ function startAutoPlay() {
             gain.connect(ctx.destination);
             osc.start();
             osc.stop(nextnextNoteTime);
-        }
+        
         return nextnextNoteTime;
     } 
     function nextNote() { 
@@ -1291,13 +1335,22 @@ const spectrumCanvas = document.getElementById("freq-spectrum");
 const canvasCtx = spectrumCanvas.getContext("2d");
 const pixelRatio = window.devicePixelRatio || 1;
 let mediaStream;
-const canvasWidth = spectrumCanvas.parentNode.clientWidth;
-const canvasHeight = spectrumCanvas.parentNode.clientHeight;
-spectrumCanvas.width = canvasWidth * pixelRatio;
-spectrumCanvas.height = canvasHeight * pixelRatio;
-canvasCtx.scale(pixelRatio, pixelRatio);
-spectrumCanvas.style.width = canvasWidth;
-spectrumCanvas.style.height = canvasHeight;
+let canvasWidth = spectrumCanvas.parentNode.clientWidth;
+let canvasHeight = spectrumCanvas.parentNode.clientHeight;
+resizeCanvas();
+window.onresize = resizeCanvas;
+function resizeCanvas() {
+    spectrumCanvas.style.width = null;
+    spectrumCanvas.style.height = null;
+    spectrumCanvas.parentNode.style.width = null;
+    canvasWidth = spectrumCanvas.parentNode.clientWidth;
+    canvasHeight = spectrumCanvas.parentNode.clientHeight;
+    spectrumCanvas.width = canvasWidth * pixelRatio;
+    spectrumCanvas.height = canvasHeight * pixelRatio;
+    canvasCtx.scale(pixelRatio, pixelRatio);
+    spectrumCanvas.style.width = canvasWidth + "px";
+    spectrumCanvas.style.height = canvasHeight + "px";
+}
 
 document.getElementById("tuner-start").onchange = () => {
     canvasCtx.fillStyle = 'rgba(0, 0, 0, 1)';
@@ -1351,8 +1404,9 @@ document.getElementById("tuner-start").onchange = () => {
                     var f = Math.floor(i * tunerCtx.sampleRate / ana.fftSize);
 
                     if ((f % 500) === 0) {
-                        var text = (f < 1000) ? (f + ' Hz') : ((f / 1000) + ' kHz');
-                        canvasCtx.fillRect(x, 0, 1, canvasHeight);
+                        var text = (f / 1000) + 'kHz';
+                        canvasCtx.moveTo(x, canvasHeight);
+                        canvasCtx.lineTo(x, 0);
                         canvasCtx.fillText(text, x, canvasHeight);
                     }
                     if (dataArray[peakFreqIndex] < dataArray[i]) {
@@ -1360,20 +1414,28 @@ document.getElementById("tuner-start").onchange = () => {
                     }
                     const peakFreq = peakFreqIndex * tunerCtx.sampleRate / ana.fftSize;
                     document.getElementById("peakFreq").textContent = peakFreq;
-                    let logFreq = (12 + Math.round(12 * Math.log2(peakFreq / stdFreqElm.stdFreqVal))) % 12;
-                    document.getElementById("peakTone").textContent = scales[logFreq];
+                    if (peakFreq) {
+                        let logFreq = (12 * Math.log2(peakFreq / stdFreqElm.stdFreqVal)) % 12;
+                        let toneIndex = 12 + Math.round(logFreq) % 12;
+                        document.getElementById("peakTone").textContent = scales[toneIndex];
+                        document.getElementById("toneDiffrence").textContent = (toneIndex - logFreq);
+                    }
                 }
 
-                canvasCtx.stroke();
+                canvasCtx.moveTo(canvasWidth, canvasHeight);
+                canvasCtx.lineTo(canvasWidth, 0);
 
                 var textYs = ['1.00', '0.50', ''];
-                canvasCtx.font = "2em serif";
+                canvasCtx.font = "0.95em serif";
                 for (var i = 0, len = textYs.length; i < len; i++) {
                     var text = textYs[i];
                     var gy   = (1 - parseFloat(text)) * canvasHeight;
-                    canvasCtx.fillRect(0, gy, canvasWidth, 1);
+                    canvasCtx.moveTo(0, gy);
+                    canvasCtx.lineTo(canvasWidth, gy);
                     canvasCtx.fillText(text, 0, gy);
                 }
+
+                canvasCtx.stroke();
             }
         });
     }
