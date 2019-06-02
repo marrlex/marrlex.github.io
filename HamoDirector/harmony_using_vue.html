@@ -140,7 +140,7 @@ input[type="checkbox"] {
     border-radius: 8px;
     border: 1px solid var(--border);
     display: inline-block;
-    line-height: 1;
+    line-height: 1em;
 }
 input[type="checkbox"]:checked + .switch-label {
     background: var(--active);
@@ -209,18 +209,18 @@ input[type="range"] {
 }
 .wrapSelect {
     position: relative;
-    height: 1.4em;
+    height: calc(1em + 8px);
     border: 1.5px solid var(--active-grad);
     margin: 1px;
     border-radius: 50px;
     background: var(--background);
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: bottom;
     border-collapse: separate;
 }
 .wrapSelect:before {
     position: absolute;
-    top: 0.5em;
+    top: calc(0.5em + 2px);
     right: 0.5em;
     width: 0;
     height: 0;
