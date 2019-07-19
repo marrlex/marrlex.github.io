@@ -194,7 +194,7 @@ input[type="range"] {
     appearance: none;
     background-color: var(--active);
     box-shadow: 1px 1px 4px var(--shadow);
-    height: 2px;
+    height: 5px;
     width: calc(100% - (1em + 8px) * 2);
     border-radius: 6px;
     display: inline-block;
@@ -286,6 +286,7 @@ button {
     box-shadow: 1px 1px 1px rgba(0,0,0,0.4);
 }
 .drawer {
+    cursor: move;
     width: 21em;
     position: absolute;
     padding: 1em 1em;
@@ -303,12 +304,18 @@ button {
     opacity: 1;
     transform: translateX(100%);
 }
+.drawer div:nth-child(2) {
+    cursor: default;
+}
 .drawer > div {
     margin-left: auto;
     margin-right: auto;
 }
 .dragging {
     transition: 0s;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 #metronome input[type="range"] {
     width: calc(100% - (1em + 8px) * 2);
@@ -359,7 +366,8 @@ canvas {
     height: 100%;
 }
 </style>
-<script src="https://jp.vuejs.org/js/vue.min.js"></script>
+<script src="./vue.js"></script>
+<!-- script src="https://jp.vuejs.org/js/vue.min.js"></script-->
 <h1 id="title">鱧ディレクター</h1>
 <div id="top-menu">
     <span id="chordView">&nbsp;</span>
@@ -731,6 +739,7 @@ const toneNames = [
     "C4","Cis4", "D4", "Es4", "E4", "F4", "Fis4", "G4", "As4", "A4", "B4", "H4",
     "C5"
 ];
+const keyList = [..."awsedftgyhujk"];
 const scales = ["A", "B", "H", "C","Cis", "D", "Es", "E", "F", "Fis", "G", "As"];
 const tone = {};
 const playing = {};
@@ -793,7 +802,7 @@ new Vue({
 })
 
 setMajorOrMinor();
-setRangeOctave();
+setOctaveRange();
 pianoElm.addEventListener("touchstart", (e) => {
     const toneName = e.target.getAttribute("name");
     if (toneNames.includes(toneName)) {
@@ -834,6 +843,7 @@ const release = new Vue({
         }
     }
 });
+
 function playTone(toneName, e) {
     if (isLongtone) {
         stopPlay();
@@ -999,7 +1009,7 @@ function setMajorOrMinor() {
         }
     }
 }
-function setRangeOctave() {
+function setOctaveRange() {
     for (let elm of rangeElm) {
         if (elm.checked) {
             currentOctave = elm.value - 0;
@@ -1014,7 +1024,7 @@ for (let elm of keyElm) {
 }
 for (let elm of rangeElm) {
     elm.onchange = () => {
-        setRangeOctave();
+        setOctaveRange();
         changeToneFreq();
     }
 }
@@ -1025,6 +1035,54 @@ pianoElm.addEventListener("touchend", (e) => {
         stopPlay(toneName, e);
     }   
 });
+
+
+document.addEventListener("keydown", (e) => {
+    // note key
+    if (~keyList.indexOf(e.key.toLowerCase())) {
+        const toneName = toneNames[keyList.indexOf(e.key.toLowerCase()) + 3];
+        if (e.key === e.key.toUpperCase()) {
+            scale.value = toneName.slice(0, -1);
+            return 0;
+        }
+        const elm = document.querySelector("div[name=" + toneName + "]");
+        if (toneNames.includes(toneName)) {
+            e.preventDefault();
+            playTone(toneName, elm);
+            elm.classList.add("keyboard-press");
+        }
+    }
+
+    // number key
+    if (e.key == e.key - 0) {
+        if (e.key == 0) {
+            scale.value = "ave";
+        } else if (e.key <= 3) {
+            rangeElm[e.key - 1].checked = true;
+            setOctaveRange();
+        }
+    }
+
+    // other
+    switch (e.key) {
+        case "m":
+            keyElm[0].checked ? keyElm[1].checked = true : keyElm[0].checked = true;
+            break;
+        case "-":
+            susteinElm.checked = !susteinElm.checked;
+            break;
+    }
+
+});
+document.addEventListener("keyup", (e) => {
+    const toneName = toneNames[keyList.indexOf(e.key) + 3];
+    const elm = document.querySelector("div[name=" + toneName + "]");
+    if (toneName) {
+        e.preventDefault();
+        stopPlay(toneName, elm);
+    }   
+});
+
 const susteinElm = document.getElementById("sustein");
 susteinElm.onchange = () => {
     if (!susteinElm.checked) {
@@ -1273,6 +1331,7 @@ for (let elm of document.querySelectorAll("input[type='range']")) {
         value = "ー";
         onclick = prevent;
         addEventListener("touchstart", handler);
+        addEventListener("mousedown", handler);
     }
     const afterElm = document.createElement("input");
     afterElm.type = "button";
@@ -1280,6 +1339,7 @@ for (let elm of document.querySelectorAll("input[type='range']")) {
     afterElm.value = "＋";
     afterElm.onclick = prevent;
     afterElm.addEventListener("touchstart", handler);
+    afterElm.addEventListener("mousedown", handler);
 
     elm.insertAdjacentElement("beforebegin", beforeElm);
     elm.insertAdjacentElement("afterend", afterElm);
@@ -1515,21 +1575,51 @@ document.getElementById("tuner-start").onchange = () => {
 for (const drawerElm of document.querySelectorAll(".drawer")) {
     let startX, startY;
 
-    drawerElm.addEventListener("touchstart", (e) => {
-        startX = e.changedTouches[0].pageX - drawerElm.offsetLeft;
-        startY = e.changedTouches[0].pageY - drawerElm.offsetTop;
-        drawerElm.classList.add("dragging");
-    })
-    drawerElm.addEventListener("touchmove", (e) => {
-        if (e.target.tagName == "DIV") {
+    drawerElm.addEventListener("touchstart", dragStart, false);
+    drawerElm.addEventListener("mousedown", dragStart, false);
+
+    function dragStart(e) {
+        if (e.target.matches("div.td:nth-child(n+1) *")) {
+            e.stopPropagation();
+        } else if (e.currentTarget.classList.contains("drawer")) {
             e.preventDefault();
-            drawerElm.style.left = e.changedTouches[0].pageX - startX + "px";
-            drawerElm.style.top = e.changedTouches[0].pageY - startY + "px";   
+            let event;
+            if (e.type === "mousedown") {
+                event = e;
+                document.addEventListener("mousemove", dragger);
+                document.addEventListener("mouseup", dragEnd, {once: true});
+            } else {
+                event = e.changedTouches[0];
+                document.addEventListener("touchmove", dragger);
+                document.addEventListener("touchend", dragEnd, {once: true});
+            }
+
+            startX = event.pageX - e.currentTarget.offsetLeft;
+            startY = event.pageY - e.currentTarget.offsetTop;
+            e.currentTarget.classList.add("dragging");
         }
-    });
-    drawerElm.addEventListener("touchend", (e) => {
-        drawerElm.classList.remove("dragging");     
-    })
+    }
+    
+    function dragger(e) {
+        e.preventDefault();
+        let event;
+        if (e.type === "mousemove") {
+            event = e;
+        } else {
+            event = e.changedTouches[0];
+        }
+
+        const target = document.querySelector(".dragging");
+
+        target.style.left = event.pageX - startX + "px";
+        target.style.top = event.pageY - startY + "px";   
+    }
+    
+    function dragEnd(e) {
+        document.removeEventListener("touchmove", dragger);
+        document.removeEventListener("mousemove", dragger);
+        document.querySelector(".dragging").classList.remove("dragging");     
+    }
 }
 </script>
 </body>
