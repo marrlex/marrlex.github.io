@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/htm;charset=UTF-8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>鱧ディレクター</title>
+<link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="./harmony.png" />
 <link rel="icon" type="image/png" href="./harmony.png">
 <link rel="icon" type="image/svg+xml" sizes="any" href="./harmony.svg" />
@@ -131,7 +132,7 @@ h1, h2 {
     visibility: hidden;
 }
 .keyboard-press {
-    background-color: #ccc !important;
+    background-color: rgba(204, 204, 204, 0.95) !important;
     border-bottom: solid 1px black !important;
     box-shadow: 1px 1px 4px rgba(0,0,0,0.4) inset;
 }
@@ -457,11 +458,11 @@ canvas {
         {{ sizeValue }}
     </div>
 </div>
-<div id="sustain" class="block">
+<div class="block">
     <div class="th">持続</div>
     <div class="td">
-        <label for="sustein">
-            <input type="checkbox" id="sustein" name ="sustein"/>
+        <label for="sustain">
+            <input type="checkbox" id="sustain" name ="sustain"/>
             <span class="switch-label">持続する</span>
         </label>
     </div>
@@ -698,8 +699,7 @@ canvas {
         <div>&nbsp;
             <button class="close-window" onclick="showFromLeft('settings')">閉じる</button>
         </div>
-</div>
-
+    </div>
 </div>
 <br />
 
@@ -711,8 +711,7 @@ canvas {
 <br />
 <script>
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
-const audioctx = new AudioContext();
-const ana = audioctx.createAnalyser();
+let audioctx = new AudioContext();
 //const sizeElm = document.getElementById("size");
 const pianoElm = document.getElementById("piano-wrapper");
 const keyboards = document.getElementsByClassName("keyboards");
@@ -725,6 +724,7 @@ const releaseElm = document.getElementById("release");
 const keyElm = document.querySelectorAll("input[name='key']");
 const rangeElm = document.getElementById("range-of-octave").querySelectorAll("input");
 const autoElm = document.getElementById("keyAuto");
+const sustainElm = document.getElementById("sustain");
 let majorOrMinor;
 let currentOctave;
 const freqRatio = {};
@@ -816,6 +816,7 @@ function showFromLeft(id) {
         classList.toggle("show");
     }
 }
+
 let attackTimeConst = 20 * 1e-3;
 const attack = new Vue({
     el: "#attack",
@@ -843,11 +844,16 @@ const release = new Vue({
     }
 });
 
+//navigator.serviceWorker.register("./worker.js");
+
 function playTone(toneName, e) {
     if (isLongtone) {
         stopPlay();
     }
     if (!playing[toneName]) {
+        if (audioctx.state != "running") {
+            audioctx = new AudioContext();
+        }
         const osc = audioctx.createOscillator();
         const gain = audioctx.createGain();
         const ana = audioctx.createAnalyser();
@@ -895,6 +901,7 @@ function playTone(toneName, e) {
         gain.gain.setTargetAtTime(1, audioctx.currentTime, attackTimeConst);
     }
 }
+
 colorElm.onchange = () => {
     changeToneType(colorElm.value);
 }
@@ -1068,28 +1075,27 @@ document.addEventListener("keydown", (e) => {
             keyElm[0].checked ? keyElm[1].checked = true : keyElm[0].checked = true;
             break;
         case "-":
-            susteinElm.checked = !susteinElm.checked;
+            sustainElm.checked = !sustainElm.checked;
+            sustainElm.dispatchEvent(new Event("change"));
             break;
     }
 
 });
 document.addEventListener("keyup", (e) => {
     const toneName = toneNames[keyList.indexOf(e.key) + 3];
-    const elm = document.querySelector("div[name=" + toneName + "]");
     if (toneName) {
         e.preventDefault();
-        stopPlay(toneName, elm);
+        stopPlay(toneName, e);
     }   
 });
 
-const susteinElm = document.getElementById("sustein");
-susteinElm.onchange = () => {
-    if (!susteinElm.checked) {
+sustainElm.onchange = () => {
+    if (!sustainElm.checked) {
         stopPlay();
     }
 }
 function stopPlay(toneName, event){
-    if(!toneName) {
+    if(!toneName) { 
         for (let osc of Object.keys(playing)) {
             playing[osc].gain.gain.setTargetAtTime(0, audioctx.currentTime, releaseTimeConst);
             playing[osc].osc.stop(audioctx.currentTime + 0.05);
@@ -1098,16 +1104,24 @@ function stopPlay(toneName, event){
         }
         isLongtone = false;
     }
-    if (susteinElm.checked) {
+    if (sustainElm.checked) {
         if(event) {
-            isLongtone = !event.touches[0];
+            isLongtone = event.key || !event.touches[0];
         }
     } else if(playing[toneName]) {
         playing[toneName].gain.gain.setTargetAtTime(0, audioctx.currentTime, releaseTimeConst);
         playing[toneName].osc.stop(audioctx.currentTime + 5);
-        playing[toneName].elm. classList.remove("keyboard-press");
+        playing[toneName].elm.classList.remove("keyboard-press");
         delete playing[toneName];
     }
+    if (!Object.keys(playing).length) {
+        setTimeout(() => {
+            if (!Object.keys(playing).length) {
+                audioctx.close();
+            }
+        }, 500)
+    }
+
 }
 class MetronomeNote {
     constructor(beatInt, name, elmId, initVol, freq) {
@@ -1324,7 +1338,7 @@ for (let elm of timeSignatureElm.querySelectorAll("input")) {
 */
 for (let elm of document.querySelectorAll("input[type='range']")) {
     const beforeElm = document.createElement("input");
-     with (beforeElm) {
+    with (beforeElm) {
         type = "button";
         classList.add("minus-button");
         value = "ー";
@@ -1458,7 +1472,6 @@ function startAutoPlay() {
 }
 */
 
-/* チューナー作る */
 const startTuning = document.getElementById("tuner-start");
 startTuning.checked = false;
 const spectrumCanvas = document.getElementById("freq-spectrum");
@@ -1578,7 +1591,7 @@ for (const drawerElm of document.querySelectorAll(".drawer")) {
     drawerElm.addEventListener("mousedown", dragStart, false);
 
     function dragStart(e) {
-        if (e.target.matches("div.td:nth-child(n+1) *")) {
+        if (e.target.matches("div *")) {
             e.stopPropagation();
         } else if (e.currentTarget.classList.contains("drawer")) {
             e.preventDefault();
