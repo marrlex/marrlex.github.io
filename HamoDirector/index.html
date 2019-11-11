@@ -1,46 +1,97 @@
 <!DOCTYPE html>
 <html lang="ja">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<meta http-equiv="Content-Type" content="text/htm;charset=UTF-8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>鱧ディレクター</title>
-<link rel="apple-touch-icon" href="./harmony.png" />
-<link rel="icon" type="image/png" href="./harmony.png">
-<link rel="icon" type="image/svg+xml" sizes="any" href="./harmony.svg" />
-<body>
-<style>
+    <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta http-equiv="Content-Type" content="text/htm;charset=UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>鱧ディレクター</title>
+        <link rel="manifest" href="./manifest.json">
+        <link rel="apple-touch-icon" href="./harmony.png" />
+        <link rel="icon" type="image/png" href="./harmony.png">
+        <link rel="icon" type="image/svg+xml" sizes="any" href="./harmony.svg" />
+    </head>
+    <body>
+        <style>
+:root {
+    /* color set*/
+    --active-cute: #ff82a9;
+    --active-grad-cute: #ff72d0;
+    --background-cute: #ffebe7;
+    --border-cute: violet;
+    --shadow-cute: hotpink;
+
+    --active-cool: lightskyblue;
+    --active-grad-cool: deepskyblue;
+    --background-cool: paleturquoise;
+    --border-cool: royalblue;
+    --shadow-cool: aqua;
+
+    --active-natural: limegreen;
+    --active-grad-natural: mediumseagreen;
+    --background-natural: #CFC;
+    --border-natural: forestgreen;
+    --shadow-natural: darkcyan;
+}
+
 body {
-    font-family: "HG明朝E", serif;
+    font-family: "ヒラギノ丸ゴ ProN", "HG丸ｺﾞｼｯｸM-PRO", serif;
+    text-shadow: 0.1em 0.2em 0.1em rgba(0, 0, 0, 0.2);
     margin: 0;
-    background-color: #BED9C2; <!--淡緑-->
+
+    background-color: var(--background);
 }
-h1 {
+#top-menu {
     position: relative;
-    background: linear-gradient(to bottom, turquoise 0%, black 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-box-reflect: below -18px linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,0) 10%,rgba(0, 0, 0, 0.6));
-    margin: 4px;
-    margin-bottom: 1em;
-    font-size: 1.7em;
+    height: 2em;
 }
-/*table {
-    border-collapse: collapse;
-    border-spacing: 10px 5px;
-    box-sizing: content-box;
-}*/
-table, td {
-    border-collapse: collapse;
+
+#title {
+    height: 1.7em;
+    text-shadow: none;
 }
-td:first-child{
+#title span:nth-child(5n+1) {
+    color: #e84207;
+}
+#title span:nth-child(5n+2) {
+    color: #48be1e;
+}
+#title span:nth-child(5n+3) {
+    color: #4207ef;
+}
+#title span:nth-child(5n+4) {
+    color: #e84207;
+}
+#title span:nth-child(5n+5) {
+    color: #275ee8;
+}
+h1, h2 {
+    margin: 0;
+    display: inline-block;
+}
+.td:first-child{
     text-align: right;
+    padding-right: 5px;
 }
-td input:first-child, td label {
-    margin-left: 10px;
-}
-td.range-td {
+.td.range-td {
     text-align: right;
     display: block;
+}
+#control-panel {
+    display: table;
+    border-spacing: 4px;
+}
+.block {
+    display: table-row;
+}
+.th, .td {
+    display: table-cell;
+    height: 1.6em;
+    text-shadow: 0.1em 0.2em 0.1em rgba(0, 0, 0, 0.2);
+}
+.th {
+    text-align: center;
+    vertical-align: middle;
+    padding-right: 5px;
 }
 .piano {
     position: relative;
@@ -81,10 +132,9 @@ td.range-td {
 }
 .key-space {
     visibility: hidden;
-    z-index: -9999;
 }
 .keyboard-press {
-    background-color: #ccc !important;
+    background-color: rgba(204, 204, 204, 0.95) !important;
     border-bottom: solid 1px black !important;
     box-shadow: 1px 1px 4px rgba(0,0,0,0.4) inset;
 }
@@ -101,22 +151,22 @@ input[type="checkbox"] {
     padding: 5px 5px 5px 45px;
     transition: .2s;
     border-radius: 8px;
-    border: 1px solid #dfd;
+    border: 1px solid var(--border);
     display: inline-block;
-    line-height: 1;
+    line-height: 1em;
 }
 input[type="checkbox"]:checked + .switch-label {
-    background: turquoise;
+    background: var(--active);
     color: black;
-    border: 1px solid turquoise;
+    border: 1px solid var(--active);
     text-shadow: 1px 1px 2px white;
 }
 input[type="checkbox"]:checked + .switch-label:before {
-    border: 1px solid turquoise;
+    border: 1px solid var(--active);
 }
 input[type="checkbox"]:checked + .switch-label:after {
     left: 26px;
-    background: turquoise;
+    background: var(--active);
 }
 .switch-label:before {
     content: "";
@@ -125,7 +175,7 @@ input[type="checkbox"]:checked + .switch-label:after {
     width: 30px;
     height: 15px;
     border-radius: 15px;
-    border: 1px solid #aaa;
+    border: 1px solid var(--border);
     background: white;
     position: absolute;
 }
@@ -145,33 +195,18 @@ input[type="checkbox"]:checked + .switch-label:after {
 input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
-    background-color: turquoise;
-    box-shadow: 1px 1px 4px #dfd;
-    height: 2px;
-    width: 70%;
+    background-color: var(--active);
+    box-shadow: 1px 1px 4px var(--shadow);
+    height: 5px;
+    width: calc(100% - (1em + 8px) * 2);
     border-radius: 6px;
     display: inline-block;
 }
-input[type="range"]:focus,input[type="range"]:active {
-    outline: none;
-}
-input[type="range"]:-webkit-slider-thumb,input[type="range"]:-moz-range-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    cursor: pointer;
-    position: relative;
-    width: 20px;
-    height: 20px;
-    display: block;
-    border: 2px solid #dfd;
-    background-color: white;
-    border-radius: 50%;
-    -webkit-border-radius: 50%;
-}
 .wrapSelect {
     overflow: hidden;
-    width: 40%;
+    width: 6em;
     text-align: center;
+    margin-left: 0.4em;
 }
 .wrapSelect select {
     width: 90%;
@@ -187,34 +222,36 @@ input[type="range"]:-webkit-slider-thumb,input[type="range"]:-moz-range-thumb {
 }
 .wrapSelect {
     position: relative;
-    height: 1.4em;
-    border: 2px solid turquoise;
+    height: calc(1em + 8px);
+    border: 1.5px solid var(--active-grad);
+    margin: 1px;
     border-radius: 50px;
-    background: #dfd;
-    display: inline-table;
+    background: var(--background);
+    display: inline-block;
+    vertical-align: bottom;
     border-collapse: separate;
 }
 .wrapSelect:before {
     position: absolute;
-    top: 0.8em;
-    right: 0.8em;
+    top: calc(0.5em + 2px);
+    right: 0.5em;
     width: 0;
     height: 0;
     padding: 0;
     content: '';
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid turquoise;
+    border-top: 6px solid var(--active-grad);
 }
 .plus-button, .minus-button {
-    padding: 0 2px;
     display: inline-block;
     font-weight: bold;
-    border: 1px solid #dfd;
+    border: 1px solid var(--border);
     border-radius: 4px;
     color: white;
-    background-image: linear-gradient(darkturquoise 0%, turquoise 100%);
-    width: 10%;
+    background-image: linear-gradient(var(--active-grad) 0%, var(--active) 100%);
+    width: calc(1em + 6px);
+    padding: 0 2px;
 }
 .minus-button {
     margin-left: 0;
@@ -232,200 +269,456 @@ input[type="radio"] {
     display: inline-block;
     margin: auto;
     padding: 2px .4em;
-    border: 1px solid #dfd;
+    border: 1px solid var(--border);
     border-radius: .5em;
     border-collapse: collapse;
     transition: all .2s;
 }
 input[type="radio"]:checked + .radio-label {
-    background: #dfd;
-    background-image: linear-gradient(darkturquoise 0%, turquoise 100%);
+    background: var(--shadow);
+    background-image: linear-gradient(var(--active) 0%, var(--active) 100%);
     color: black;
     text-shadow: 1px 1px 2px white;
 }
+button {
+    color: black;
+    padding: 0.1em 0.5em;
+    background: transparent;
+    border-radius: 30px;
+    border: 2px solid var(--active);
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+}
+.drawer {
+    cursor: move;
+    width: 21em;
+    position: absolute;
+    padding: 1em 1em;
+    border: solid 2px var(--active-grad);
+    border-radius: 10px;
+    background-color: var(--background);
+    right: 100%;
+    top: 2em;
+    transition: .3s;
+    visibility: hidden;
+    opacity: 0;
+}
+.drawer.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(100%);
+}
+.drawer div:nth-child(2) {
+    cursor: default;
+}
+.drawer > div {
+    margin-left: auto;
+    margin-right: auto;
+}
+.dragging {
+    transition: 0s;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+#metronome input[type="range"] {
+    width: calc(100% - (1em + 8px) * 2);
+}
+#metronome input[type="text"] {
+    width: 5em;
+    padding: 2px;
+    border: none;
+    border-radius: 0.5em;
+    box-shadow: 0 0 0.2em var(--border);
+    transition: .3s;
+}
+#metronome input[type="text"]:focus {
+    box-shadow: 0 0 1px 1px var(--active);
+    outline: 0;
+}
+#metronome .th {
+    min-width: 4em;
+}
+#metronome .td:nth-child(2) {
+    width: calc(100% - 7em);
+}
+#control-button {
+    position: absolute;
+    top: 0;
+    right: 1em;
+}
+.close-window {
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: 1em;
+}
+#tuner {
+    width: 60vw;
+    height: auto;
+}
+.canvas-container {
+    height: 0;
+    padding-top: 56.25%;
+    position: relative;
+}
+canvas {
+    position: absolute;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+        </style>
+        <script src="./vue.js"></script>
+        <!-- script src="https://jp.vuejs.org/js/vue.min.js"></script-->
+        <h1 id="title">鱧ディレクター</h1>
+        <div id="top-menu">
+            <span id="chordView">&nbsp;</span>
+            <div id="control-button">
+                <button onclick="showFromLeft('metronome')">メトロノーム</button>
+                <button onclick="showFromLeft('tone-color')">音色</button>
+                <button onclick="showFromLeft('tuner')">チューナー</button>
+                <button onclick="showFromLeft('settings')">設定</button>
+            </div>
+        </div>
+        <div id="piano-wrapper">
+            <div class="piano">
+                <div class="white-keys">
+                    <div class="keyboards" name="C1"></div>
+                    <div class="keyboards" name="D1"></div>
+                    <div class="keyboards" name="E1"></div>
+                    <div class="keyboards" name="F1"></div>
+                    <div class="keyboards" name="G1"></div>
+                    <div class="keyboards" name="A1"></div>
+                    <div class="keyboards" name="H1"></div>
+                    <div class="keyboards" name="C2"></div>
+                    <div class="keyboards" name="D2"></div>
+                    <div class="keyboards" name="E2"></div>
+                    <div class="keyboards" name="F2"></div>
+                    <div class="keyboards" name="G2"></div>
+                    <div class="keyboards" name="A2"></div>
+                    <div class="keyboards" name="H2"></div>
+                    <div class="keyboards" name="C3"></div>
+                </div>
+                <div class="black-keys">
+                    <div class="keyboards" name="Cis1"></div>
+                    <div class="keyboards" name="Es1"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Fis1"></div>
+                    <div class="keyboards" name="As1"></div>
+                    <div class="keyboards" name="B1"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Cis2"></div>
+                    <div class="keyboards" name="Es2"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Fis2"></div>
+                    <div class="keyboards" name="As2"></div>
+                    <div class="keyboards" name="B2"></div>
+                </div>
+            </div>
+            <div class="piano">
+                <div class="white-keys">
+                    <div class="keyboards" name="C3"></div>
+                    <div class="keyboards" name="D3"></div>
+                    <div class="keyboards" name="E3"></div>
+                    <div class="keyboards" name="F3"></div>
+                    <div class="keyboards" name="G3"></div>
+                    <div class="keyboards" name="A3"></div>
+                    <div class="keyboards" name="H3"></div>
+                    <div class="keyboards" name="C4"></div>
+                    <div class="keyboards" name="D4"></div>
+                    <div class="keyboards" name="E4"></div>
+                    <div class="keyboards" name="F4"></div>
+                    <div class="keyboards" name="G4"></div>
+                    <div class="keyboards" name="A4"></div>
+                    <div class="keyboards" name="H4"></div>
+                    <div class="keyboards" name="C5"></div>
+                </div>
+                <div class="black-keys">
+                    <div class="keyboards" name="Cis3"></div>
+                    <div class="keyboards" name="Es3"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Fis3"></div>
+                    <div class="keyboards" name="As3"></div>
+                    <div class="keyboards" name="B3"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Cis4"></div>
+                    <div class="keyboards" name="Es4"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Fis4"></div>
+                    <div class="keyboards" name="As4"></div>
+                    <div class="keyboards" name="B4"></div>
+                </div>
+            </div>
+        </div>
 
-</style>
-<h1>鱧ディレクター</h1>
-<span id="chordView"></span>
-<div id="piano-wrapper">
-<div class="piano">
-    <div class="white-keys">
-        <div class="keyboards" name="C1"></div>
-        <div class="keyboards" name="D1"></div>
-        <div class="keyboards" name="E1"></div>
-        <div class="keyboards" name="F1"></div>
-        <div class="keyboards" name="G1"></div>
-        <div class="keyboards" name="A1"></div>
-        <div class="keyboards" name="H1"></div>
-        <div class="keyboards" name="C2"></div>
-        <div class="keyboards" name="D2"></div>
-        <div class="keyboards" name="E2"></div>
-        <div class="keyboards" name="F2"></div>
-        <div class="keyboards" name="G2"></div>
-        <div class="keyboards" name="A2"></div>
-        <div class="keyboards" name="H2"></div>
-        <div class="keyboards" name="C3"></div>
-    </div>
-    <div class="black-keys">
-        <div class="keyboards" name="Cis1"></div>
-        <div class="keyboards" name="Es1"></div>
-        <div class="keyboards key-space"></div>
-        <div class="keyboards" name="Fis1"></div>
-        <div class="keyboards" name="As1"></div>
-        <div class="keyboards" name="B1"></div>
-        <div class="keyboards key-space"></div>
-        <div class="keyboards" name="Cis2"></div>
-        <div class="keyboards" name="Es2"></div>
-        <div class="keyboards key-space"></div>
-        <div class="keyboards" name="Fis2"></div>
-        <div class="keyboards" name="As2"></div>
-        <div class="keyboards" name="B2"></div>
-    </div>
-</div>
-<div class="piano">
-    <div class="white-keys">
-        <div class="keyboards" name="C3"></div>
-        <div class="keyboards" name="D3"></div>
-        <div class="keyboards" name="E3"></div>
-        <div class="keyboards" name="F3"></div>
-        <div class="keyboards" name="G3"></div>
-        <div class="keyboards" name="A3"></div>
-        <div class="keyboards" name="H3"></div>
-        <div class="keyboards" name="C4"></div>
-        <div class="keyboards" name="D4"></div>
-        <div class="keyboards" name="E4"></div>
-        <div class="keyboards" name="F4"></div>
-        <div class="keyboards" name="G4"></div>
-        <div class="keyboards" name="A4"></div>
-        <div class="keyboards" name="H4"></div>
-        <div class="keyboards" name="C5"></div>
-    </div>
-    <div class="black-keys">
-        <div class="keyboards" name="Cis3"></div>
-        <div class="keyboards" name="Es3"></div>
-        <div class="keyboards key-space"></div>
-        <div class="keyboards" name="Fis3"></div>
-        <div class="keyboards" name="As3"></div>
-        <div class="keyboards" name="B3"></div>
-        <div class="keyboards key-space"></div>
-        <div class="keyboards" name="Cis4"></div>
-        <div class="keyboards" name="Es4"></div>
-        <div class="keyboards key-space"></div>
-        <div class="keyboards" name="Fis4"></div>
-        <div class="keyboards" name="As4"></div>
-        <div class="keyboards" name="B4"></div>
-    </div>
-</div></div>
-<table>
-<tr><th>持続</th>
-    <td><label for="sustein"><input type="checkbox" id="sustein" name ="sustein"/><span class="switch-label">持続する</span></label></td>
-</tr>
-<tr><th>基準周波数</th>
-    <td><input type="range" id="stdFreq" min="435" max="445" value="442"/></td>
-    <td id="stdFreqVal"></td>
-</tr>
-<tr><th>調</th>
-    <td><div><div class="wrapSelect"><select id="scale">
-        <option value="ave" selected="">平均律</option>
-        <option value="C">C</option>
-        <option value="Cis">C♯</option>
-        <option value="D">D</option>
-        <option value="Es">E♭</option>
-        <option value="E">E</option>
-        <option value="F">F</option>
-        <option value="Fis">F♯</option>
-        <option value="G">G</option>
-        <option value="As">A♭</option>
-        <option value="A">A</option>
-        <option value="B">B♭</option>
-        <option value="H">B</option>
-    </select></div>
-    <label for="major"><input type="radio" name="key" id="major" value="major" checked="" /><span class="radio-label">長調</span></label>
-    <label for="minor"><input type="radio" name="key" id="minor" value="minor" /><span class="radio-label">短調</span></label></div>
-    <label for="keyAuto"><input type="checkbox" id="keyAuto" name ="keyAuto"/><span class="switch-label">自動</span></label>
-</td></tr>
-<tr><th>音色</th>
-<td><div class="wrapSelect"><select id="toneColor">
-    <option value="sine" selected="">正弦波</option>
-    <option value="square">矩形波</option>
-    <option value="sawtooth">鋸波</option>
-    <option value="triangle">三角波</option>
-    <!--option value="custom" disabled="">その他(未実装)</option-->
-</select></div></td></tr>
-<tr>
-    <th>アタック</th>
-    <td><input type="range" id="attack" min="0" max="100" value="80"/></td>
-    <td id="attackVal"></td>
-</tr>
-<tr>
-    <th>リリース</th>
-    <td><input type="range" id="release" min="0" max="100" value="50"/></td>
-    <td id="releaseVal"></td>
-</tr>
-<tr><th>音域</th>
-    <td><div id="range-of-octave">
-    <label for="low"><input type="radio" name="range-of-octave" id="low" value="2" /><span class="radio-label">低音</span></label>
-    <label for="midium"><input type="radio" name="range-of-octave" id="midium" value="1" checked="" /><span class="radio-label">中音</span></label>
-    <label for="high"><input type="radio" name="range-of-octave" id="high" value="0" /><span class="radio-label">高音</span></label>
-    </div>
-</td></tr>
-<tr><th>メトロノーム</th>
-    <td><div class="switch">
-        <label for="metro"><input type="checkbox" id="metro" name="metro"/><span class="switch-label">再生する</span></label>
-    </div></td>
-</tr>
-<tr>
-    <td>テンポ</td>
-    <td><input type="range" id="tempo" min="40" max="300" value="100"/></td>
-    <td id="tempoVal"></td>
-</tr>
-<tr><td>強拍</td>
-    <td><input type="range" id="stressVol" min="0" max="100" value="100"/></td>
-    <td id="stressVal"></td>
-</tr>
-<tr><td>4分音符</td>
-    <td><input type="range" id="fourVol" min="0" max="100" value="80"/></td>
-    <td id="fourVal"></td>
-</tr>
-<tr><td>8分音符</td>
-    <td><input type="range" id="eightVol" min="0" max="100" value="20"/></td>
-    <td id="eightVal"></td>
-</tr>
-<tr><td>3連符</td>
-    <td><input type="range" id="tripletVol" min="0" max="100" value="0"/></td>
-    <td id="tripletVal"></td>
-</tr>
-<tr><td>16分音符</td>
-    <td><input type="range" id="sixteenVol" min="0" max="100" value="0"/></td>
-    <td id="sixteenVal"></td>
-</tr>
-<tr><td>拍子</td>
-<td><div class="signature" id="signature">
-    <div>
-    <label for="sign1"><input type="radio" name="signature-numerator" id="sign1" value="1" /><span class="radio-label">1</span></label>
-    <label for="sign2"><input type="radio" name="signature-numerator" id="sign2" value="2" /><span class="radio-label">2</span></label>
-    <label for="sign3"><input type="radio" name="signature-numerator" id="sign3" value="3" /><span class="radio-label">3</span></label>
-    <label for="sign4"><input type="radio" name="signature-numerator" id="sign4" value="4" checked="" /><span class="radio-label">4</span></label>
-    </div>
-    <label for="sign0"><input type="radio" name="signature-numerator" id="sign0" value="other" /><span class="radio-label">複合拍子</span></label>
-    <input type="text" id="compound-signature" placeholder="ex. 2+3, 4+2 etc..."></div>
-</div></td>
-</tr>
-</table>
-<br />
-<!--
-<p>自動再生</p>
-<label for="auto-player"><input type="checkbox" id="auto-player" /><span class="switch-label">再生／停止</span></label>
-<textarea id="auto-play-text" placeholder="c,c,e,g|ceg|c"></textarea>
--->
-<br />
-<script>
+        <div id="control-panel">
+        <div id="keyboard-size" class="block">
+            <div class="th">キーボードサイズ</div>
+            <div class="td">
+                <input type="range" min="0" max="100" value="50" v-model="sizeValue" v-on:input="changeSize"/>
+            </div><div class="td">
+                {{ sizeValue }}
+            </div>
+        </div>
+        <div class="block">
+            <div class="th">持続</div>
+            <div class="td">
+                <label for="sustain">
+                    <input type="checkbox" id="sustain" name ="sustain"/>
+                    <span class="switch-label">持続する</span>
+                </label>
+            </div>
+        </div>
+        <div class="block">
+            <div class="th">調</div>
+            <div class="td">
+                <span class="wrapSelect">
+                    <select id="scale">
+                        <option value="ave" selected="">平均律</option>
+                        <option value="C">C</option>
+                        <option value="Cis">C♯</option>
+                        <option value="D">D</option>
+                        <option value="Es">E♭</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="Fis">F♯</option>
+                        <option value="G">G</option>
+                        <option value="As">A♭</option>
+                        <option value="A">A</option>
+                        <option value="B">B♭</option>
+                        <option value="H">B</option>
+                    </select>
+                </span>
+                <label for="keyAuto">
+                    <input type="checkbox" id="keyAuto" name ="keyAuto"/>
+                    <span class="switch-label">自動</span>
+                </label>
+                <div>
+                    <label for="major">
+                        <input type="radio" name="key" id="major" value="major" checked="" />
+                        <span class="radio-label">長調</span>
+                    </label>
+                    <label for="minor">
+                        <input type="radio" name="key" id="minor" value="minor" />
+                        <span class="radio-label">短調</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="drawer" id="tone-color">
+            <div class="block">
+                <div class="th">音色</div>
+                <div class="td">
+                    <div class="wrapSelect">
+                        <select id="toneColor">
+                        <option value="sine" selected="">正弦波</option>
+                        <option value="square">矩形波</option>
+                        <option value="sawtooth">鋸波</option>
+                        <option value="triangle">三角波</option>
+                        <!--option value="custom" disabled="">その他(未実装)</option-->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="attack" class="block">
+                <div class="th">アタック</div>
+                <div class="td">
+                    <input type="range" v-model="attackVal" v-on:input="changeValue" min="0" max="100" value="80"/>
+                </div><div class="td">
+                    {{ attackVal }}
+                </div>
+            </div>
+            <div id="release" class="block">
+                <div class="th">リリース</div>
+                <div class="td">
+                    <input type="range" v-model="releaseVal" v-on:input="changeValue" min="0" max="100" value="50"/>
+                </div><div class="td">
+                    {{releaseVal}}
+                </div>
+            </div>
+            <div class="block">
+                <div class="th">音域</div>
+                <div class="td">
+                    <div id="range-of-octave">
+                        <label for="low">
+                            <input type="radio" name="range-of-octave" id="low" value="2" />
+                            <span class="radio-label">低音</span>
+                        </label>
+                        <label for="midium">
+                            <input type="radio" name="range-of-octave" id="midium" value="1" checked="" />
+                            <span class="radio-label">中音</span>
+                        </label>
+                        <label for="high">
+                            <input type="radio" name="range-of-octave" id="high" value="0" />
+                            <span class="radio-label">高音</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div>&nbsp;
+                <button class="close-window" onclick="showFromLeft('tone-color')">閉じる</button>
+            </div>
+        </div>
+        <div class="drawer" id="metronome">
+            <span id="metro-title">メトロノーム
+                    <div class="switch" style="display: inline-block">
+                        <label for="metro">
+                            <input type="checkbox" id="metro" name="metro"/>
+                            <span class="switch-label">再生する</span>
+                        </label>
+                    </div>
+            </span>
+            <div id="tempo" class="block">
+                <div class="td">テンポ</div>
+                <div class="td">
+                    <input type="range" v-model="tempoVal" min="40" max="300" value="100"/>
+                </div><div class="td">
+                    {{ tempoVal }}
+                </div>
+            </div>
+            <div id="stressVol" class="block">
+                <div class="td">強拍</div>
+                <div class="td">
+                    <input type="range" v-model="volume" min="0" max="100" value="100"/>
+                </div><div class="td">
+                    {{ volume }}
+                </div>
+            </div>
+            <div id="fourVol" class="block">
+                <div class="td">4分音符</div>
+                <div class="td">
+                    <input type="range" v-model="volume" min="0" max="100" value="80"/>
+                </div><div class="td">
+                    {{ volume }}
+                </div>
+            </div>
+            <div id="eightVol" class="block">
+                <div class="td">8分音符</div>
+                <div class="td">
+                    <input type="range" v-model="volume" min="0" max="100" value="20"/>
+                </div><div class="td">
+                    {{ volume }}
+                </div>
+            </div>
+            <div id="tripletVol" class="block">
+                <div class="td">3連符</div>
+                <div class="td">
+                    <input type="range" v-model="volume" min="0" max="100" value="0"/>
+                </div><div class="td">
+                    {{ volume }}
+                </div>
+            </div>
+            <div id="sixteenVol" class="block">
+                <div class="td">16分音符</div>
+                <div class="td">
+                    <input type="range" v-model="volume" min="0" max="100" value="0"/>
+                </div><div class="td">
+                    {{ volume }}
+                </div>
+            </div>
+            <div id="signature" class="block">
+                <div class="td">拍子</div>
+                <div class="td">
+                        <div class="signature" id="signature">
+                            <div>
+                                <label for="sign1">
+                                    <input type="radio" name="signature-numerator" id="sign1" value="1" />
+                                    <span class="radio-label">1</span>
+                                </label>
+                                <label for="sign2">
+                                    <input type="radio" name="signature-numerator" id="sign2" value="2" />
+                                    <span class="radio-label">2</span>
+                                </label>
+                                <label for="sign3">
+                                    <input type="radio" name="signature-numerator" id="sign3" value="3" />
+                                    <span class="radio-label">3</span>
+                                </label>
+                                <label for="sign4">
+                                    <input type="radio" name="signature-numerator" id="sign4" value="4" checked="" />
+                                    <span class="radio-label">4</span>
+                                </label>
+                            </div>
+                            <label for="sign0">
+                                <input type="radio" name="signature-numerator" id="sign0" value="other" />
+                                <span class="radio-label">複合拍子</span>
+                            </label>：
+                            <input type="text" id="compound-signature" placeholder="2+3 etc...">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button class="close-window" onclick="showFromLeft('metronome')">閉じる</button>
+                </div>
+            </div> 
+        </div>
+        <div class="drawer" id="tuner">
+            <div class="switch" style="display: inline-block">
+                <label for="tuner-start">
+                    <input type="checkbox" id="tuner-start" name="tuner-start" />
+                    <span class="switch-label">開始する（PCのみ）</span>
+                </label>
+            </div>
+            <div class="canvas-container">
+                <canvas id="freq-spectrum"></canvas>
+            </div>
+            <div>
+                <div>ピーク周波数<span id="peakFreq"></span> [Hz]</div>
+                <div>ピーク音名<span id="peakTone"></span></div>
+                <div>ズレ<span id="toneDiffrence"></span> [cent]</div>
+                <div>&nbsp;
+                    <button class="close-window" onclick="showFromLeft('tuner')">閉じる</button>
+                </div>
+            </div>
+        </div>
+        <div class="drawer" id="settings">
+            <h2>設定</h2>
+            <div id="stdFreq" class="block">
+                <div class="th">基準周波数</div>
+                <div class="td">
+                    <input type="range" v-model="stdFreqVal" v-on:input="changeFreq" min="435" max="445" value="442"/>
+                </div><div class="td">
+                    {{ stdFreqVal }}
+                </div>
+            </div>
+            <div id="color-theme" class="block" v-on:change="changeColorTheme">
+                <div class="th">色テーマ：</div>
+                <div class="td">
+                    <label for="cute">
+                        <input type="radio" v-model="theme" id="cute" value="cute" />
+                        <span class="radio-label">Cute</span>
+                    </label>
+                    <label for="natural">
+                        <input type="radio" v-model="theme" id="natural" value="natural" />
+                        <span class="radio-label">Natural</span>
+                    </label>
+                    <label for="cool">
+                        <input type="radio" v-model="theme" id="cool" value="cool" />
+                        <span class="radio-label">Cool</span>
+                    </label>
+                </div>
+            </div>
+                <div>&nbsp;
+                    <button class="close-window" onclick="showFromLeft('settings')">閉じる</button>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <!--
+        <p>自動再生</p>
+        <label for="auto-player"><input type="checkbox" id="auto-player" /><span class="switch-label">再生／停止</span></label>
+        <textarea id="auto-play-text" placeholder="c,c,e,g|ceg|c"></textarea>
+        -->
+        <br />
+        <script>
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
-const audioctx = new AudioContext();
-const ana = audioctx.createAnalyser();
+let audioctx = new AudioContext();
+//const sizeElm = document.getElementById("size");
 const pianoElm = document.getElementById("piano-wrapper");
 const keyboards = document.getElementsByClassName("keyboards");
-const stdFreqElm = document.getElementById("stdFreq");
+const controlElm = document.getElementById("control-panel");
 const colorElm = document.getElementById("toneColor");
 const scale = document.getElementById("scale");
 const chordElm = document.getElementById("chordView");
@@ -434,6 +727,7 @@ const releaseElm = document.getElementById("release");
 const keyElm = document.querySelectorAll("input[name='key']");
 const rangeElm = document.getElementById("range-of-octave").querySelectorAll("input");
 const autoElm = document.getElementById("keyAuto");
+const sustainElm = document.getElementById("sustain");
 let majorOrMinor;
 let currentOctave;
 const freqRatio = {};
@@ -447,39 +741,122 @@ const toneNames = [
     "C4","Cis4", "D4", "Es4", "E4", "F4", "Fis4", "G4", "As4", "A4", "B4", "H4",
     "C5"
 ];
+const keyList = [..."awsedftgyhujk"];
 const scales = ["A", "B", "H", "C","Cis", "D", "Es", "E", "F", "Fis", "G", "As"];
 const tone = {};
 const playing = {};
 let isLongtone = false;
+{
+    const titleElm = document.getElementById("title");
+    const titleStr = titleElm.textContent;
+    titleElm.textContent = "";
+    for (const str of titleStr) {
+        const e = document.createElement("span");
+        e.textContent = str;
+        titleElm.insertAdjacentElement("beforeend", e);
+    }
+}
+const keyboardSize = new Vue({
+    el: "#keyboard-size",
+    data: {
+        sizeValue: window.localStorage.getItem("size") || 50
+    },
+    created: function() {
+        this.changeSize()
+    },
+    methods: {
+        changeSize: function() {
+            window.localStorage.setItem("size", this.sizeValue);
+            const size = 1 + this.sizeValue / 100;
+            for (const e of pianoElm.querySelectorAll(".white-keys .keyboards")){
+                e.style.width = 44 * size + "px";
+            }
+            for (const e of pianoElm.querySelectorAll(".black-keys .keyboards")){
+                e.style.width = 30 * size + "px";
+                e.style.marginRight = 14 * size + "px";
+            }
+            for (const e of pianoElm.querySelectorAll(".black-keys")){
+                e.style.left = 29 * size + "px";
+            }
+        }
+    }
+});
 
+new Vue({
+    el: "#color-theme",
+    data: {
+        theme: window.localStorage.getItem("colorTheme") || "natural"
+    },
+    created: function() {
+        this.changeColorTheme();
+    },
+    methods: {
+        changeColorTheme: function() {
+            window.localStorage.setItem("colorTheme", this.theme);
+            const colorProp = ["--active", "--active-grad", "--background", "--border", "--shadow"];
+            for (const prop of colorProp) {
+                const style = getComputedStyle(document.documentElement);
+                const property = style.getPropertyValue(prop + "-" + this.theme);
+                document.documentElement.style.setProperty(prop, property);
+            }
+        }
+    }
+})
 
 setMajorOrMinor();
-setRangeOctave();
-pianoElm.ontouchstart = (e) => {
+setOctaveRange();
+pianoElm.addEventListener("touchstart", (e) => {
     const toneName = e.target.getAttribute("name");
     if (toneNames.includes(toneName)) {
         e.preventDefault();
         playTone(toneName, e.target);
         e.target.classList.add("keyboard-press");
     }
+});
+function showFromLeft(id) {
+    with (document.getElementById(id)) {
+        style.transition = "";
+        classList.toggle("show");
+    }
 }
-showParam(attackElm, "attackVal");
-let attackTimeConst = (100 - attackElm.value) * 1e-3;
-attackElm.oninput = () => {
-    showParam(attackElm, "attackVal");
-    attackTimeConst = (100 - attackElm.value) * 1e-3;
-}
-showParam(releaseElm, "releaseVal");
-let releaseTimeConst = releaseElm.value * 1e-3;
-releaseElm.oninput = () => {
-    showParam(releaseElm, "releaseVal");
-    releaseTimeConst = releaseElm.value * 1e-3;
-}
+
+let attackTimeConst = 20 * 1e-3;
+const attack = new Vue({
+    el: "#attack",
+    data: {
+        attackVal: window.localStorage.getItem("attack") || 80
+    },
+    methods: {
+        changeValue: () => {
+            attackTimeConst = (100 - attack.attackVal) * 1e-3;
+            window.localStorage.setItem("attack", attack.attackVal);
+        }
+    }
+});
+let releaseTimeConst = 50 * 1e-3;
+const release = new Vue({
+    el: "#release",
+    data: {
+        releaseVal: window.localStorage.getItem("release") || 50
+    },
+    methods: {
+        changeValue: () => {
+            releaseTimeConst = (100 - release.releaseVal) * 1e-3;
+            window.localStorage.setItem("release", release.releaseVal);
+        }
+    }
+});
+
+//navigator.serviceWorker.register("./worker.js");
+
 function playTone(toneName, e) {
     if (isLongtone) {
         stopPlay();
     }
     if (!playing[toneName]) {
+        if (audioctx.state != "running") {
+            audioctx = new AudioContext();
+        }
         const osc = audioctx.createOscillator();
         const gain = audioctx.createGain();
         const ana = audioctx.createAnalyser();
@@ -498,11 +875,20 @@ function playTone(toneName, e) {
                     }
                 }
                 const chord = chordCheck(playingTones, toneNames[lowest].slice(0, -1));
-                if (chord) {
-                    keyScale = chord.key;
-                    chordElm.textContent = keyScale + " " + chord.chordStr;
+                if (chord[0]) {
+                    keyScale = chord[0].key;
+                    let chordListStr = "";
+                    for (const obj of chord) {
+                        chordListStr = obj.key + " " +obj.chordStr;
+                    }
+                    chordElm.textContent = chordListStr;
                     changeToneFreq(keyScale);
                     scale.value = keyScale;
+                    if (chord[0].secondTone == 3) {
+                        keyElm[1].checked = true;
+                    } else {
+                        keyElm[0].checked = true;
+                    }
                 }
             }
         }
@@ -518,6 +904,7 @@ function playTone(toneName, e) {
         gain.gain.setTargetAtTime(1, audioctx.currentTime, attackTimeConst);
     }
 }
+
 colorElm.onchange = () => {
     changeToneType(colorElm.value);
 }
@@ -538,7 +925,6 @@ function chordCheck(tones, lowest) {
     if (tones.length > 4) {
         return false;
     }
-    console.log(lowest)
     let notes = [];
     const n = tones.length;
     tones.forEach(note => {
@@ -553,11 +939,10 @@ function chordCheck(tones, lowest) {
     while (notes[splitIndex++] < lowestNum) continue;
     splitIndex--;
     notes = [...notes.slice(splitIndex, n), ...notes.slice(0, splitIndex)];
-    console.log(notes)
     const toneDistance = (base, higher) => {
         return (higher > base) ? higher - base : (12 + higher - base) % 12;
     }
-
+    const result = [];
     for (let i = 0; i < n; i++) {
         const distances = [];
         for (let j = 0; j < n; j++) {
@@ -572,34 +957,49 @@ function chordCheck(tones, lowest) {
             "0,4,7,10": "7",
             "0,3,7,10": "m7",
             "0,4,7,11": "M7",
-            "0,3,6,10": "m7-5",
+            "0,3,6,10": "m7♭5",
             "0,5,7,10": "7sus4",
             "0,4,8": "aug",
             "0,3,6": "diminish",
             "0,3,7,11": "mM7",
             "0,4,7,9": "6",
             "0,3,7,9": "m6",
-            "0,4,6,10": "7-5",
+            "0,4,6,10": "7♭5",
 
             // "0,2,4,7": "I on II"
         }
         const prop = distances.join();
         if (prop in chordList) {
-            return {
+            result.push({
                 key: baseToneName,
-                chordStr: chordList[prop]
-            }
+                chordStr: chordList[prop],
+                secondTone: distances[1]
+            });
         } else {
             notes.push(notes[0]);
             notes.shift();
         }
     }
-    return "";
+    return result;
 }
+
+const stdFreqElm = new Vue({
+    el: "#stdFreq",
+    data: {
+        stdFreqVal: 442
+    },
+    methods: {
+        changeFreq: () => {
+            if (Object.keys(playing).length) {
+                changeToneFreq();
+            }
+        }
+    }
+});
 
 function getFreqByScaleInterval(scale, interval) {
     let stdInterval = scales.indexOf(scale);
-    const stdFreq = stdFreqElm.value / (2 ** currentOctave);
+    const stdFreq = stdFreqElm.stdFreqVal / (2 ** currentOctave);
     const currentFreq = freqRatio[majorOrMinor];
     if (~stdInterval) {
         const referFreq = stdFreq / 2 * 2 ** (stdInterval / 12);
@@ -618,7 +1018,7 @@ function setMajorOrMinor() {
         }
     }
 }
-function setRangeOctave() {
+function setOctaveRange() {
     for (let elm of rangeElm) {
         if (elm.checked) {
             currentOctave = elm.value - 0;
@@ -633,25 +1033,72 @@ for (let elm of keyElm) {
 }
 for (let elm of rangeElm) {
     elm.onchange = () => {
-        setRangeOctave();
+        setOctaveRange();
         changeToneFreq();
     }
 }
-pianoElm.ontouchend = (e) => {
+pianoElm.addEventListener("touchend", (e) => {
     const toneName = e.target.getAttribute("name");
     if (toneName) {
         e.preventDefault();
         stopPlay(toneName, e);
     }   
-}
-const susteinElm = document.getElementById("sustein");
-susteinElm.onchange = () => {
-    if (!susteinElm.checked) {
+});
+
+
+document.addEventListener("keydown", (e) => {
+    // note key
+    if (~keyList.indexOf(e.key.toLowerCase())) {
+        const toneName = toneNames[keyList.indexOf(e.key.toLowerCase()) + 3];
+        if (e.key === e.key.toUpperCase()) {
+            scale.value = toneName.slice(0, -1);
+            return 0;
+        }
+        const elm = document.querySelector("div[name=" + toneName + "]");
+        if (toneNames.includes(toneName)) {
+            e.preventDefault();
+            playTone(toneName, elm);
+            elm.classList.add("keyboard-press");
+        }
+    }
+
+    // number key
+    if (e.key == e.key - 0) {
+        if (e.key == 0) {
+            scale.value = "ave";
+        } else if (e.key <= 3) {
+            rangeElm[e.key - 1].checked = true;
+            setOctaveRange();
+        }
+    }
+
+    // other
+    switch (e.key) {
+        case "m":
+            keyElm[0].checked ? keyElm[1].checked = true : keyElm[0].checked = true;
+            break;
+        case "-":
+            sustainElm.checked = !sustainElm.checked;
+            sustainElm.dispatchEvent(new Event("change"));
+            break;
+    }
+
+});
+document.addEventListener("keyup", (e) => {
+    const toneName = toneNames[keyList.indexOf(e.key) + 3];
+    if (toneName) {
+        e.preventDefault();
+        stopPlay(toneName, e);
+    }   
+});
+
+sustainElm.onchange = () => {
+    if (!sustainElm.checked) {
         stopPlay();
     }
 }
 function stopPlay(toneName, event){
-    if(!toneName) {
+    if(!toneName) { 
         for (let osc of Object.keys(playing)) {
             playing[osc].gain.gain.setTargetAtTime(0, audioctx.currentTime, releaseTimeConst);
             playing[osc].osc.stop(audioctx.currentTime + 0.05);
@@ -660,33 +1107,45 @@ function stopPlay(toneName, event){
         }
         isLongtone = false;
     }
-    if (susteinElm.checked) {
+    if (sustainElm.checked) {
         if(event) {
-            isLongtone = !event.touches[0];
+            isLongtone = event.key || !event.touches[0];
         }
     } else if(playing[toneName]) {
         playing[toneName].gain.gain.setTargetAtTime(0, audioctx.currentTime, releaseTimeConst);
         playing[toneName].osc.stop(audioctx.currentTime + 5);
-        playing[toneName].elm. classList.remove("keyboard-press");
+        playing[toneName].elm.classList.remove("keyboard-press");
         delete playing[toneName];
     }
-}
-stdFreqElm.addEventListener("input", showFreq);
-showFreq();
-function showFreq() {
-    showParam(stdFreqElm, "stdFreqVal");
-    if (Object.keys(playing).length) {
-        changeToneFreq();
+    /*
+    if (!Object.keys(playing).length) {
+        setTimeout(() => {
+            if (!Object.keys(playing).length) {
+                audioctx.close();
+            }
+        }, 500)
     }
+    */
+
 }
 class MetronomeNote {
-    constructor(beatInt, name, elmId, pElmId, freq) {
+    constructor(beatInt, name, elmId, initVol, freq) {
         this.beatInterval = beatInt;
         this.noteName = name;
-        this.element = document.getElementById(elmId);
-        this.paramElement = document.getElementById(pElmId);
+        this.element = new Vue({
+            el: "#" + elmId,
+            data: {
+                volume: initVol
+            },
+            methods: {
+                changeLevel() {
+                    this.level = this.element.volume;
+                }
+            }
+        });
+        //this.paramElement = document.getElementById(pElmId);
         this.frequency = freq;
-        this.level = this.element.value;
+        this.level = this.element.volume;
 
         this.element.oninput = this.showParam.bind(this);
     }
@@ -711,17 +1170,17 @@ class MetronomeNote {
         this.osc.start();
     }
     showParam() {
-        this.paramElement.textContent = this.element.value;
-        this.level = this.element.value;
+        //this.paramElement.textContent = this.element.value;
+        this.level = this.element.volume;
     }
     reserveBeat(current48Beat, nextBeatTime, currentTimeSignature) {
         if (this.beatInterval) {
             if (current48Beat % this.beatInterval === 0) {
-                this.gain.gain.setValueAtTime(this.level / 50, nextBeatTime);
+                this.gain.gain.setValueAtTime(this.element.volume / 50, nextBeatTime);
                 this.gain.gain.linearRampToValueAtTime(0, nextBeatTime + 0.05);
             }
         } else if (!currentTimeSignature && !current48Beat) {
-            this.gain.gain.setValueAtTime(this.level / 50, nextBeatTime);
+            this.gain.gain.setValueAtTime(this.element.volume / 50, nextBeatTime);
             this.gain.gain.linearRampToValueAtTime(0, nextBeatTime + 0.05);   
         }
     }
@@ -749,11 +1208,11 @@ function base64dataToArrayBuffer(data) {
   //return buffer.buffer;
 };
 */
-const stress = new MetronomeNote(0, "stress", "stressVol", "stressVal", 2400);
-const four = new MetronomeNote(12, "four", "fourVol", "fourVal", 1200);
-const eight = new MetronomeNote(6, "eight", "eightVol", "eightVal", 1200);
-const triplet = new MetronomeNote(4, "triplet", "tripletVol", "tripletVal", 1200);
-const sixteen = new MetronomeNote(3, "sixteen", "sixteenVol", "sixteenVal", 1200);
+const stress = new MetronomeNote(0, "stress", "stressVol", 100, 2400);
+const four = new MetronomeNote(12, "four", "fourVol", 80, 1200);
+const eight = new MetronomeNote(6, "eight", "eightVol", 20, 1200);
+const triplet = new MetronomeNote(4, "triplet", "tripletVol", 0, 1200);
+const sixteen = new MetronomeNote(3, "sixteen", "sixteenVol", 0, 1200);
 
 const metronomeNotes = {
     stress, four, eight, triplet, sixteen
@@ -764,6 +1223,17 @@ for (let note of Object.values(metronomeNotes)) {
 function showParam(elm, name) {
     document.getElementById(name).textContent = elm.value;
 }
+const tempo = new Vue({
+    el: "#tempo",
+    data: {
+        tempoVal: 100
+    },
+    methods: {
+        changeTempo: () => {
+
+        }
+    }
+})
 const timeSignatureElm = document.getElementById("signature");
 class MetronomeBeater {
     constructor() {   
@@ -797,7 +1267,7 @@ class MetronomeBeater {
         return (timeStamp - this.baseTimeStamp) / 1000;
     }
     nextNote() {
-        const beatTick = 60 * 1000 / metroTempo;
+        const beatTick = 60 * 1000 / tempo.tempoVal;
         if (this.isChangedSignature) {
             this.currentSignatureIndex = 0;
             this.isChangedSignature = false;
@@ -807,7 +1277,8 @@ class MetronomeBeater {
         this.current48Beat %= 12;
         if (!this.current48Beat) {
             this.currentTimeSignature++;
-            if (this.currentTimeSignature === this.signature[this.currentSignatureIndex]) {
+            this.currentSignatureIndex %= this.signature.length;
+            if (this.currentTimeSignature >= this.signature[this.currentSignatureIndex]) {
                 this.currentTimeSignature = 0;
                 this.currentSignatureIndex++;
                 this.currentSignatureIndex %= this.signature.length;
@@ -816,19 +1287,21 @@ class MetronomeBeater {
         return this;
     }
     setTimeSignatureNumerator() {
-        (() => {
-            let resultElm;
-            for (let elm of timeSignatureElm.querySelectorAll("input")) {
-                if (elm.checked) {
-                    resultElm = elm;
-                }
+        let selectedSignatureElm;
+        for (let elm of timeSignatureElm.querySelectorAll("input")) {
+            if (elm.checked) {
+                selectedSignatureElm = elm;
             }
-            if (!(resultElm.value - 0)) {
-                const compoundElm = document.getElementById("compound-signature");
-                this.signature = compoundElm.value.split(/\+|,| /);
+        }
+        if (!(selectedSignatureElm.value - 0)) {
+            const compoundElm = document.getElementById("compound-signature");
+            this.signature = compoundElm.value.split(/\+|,| /);
+            if (!this.signature.length) {
+                this.signature = 1;
             }
-            this.signature = [resultElm.value - 0];
-        })()
+        } else {
+            this.signature = [selectedSignatureElm.value - 0];   
+        }
     }
     scheduler() {
         const now = this.currentTimeStamp();
@@ -846,7 +1319,6 @@ const beat = new MetronomeBeater();
 const metroElm = document.getElementById("metro");
 const tempoElm = document.getElementById("tempo");
 let metroIntervalId, metroctx;
-let metroTempo = tempoElm.value;
 metroElm.onchange = metroHandler;
 metroElm.checked = false;
 function metroHandler() {
@@ -857,12 +1329,6 @@ function metroHandler() {
         clearInterval(metroIntervalId);
         metroIntervalId = null;
     }
-}
-
-showParam(tempoElm, "tempoVal");
-tempoElm.oninput = () => {
-    metroTempo = tempoElm.value;
-    showParam(tempoElm, "tempoVal");
 }
 
 for (let elm of timeSignatureElm.querySelectorAll("input")) {
@@ -877,22 +1343,26 @@ for (let elm of timeSignatureElm.querySelectorAll("input")) {
 */
 for (let elm of document.querySelectorAll("input[type='range']")) {
     const beforeElm = document.createElement("input");
-     with (beforeElm) {
+    with (beforeElm) {
         type = "button";
         classList.add("minus-button");
         value = "ー";
-        onclick = prevent;
-        ontouchstart = handler;
+        addEventListener("touchstart", handler);
+        addEventListener("mousedown", handler);
     }
     const afterElm = document.createElement("input");
     afterElm.type = "button";
     afterElm.classList.add("plus-button");
     afterElm.value = "＋";
-    afterElm.onclick = prevent;
-    afterElm.ontouchstart = handler;
+    afterElm.addEventListener("touchstart", handler);
+    afterElm.addEventListener("mousedown", handler);
 
     elm.insertAdjacentElement("beforebegin", beforeElm);
     elm.insertAdjacentElement("afterend", afterElm);
+
+    controlElm.style.display = "none";
+    controlElm.style.display = "";    
+
     function handler(e) {
         let elm;
         switch (e.target.value) {
@@ -906,8 +1376,7 @@ for (let elm of document.querySelectorAll("input[type='range']")) {
                 break;
         }
         elm.dispatchEvent(new Event("input"));
-    }
-    function prevent(e){
+        e.stopPropagation();
         e.preventDefault();
     }
 }
@@ -980,7 +1449,7 @@ function startAutoPlay() {
             gain.connect(ctx.destination);
             osc.start();
             osc.stop(nextnextNoteTime);
-        }
+        
         return nextnextNoteTime;
     } 
     function nextNote() { 
@@ -1004,6 +1473,168 @@ function startAutoPlay() {
     } 
 }
 */
-</script>
-</body>
+
+const startTuning = document.getElementById("tuner-start");
+startTuning.checked = false;
+const spectrumCanvas = document.getElementById("freq-spectrum");
+const canvasCtx = spectrumCanvas.getContext("2d");
+const pixelRatio = window.devicePixelRatio || 1;
+let mediaStream;
+let canvasWidth = spectrumCanvas.parentNode.clientWidth;
+let canvasHeight = spectrumCanvas.parentNode.clientHeight;
+resizeCanvas();
+window.onresize = resizeCanvas;
+function resizeCanvas() {
+    spectrumCanvas.style.width = null;
+    spectrumCanvas.style.height = null;
+    spectrumCanvas.parentNode.style.width = null;
+    canvasWidth = spectrumCanvas.parentNode.clientWidth;
+    canvasHeight = spectrumCanvas.parentNode.clientHeight;
+    spectrumCanvas.width = canvasWidth * pixelRatio;
+    spectrumCanvas.height = canvasHeight * pixelRatio;
+    canvasCtx.scale(pixelRatio, pixelRatio);
+    spectrumCanvas.style.width = canvasWidth + "px";
+    spectrumCanvas.style.height = canvasHeight + "px";
+}
+
+document.getElementById("tuner-start").onchange = () => {
+    canvasCtx.fillStyle = 'rgba(0, 0, 0, 1)';
+    canvasCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+    if (!startTuning.checked && mediaStream) {
+        mediaStream.getAudioTracks().forEach((track) => {
+            track.stop();
+        })
+    } else {
+        navigator.mediaDevices.getUserMedia({audio: true, video: false}).then((stream) => {
+            mediaStream = stream;
+            const tunerCtx = new AudioContext();
+            // tunerCtx.sampleRate = 2 ** 14;
+            const ana = tunerCtx.createAnalyser();
+            const lowFilter = tunerCtx.createBiquadFilter();
+            const highFilter = tunerCtx.createBiquadFilter();
+            const source = tunerCtx.createMediaStreamSource(stream);
+            const processor = tunerCtx.createScriptProcessor(4096, 1, 1);
+            ana.fftSize = 2 ** 15;
+            ana.minDecibels = -60;
+            const bufferLength = ana.frequencyBinCount;
+            let dataArray = new Uint8Array(bufferLength);
+
+            ana.smoothingTimeConstant = 0.5;
+            lowFilter.type = "lowpass";
+            lowFilter.frequency = 1000;
+            //highFilter.type = "highpass";
+            //highFilter.frequency = 100;
+            highFilter.gain.value = 10;
+            source.connect(lowFilter);
+            lowFilter.connect(ana);
+            //highFilter.connect(ana);
+            ana.connect(processor);
+            // processor.connect(tunerCtx.destination);
+
+            const barWidth = canvasWidth / bufferLength;
+            processor.onaudioprocess = e => {
+                ana.getByteFrequencyData(dataArray);
+                canvasCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+                canvasCtx.beginPath();
+
+                let peakFreqIndex = 0;
+                for (var i = 0, len = dataArray.length / 8; i < len; i++) {
+                    var x = (i / len) * canvasWidth;
+                    var y = (1 - (dataArray[i] / 255)) * canvasHeight;
+                    if (i === 0) {
+                        canvasCtx.moveTo(x, y);
+                    } else {
+                        canvasCtx.lineTo(x, y);
+                    }
+                    var f = Math.floor(i * tunerCtx.sampleRate / ana.fftSize);
+
+                    if ((f % 500) === 0) {
+                        var text = (f / 1000) + 'kHz';
+                        canvasCtx.moveTo(x, canvasHeight);
+                        canvasCtx.lineTo(x, 0);
+                        canvasCtx.fillText(text, x, canvasHeight);
+                    }
+                    if (dataArray[peakFreqIndex] < dataArray[i]) {
+                        peakFreqIndex = i;
+                    }
+                    const peakFreq = peakFreqIndex * tunerCtx.sampleRate / ana.fftSize;
+                    document.getElementById("peakFreq").textContent = peakFreq;
+                    if (peakFreq) {
+                        let logFreq = (12 * Math.log2(peakFreq / stdFreqElm.stdFreqVal)) % 12;
+                        let toneIndex = 12 + Math.round(logFreq) % 12;
+                        document.getElementById("peakTone").textContent = scales[toneIndex];
+                        document.getElementById("toneDiffrence").textContent = (toneIndex - logFreq);
+                    }
+                }
+
+                canvasCtx.moveTo(canvasWidth, canvasHeight);
+                canvasCtx.lineTo(canvasWidth, 0);
+
+                var textYs = ['1.00', '0.50', ''];
+                canvasCtx.font = "0.95em serif";
+                for (var i = 0, len = textYs.length; i < len; i++) {
+                    var text = textYs[i];
+                    var gy   = (1 - parseFloat(text)) * canvasHeight;
+                    canvasCtx.moveTo(0, gy);
+                    canvasCtx.lineTo(canvasWidth, gy);
+                    canvasCtx.fillText(text, 0, gy);
+                }
+
+                canvasCtx.stroke();
+            }
+        });
+    }
+}
+
+for (const drawerElm of document.querySelectorAll(".drawer")) {
+    let startX, startY;
+
+    drawerElm.addEventListener("touchstart", dragStart, false);
+    drawerElm.addEventListener("mousedown", dragStart, false);
+
+    function dragStart(e) {
+        if (e.target.matches("div *")) {
+            e.stopPropagation();
+        } else if (e.currentTarget.classList.contains("drawer")) {
+            e.preventDefault();
+            let event;
+            if (e.type === "mousedown") {
+                event = e;
+                document.addEventListener("mousemove", dragger);
+                document.addEventListener("mouseup", dragEnd, {once: true});
+            } else {
+                event = e.changedTouches[0];
+                document.addEventListener("touchmove", dragger);
+                document.addEventListener("touchend", dragEnd, {once: true});
+            }
+
+            startX = event.pageX - e.currentTarget.offsetLeft;
+            startY = event.pageY - e.currentTarget.offsetTop;
+            e.currentTarget.classList.add("dragging");
+        }
+    }
+    
+    function dragger(e) {
+        e.preventDefault();
+        let event;
+        if (e.type === "mousemove") {
+            event = e;
+        } else {
+            event = e.changedTouches[0];
+        }
+
+        const target = document.querySelector(".dragging");
+
+        target.style.left = event.pageX - startX + "px";
+        target.style.top = event.pageY - startY + "px";   
+    }
+    
+    function dragEnd(e) {
+        document.removeEventListener("touchmove", dragger);
+        document.removeEventListener("mousemove", dragger);
+        document.querySelector(".dragging").classList.remove("dragging");     
+    }
+}
+        </script>
+    </body>
 </html>
