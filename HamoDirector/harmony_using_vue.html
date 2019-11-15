@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="ja">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<meta http-equiv="Content-Type" content="text/htm;charset=UTF-8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>鱧ディレクター</title>
-<link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="./harmony.png" />
-<link rel="icon" type="image/png" href="./harmony.png">
-<link rel="icon" type="image/svg+xml" sizes="any" href="./harmony.svg" />
-<body>
-<style>
+    <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+        <meta http-equiv="Content-Type" content="text/htm;charset=UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>鱧ディレクター</title>
+        <link rel="manifest" href="./manifest.json">
+        <link rel="apple-touch-icon" href="./harmony.png" />
+        <link rel="icon" type="image/png" href="./harmony.png">
+        <link rel="icon" type="image/svg+xml" sizes="any" href="./harmony.svg" />
+    </head>
+    <body>
+        <style>
 :root {
     /* color set*/
     --active-cute: #ff82a9;
@@ -196,7 +198,7 @@ input[type="range"] {
     background-color: var(--active);
     box-shadow: 1px 1px 4px var(--shadow);
     height: 5px;
-    width: calc(100% - (1em + 8px) * 2);
+    width: calc(100% - (1em + 10px) * 2);
     border-radius: 6px;
     display: inline-block;
 }
@@ -366,350 +368,350 @@ canvas {
     width: 100%;
     height: 100%;
 }
-</style>
-<script src="https://jp.vuejs.org/js/vue.min.js"></script>
-<h1 id="title">鱧ディレクター</h1>
-<div id="top-menu">
-    <span id="chordView">&nbsp;</span>
-    <div id="control-button">
-        <button onclick="showFromLeft('metronome')">メトロノーム</button>
-        <button onclick="showFromLeft('tone-color')">音色</button>
-        <button onclick="showFromLeft('tuner')">チューナー</button>
-        <button onclick="showFromLeft('settings')">設定</button>
-    </div>
-</div>
-<div id="piano-wrapper">
-    <div class="piano">
-        <div class="white-keys">
-            <div class="keyboards" name="C1"></div>
-            <div class="keyboards" name="D1"></div>
-            <div class="keyboards" name="E1"></div>
-            <div class="keyboards" name="F1"></div>
-            <div class="keyboards" name="G1"></div>
-            <div class="keyboards" name="A1"></div>
-            <div class="keyboards" name="H1"></div>
-            <div class="keyboards" name="C2"></div>
-            <div class="keyboards" name="D2"></div>
-            <div class="keyboards" name="E2"></div>
-            <div class="keyboards" name="F2"></div>
-            <div class="keyboards" name="G2"></div>
-            <div class="keyboards" name="A2"></div>
-            <div class="keyboards" name="H2"></div>
-            <div class="keyboards" name="C3"></div>
-        </div>
-        <div class="black-keys">
-            <div class="keyboards" name="Cis1"></div>
-            <div class="keyboards" name="Es1"></div>
-            <div class="keyboards key-space"></div>
-            <div class="keyboards" name="Fis1"></div>
-            <div class="keyboards" name="As1"></div>
-            <div class="keyboards" name="B1"></div>
-            <div class="keyboards key-space"></div>
-            <div class="keyboards" name="Cis2"></div>
-            <div class="keyboards" name="Es2"></div>
-            <div class="keyboards key-space"></div>
-            <div class="keyboards" name="Fis2"></div>
-            <div class="keyboards" name="As2"></div>
-            <div class="keyboards" name="B2"></div>
-        </div>
-    </div>
-    <div class="piano">
-        <div class="white-keys">
-            <div class="keyboards" name="C3"></div>
-            <div class="keyboards" name="D3"></div>
-            <div class="keyboards" name="E3"></div>
-            <div class="keyboards" name="F3"></div>
-            <div class="keyboards" name="G3"></div>
-            <div class="keyboards" name="A3"></div>
-            <div class="keyboards" name="H3"></div>
-            <div class="keyboards" name="C4"></div>
-            <div class="keyboards" name="D4"></div>
-            <div class="keyboards" name="E4"></div>
-            <div class="keyboards" name="F4"></div>
-            <div class="keyboards" name="G4"></div>
-            <div class="keyboards" name="A4"></div>
-            <div class="keyboards" name="H4"></div>
-            <div class="keyboards" name="C5"></div>
-        </div>
-        <div class="black-keys">
-            <div class="keyboards" name="Cis3"></div>
-            <div class="keyboards" name="Es3"></div>
-            <div class="keyboards key-space"></div>
-            <div class="keyboards" name="Fis3"></div>
-            <div class="keyboards" name="As3"></div>
-            <div class="keyboards" name="B3"></div>
-            <div class="keyboards key-space"></div>
-            <div class="keyboards" name="Cis4"></div>
-            <div class="keyboards" name="Es4"></div>
-            <div class="keyboards key-space"></div>
-            <div class="keyboards" name="Fis4"></div>
-            <div class="keyboards" name="As4"></div>
-            <div class="keyboards" name="B4"></div>
-        </div>
-    </div>
-</div>
-
-<div id="control-panel">
-<div id="keyboard-size" class="block">
-    <div class="th">キーボードサイズ</div>
-    <div class="td">
-        <input type="range" min="0" max="100" value="50" v-model="sizeValue" v-on:input="changeSize"/>
-    </div><div class="td">
-        {{ sizeValue }}
-    </div>
-</div>
-<div class="block">
-    <div class="th">持続</div>
-    <div class="td">
-        <label for="sustain">
-            <input type="checkbox" id="sustain" name ="sustain"/>
-            <span class="switch-label">持続する</span>
-        </label>
-    </div>
-</div>
-<div class="block">
-    <div class="th">調</div>
-    <div class="td">
-        <span class="wrapSelect">
-            <select id="scale">
-                <option value="ave" selected="">平均律</option>
-                <option value="C">C</option>
-                <option value="Cis">C♯</option>
-                <option value="D">D</option>
-                <option value="Es">E♭</option>
-                <option value="E">E</option>
-                <option value="F">F</option>
-                <option value="Fis">F♯</option>
-                <option value="G">G</option>
-                <option value="As">A♭</option>
-                <option value="A">A</option>
-                <option value="B">B♭</option>
-                <option value="H">B</option>
-            </select>
-        </span>
-        <label for="keyAuto">
-            <input type="checkbox" id="keyAuto" name ="keyAuto"/>
-            <span class="switch-label">自動</span>
-        </label>
-        <div>
-            <label for="major">
-                <input type="radio" name="key" id="major" value="major" checked="" />
-                <span class="radio-label">長調</span>
-            </label>
-            <label for="minor">
-                <input type="radio" name="key" id="minor" value="minor" />
-                <span class="radio-label">短調</span>
-            </label>
-        </div>
-    </div>
-</div>
-</div>
-<div class="drawer" id="tone-color">
-    <div class="block">
-        <div class="th">音色</div>
-        <div class="td">
-            <div class="wrapSelect">
-                <select id="toneColor">
-                <option value="sine" selected="">正弦波</option>
-                <option value="square">矩形波</option>
-                <option value="sawtooth">鋸波</option>
-                <option value="triangle">三角波</option>
-                <!--option value="custom" disabled="">その他(未実装)</option-->
-                </select>
+        </style>
+        <script src="https://jp.vuejs.org/js/vue.min.js"></script>
+        <h1 id="title">鱧ディレクター</h1>
+        <div id="top-menu">
+            <span id="chordView">&nbsp;</span>
+            <div id="control-button">
+                <button onclick="showFromLeft('metronome')">メトロノーム</button>
+                <button onclick="showFromLeft('tone-color')">音色</button>
+                <button onclick="showFromLeft('tuner')">チューナー</button>
+                <button onclick="showFromLeft('settings')">設定</button>
             </div>
         </div>
-    </div>
-    <div id="attack" class="block">
-        <div class="th">アタック</div>
-        <div class="td">
-            <input type="range" v-model="attackVal" v-on:input="changeValue" min="0" max="100" value="80"/>
-        </div><div class="td">
-            {{ attackVal }}
-        </div>
-    </div>
-    <div id="release" class="block">
-        <div class="th">リリース</div>
-        <div class="td">
-            <input type="range" v-model="releaseVal" v-on:input="changeValue" min="0" max="100" value="50"/>
-        </div><div class="td">
-            {{releaseVal}}
-        </div>
-    </div>
-    <div class="block">
-        <div class="th">音域</div>
-        <div class="td">
-            <div id="range-of-octave">
-                <label for="low">
-                    <input type="radio" name="range-of-octave" id="low" value="2" />
-                    <span class="radio-label">低音</span>
-                </label>
-                <label for="midium">
-                    <input type="radio" name="range-of-octave" id="midium" value="1" checked="" />
-                    <span class="radio-label">中音</span>
-                </label>
-                <label for="high">
-                    <input type="radio" name="range-of-octave" id="high" value="0" />
-                    <span class="radio-label">高音</span>
-                </label>
+        <div id="piano-wrapper">
+            <div class="piano">
+                <div class="white-keys">
+                    <div class="keyboards" name="C1"></div>
+                    <div class="keyboards" name="D1"></div>
+                    <div class="keyboards" name="E1"></div>
+                    <div class="keyboards" name="F1"></div>
+                    <div class="keyboards" name="G1"></div>
+                    <div class="keyboards" name="A1"></div>
+                    <div class="keyboards" name="H1"></div>
+                    <div class="keyboards" name="C2"></div>
+                    <div class="keyboards" name="D2"></div>
+                    <div class="keyboards" name="E2"></div>
+                    <div class="keyboards" name="F2"></div>
+                    <div class="keyboards" name="G2"></div>
+                    <div class="keyboards" name="A2"></div>
+                    <div class="keyboards" name="H2"></div>
+                    <div class="keyboards" name="C3"></div>
+                </div>
+                <div class="black-keys">
+                    <div class="keyboards" name="Cis1"></div>
+                    <div class="keyboards" name="Es1"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Fis1"></div>
+                    <div class="keyboards" name="As1"></div>
+                    <div class="keyboards" name="B1"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Cis2"></div>
+                    <div class="keyboards" name="Es2"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Fis2"></div>
+                    <div class="keyboards" name="As2"></div>
+                    <div class="keyboards" name="B2"></div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div>&nbsp;
-        <button class="close-window" onclick="showFromLeft('tone-color')">閉じる</button>
-    </div>
-</div>
-<div class="drawer" id="metronome">
-    <span id="metro-title">メトロノーム
-            <div class="switch" style="display: inline-block">
-                <label for="metro">
-                    <input type="checkbox" id="metro" name="metro"/>
-                    <span class="switch-label">再生する</span>
-                </label>
-            </div>
-    </span>
-    <div id="tempo" class="block">
-        <div class="td">テンポ</div>
-        <div class="td">
-            <input type="range" v-model="tempoVal" min="40" max="300" value="100"/>
-        </div><div class="td">
-            {{ tempoVal }}
-        </div>
-    </div>
-    <div id="stressVol" class="block">
-        <div class="td">強拍</div>
-        <div class="td">
-            <input type="range" v-model="volume" min="0" max="100" value="100"/>
-        </div><div class="td">
-            {{ volume }}
-        </div>
-    </div>
-    <div id="fourVol" class="block">
-        <div class="td">4分音符</div>
-        <div class="td">
-            <input type="range" v-model="volume" min="0" max="100" value="80"/>
-        </div><div class="td">
-            {{ volume }}
-        </div>
-    </div>
-    <div id="eightVol" class="block">
-        <div class="td">8分音符</div>
-        <div class="td">
-            <input type="range" v-model="volume" min="0" max="100" value="20"/>
-        </div><div class="td">
-            {{ volume }}
-        </div>
-    </div>
-    <div id="tripletVol" class="block">
-        <div class="td">3連符</div>
-        <div class="td">
-            <input type="range" v-model="volume" min="0" max="100" value="0"/>
-        </div><div class="td">
-            {{ volume }}
-        </div>
-    </div>
-    <div id="sixteenVol" class="block">
-        <div class="td">16分音符</div>
-        <div class="td">
-            <input type="range" v-model="volume" min="0" max="100" value="0"/>
-        </div><div class="td">
-            {{ volume }}
-        </div>
-    </div>
-    <div id="signature" class="block">
-        <div class="td">拍子</div>
-        <div class="td">
-                <div class="signature" id="signature">
-                    <div>
-                        <label for="sign1">
-                            <input type="radio" name="signature-numerator" id="sign1" value="1" />
-                            <span class="radio-label">1</span>
-                        </label>
-                        <label for="sign2">
-                            <input type="radio" name="signature-numerator" id="sign2" value="2" />
-                            <span class="radio-label">2</span>
-                        </label>
-                        <label for="sign3">
-                            <input type="radio" name="signature-numerator" id="sign3" value="3" />
-                            <span class="radio-label">3</span>
-                        </label>
-                        <label for="sign4">
-                            <input type="radio" name="signature-numerator" id="sign4" value="4" checked="" />
-                            <span class="radio-label">4</span>
-                        </label>
-                    </div>
-                    <label for="sign0">
-                        <input type="radio" name="signature-numerator" id="sign0" value="other" />
-                        <span class="radio-label">複合拍子</span>
-                    </label>：
-                    <input type="text" id="compound-signature" placeholder="2+3 etc...">
+            <div class="piano">
+                <div class="white-keys">
+                    <div class="keyboards" name="C3"></div>
+                    <div class="keyboards" name="D3"></div>
+                    <div class="keyboards" name="E3"></div>
+                    <div class="keyboards" name="F3"></div>
+                    <div class="keyboards" name="G3"></div>
+                    <div class="keyboards" name="A3"></div>
+                    <div class="keyboards" name="H3"></div>
+                    <div class="keyboards" name="C4"></div>
+                    <div class="keyboards" name="D4"></div>
+                    <div class="keyboards" name="E4"></div>
+                    <div class="keyboards" name="F4"></div>
+                    <div class="keyboards" name="G4"></div>
+                    <div class="keyboards" name="A4"></div>
+                    <div class="keyboards" name="H4"></div>
+                    <div class="keyboards" name="C5"></div>
+                </div>
+                <div class="black-keys">
+                    <div class="keyboards" name="Cis3"></div>
+                    <div class="keyboards" name="Es3"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Fis3"></div>
+                    <div class="keyboards" name="As3"></div>
+                    <div class="keyboards" name="B3"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Cis4"></div>
+                    <div class="keyboards" name="Es4"></div>
+                    <div class="keyboards key-space"></div>
+                    <div class="keyboards" name="Fis4"></div>
+                    <div class="keyboards" name="As4"></div>
+                    <div class="keyboards" name="B4"></div>
                 </div>
             </div>
         </div>
-        <div>
-            <button class="close-window" onclick="showFromLeft('metronome')">閉じる</button>
-        </div>
-    </div> 
-</div>
-<div class="drawer" id="tuner">
-    <div class="switch" style="display: inline-block">
-        <label for="tuner-start">
-            <input type="checkbox" id="tuner-start" name="tuner-start" />
-            <span class="switch-label">開始する（PCのみ）</span>
-        </label>
-    </div>
-    <div class="canvas-container">
-        <canvas id="freq-spectrum"></canvas>
-    </div>
-    <div>
-        <div>ピーク周波数<span id="peakFreq"></span> [Hz]</div>
-        <div>ピーク音名<span id="peakTone"></span></div>
-        <div>ズレ<span id="toneDiffrence"></span> [cent]</div>
-        <div>&nbsp;
-            <button class="close-window" onclick="showFromLeft('tuner')">閉じる</button>
-        </div>
-    </div>
-</div>
-<div class="drawer" id="settings">
-    <h2>設定</h2>
-    <div id="stdFreq" class="block">
-        <div class="th">基準周波数</div>
-        <div class="td">
-            <input type="range" v-model="stdFreqVal" v-on:input="changeFreq" min="435" max="445" value="442"/>
-        </div><div class="td">
-            {{ stdFreqVal }}
-        </div>
-    </div>
-    <div id="color-theme" class="block" v-on:change="changeColorTheme">
-        <div class="th">色テーマ：</div>
-        <div class="td">
-            <label for="cute">
-                <input type="radio" v-model="theme" id="cute" value="cute" />
-                <span class="radio-label">Cute</span>
-            </label>
-            <label for="natural">
-                <input type="radio" v-model="theme" id="natural" value="natural" />
-                <span class="radio-label">Natural</span>
-            </label>
-            <label for="cool">
-                <input type="radio" v-model="theme" id="cool" value="cool" />
-                <span class="radio-label">Cool</span>
-            </label>
-        </div>
-    </div>
-        <div>&nbsp;
-            <button class="close-window" onclick="showFromLeft('settings')">閉じる</button>
-        </div>
-    </div>
-</div>
-<br />
 
-<!--
-<p>自動再生</p>
-<label for="auto-player"><input type="checkbox" id="auto-player" /><span class="switch-label">再生／停止</span></label>
-<textarea id="auto-play-text" placeholder="c,c,e,g|ceg|c"></textarea>
--->
-<br />
-<script>
+        <div id="control-panel">
+        <div id="keyboard-size" class="block">
+            <div class="th">キーボードサイズ</div>
+            <div class="td">
+                <input type="range" min="0" max="100" value="50" v-model="sizeValue" v-on:input="changeSize"/>
+            </div><div class="td">
+                {{ sizeValue }}
+            </div>
+        </div>
+        <div class="block">
+            <div class="th">持続</div>
+            <div class="td">
+                <label for="sustain">
+                    <input type="checkbox" id="sustain" name ="sustain"/>
+                    <span class="switch-label">持続する</span>
+                </label>
+            </div>
+        </div>
+        <div class="block">
+            <div class="th">調</div>
+            <div class="td">
+                <span class="wrapSelect">
+                    <select id="scale">
+                        <option value="ave" selected="">平均律</option>
+                        <option value="C">C</option>
+                        <option value="Cis">C♯</option>
+                        <option value="D">D</option>
+                        <option value="Es">E♭</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="Fis">F♯</option>
+                        <option value="G">G</option>
+                        <option value="As">A♭</option>
+                        <option value="A">A</option>
+                        <option value="B">B♭</option>
+                        <option value="H">B</option>
+                    </select>
+                </span>
+                <label for="keyAuto">
+                    <input type="checkbox" id="keyAuto" name ="keyAuto"/>
+                    <span class="switch-label">自動</span>
+                </label>
+                <div>
+                    <label for="major">
+                        <input type="radio" name="key" id="major" value="major" checked="" />
+                        <span class="radio-label">長調</span>
+                    </label>
+                    <label for="minor">
+                        <input type="radio" name="key" id="minor" value="minor" />
+                        <span class="radio-label">短調</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="drawer" id="tone-color">
+            <div class="block">
+                <div class="th">音色</div>
+                <div class="td">
+                    <div class="wrapSelect">
+                        <select id="toneColor">
+                        <option value="sine" selected="">正弦波</option>
+                        <option value="square">矩形波</option>
+                        <option value="sawtooth">鋸波</option>
+                        <option value="triangle">三角波</option>
+                        <!--option value="custom" disabled="">その他(未実装)</option-->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="attack" class="block">
+                <div class="th">アタック</div>
+                <div class="td">
+                    <input type="range" v-model="attackVal" v-on:input="changeValue" min="0" max="100" value="80"/>
+                </div><div class="td">
+                    {{ attackVal }}
+                </div>
+            </div>
+            <div id="release" class="block">
+                <div class="th">リリース</div>
+                <div class="td">
+                    <input type="range" v-model="releaseVal" v-on:input="changeValue" min="0" max="100" value="50"/>
+                </div><div class="td">
+                    {{releaseVal}}
+                </div>
+            </div>
+            <div class="block">
+                <div class="th">音域</div>
+                <div class="td">
+                    <div id="range-of-octave">
+                        <label for="low">
+                            <input type="radio" name="range-of-octave" id="low" value="2" />
+                            <span class="radio-label">低音</span>
+                        </label>
+                        <label for="midium">
+                            <input type="radio" name="range-of-octave" id="midium" value="1" checked="" />
+                            <span class="radio-label">中音</span>
+                        </label>
+                        <label for="high">
+                            <input type="radio" name="range-of-octave" id="high" value="0" />
+                            <span class="radio-label">高音</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div>&nbsp;
+                <button class="close-window" onclick="showFromLeft('tone-color')">閉じる</button>
+            </div>
+        </div>
+        <div class="drawer" id="metronome">
+            <span id="metro-title">メトロノーム
+                    <div class="switch" style="display: inline-block">
+                        <label for="metro">
+                            <input type="checkbox" id="metro" name="metro"/>
+                            <span class="switch-label">再生する</span>
+                        </label>
+                    </div>
+            </span>
+            <div id="tempo" class="block">
+                <div class="td">テンポ</div>
+                <div class="td">
+                    <input type="range" v-model="tempoVal" min="40" max="300" value="100"/>
+                </div><div class="td">
+                    {{ tempoVal }}
+                </div>
+            </div>
+            <div id="stressVol" class="block">
+                <div class="td">強拍</div>
+                <div class="td">
+                    <input type="range" v-model="volume" min="0" max="100" value="100"/>
+                </div><div class="td">
+                    {{ volume }}
+                </div>
+            </div>
+            <div id="fourVol" class="block">
+                <div class="td">4分音符</div>
+                <div class="td">
+                    <input type="range" v-model="volume" min="0" max="100" value="80"/>
+                </div><div class="td">
+                    {{ volume }}
+                </div>
+            </div>
+            <div id="eightVol" class="block">
+                <div class="td">8分音符</div>
+                <div class="td">
+                    <input type="range" v-model="volume" min="0" max="100" value="20"/>
+                </div><div class="td">
+                    {{ volume }}
+                </div>
+            </div>
+            <div id="tripletVol" class="block">
+                <div class="td">3連符</div>
+                <div class="td">
+                    <input type="range" v-model="volume" min="0" max="100" value="0"/>
+                </div><div class="td">
+                    {{ volume }}
+                </div>
+            </div>
+            <div id="sixteenVol" class="block">
+                <div class="td">16分音符</div>
+                <div class="td">
+                    <input type="range" v-model="volume" min="0" max="100" value="0"/>
+                </div><div class="td">
+                    {{ volume }}
+                </div>
+            </div>
+            <div id="signature" class="block">
+                <div class="td">拍子</div>
+                <div class="td">
+                        <div class="signature" id="signature">
+                            <div>
+                                <label for="sign1">
+                                    <input type="radio" name="signature-numerator" id="sign1" value="1" />
+                                    <span class="radio-label">1</span>
+                                </label>
+                                <label for="sign2">
+                                    <input type="radio" name="signature-numerator" id="sign2" value="2" />
+                                    <span class="radio-label">2</span>
+                                </label>
+                                <label for="sign3">
+                                    <input type="radio" name="signature-numerator" id="sign3" value="3" />
+                                    <span class="radio-label">3</span>
+                                </label>
+                                <label for="sign4">
+                                    <input type="radio" name="signature-numerator" id="sign4" value="4" checked="" />
+                                    <span class="radio-label">4</span>
+                                </label>
+                            </div>
+                            <label for="sign0">
+                                <input type="radio" name="signature-numerator" id="sign0" value="other" />
+                                <span class="radio-label">複合拍子</span>
+                            </label>：
+                            <input type="text" id="compound-signature" placeholder="2+3 etc...">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button class="close-window" onclick="showFromLeft('metronome')">閉じる</button>
+                </div>
+            </div> 
+        </div>
+        <div class="drawer" id="tuner">
+            <div class="switch" style="display: inline-block">
+                <label for="tuner-start">
+                    <input type="checkbox" id="tuner-start" name="tuner-start" />
+                    <span class="switch-label">開始する（PCのみ）</span>
+                </label>
+            </div>
+            <div class="canvas-container">
+                <canvas id="freq-spectrum"></canvas>
+            </div>
+            <div>
+                <div>ピーク周波数<span id="peakFreq"></span> [Hz]</div>
+                <div>ピーク音名<span id="peakTone"></span></div>
+                <div>ズレ<span id="toneDiffrence"></span> [cent]</div>
+                <div>&nbsp;
+                    <button class="close-window" onclick="showFromLeft('tuner')">閉じる</button>
+                </div>
+            </div>
+        </div>
+        <div class="drawer" id="settings">
+            <h2>設定</h2>
+            <div id="stdFreq" class="block">
+                <div class="th">基準周波数</div>
+                <div class="td">
+                    <input type="range" v-model="stdFreqVal" v-on:input="changeFreq" min="435" max="445" value="442"/>
+                </div><div class="td">
+                    {{ stdFreqVal }}
+                </div>
+            </div>
+            <div id="color-theme" class="block" v-on:change="changeColorTheme">
+                <div class="th">色テーマ：</div>
+                <div class="td">
+                    <label for="cute">
+                        <input type="radio" v-model="theme" id="cute" value="cute" />
+                        <span class="radio-label">Cute</span>
+                    </label>
+                    <label for="natural">
+                        <input type="radio" v-model="theme" id="natural" value="natural" />
+                        <span class="radio-label">Natural</span>
+                    </label>
+                    <label for="cool">
+                        <input type="radio" v-model="theme" id="cool" value="cool" />
+                        <span class="radio-label">Cool</span>
+                    </label>
+                </div>
+            </div>
+                <div>&nbsp;
+                    <button class="close-window" onclick="showFromLeft('settings')">閉じる</button>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <!--
+        <p>自動再生</p>
+        <label for="auto-player"><input type="checkbox" id="auto-player" /><span class="switch-label">再生／停止</span></label>
+        <textarea id="auto-play-text" placeholder="c,c,e,g|ceg|c"></textarea>
+        -->
+        <br />
+        <script>
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioctx = new AudioContext();
 //const sizeElm = document.getElementById("size");
@@ -1114,6 +1116,7 @@ function stopPlay(toneName, event){
         playing[toneName].elm.classList.remove("keyboard-press");
         delete playing[toneName];
     }
+    /*
     if (!Object.keys(playing).length) {
         setTimeout(() => {
             if (!Object.keys(playing).length) {
@@ -1121,6 +1124,7 @@ function stopPlay(toneName, event){
             }
         }, 500)
     }
+    */
 
 }
 class MetronomeNote {
@@ -1342,7 +1346,6 @@ for (let elm of document.querySelectorAll("input[type='range']")) {
         type = "button";
         classList.add("minus-button");
         value = "ー";
-        onclick = prevent;
         addEventListener("touchstart", handler);
         addEventListener("mousedown", handler);
     }
@@ -1350,7 +1353,6 @@ for (let elm of document.querySelectorAll("input[type='range']")) {
     afterElm.type = "button";
     afterElm.classList.add("plus-button");
     afterElm.value = "＋";
-    afterElm.onclick = prevent;
     afterElm.addEventListener("touchstart", handler);
     afterElm.addEventListener("mousedown", handler);
 
@@ -1373,8 +1375,7 @@ for (let elm of document.querySelectorAll("input[type='range']")) {
                 break;
         }
         elm.dispatchEvent(new Event("input"));
-    }
-    function prevent(e){
+        e.stopPropagation();
         e.preventDefault();
     }
 }
@@ -1633,6 +1634,6 @@ for (const drawerElm of document.querySelectorAll(".drawer")) {
         document.querySelector(".dragging").classList.remove("dragging");     
     }
 }
-</script>
-</body>
+        </script>
+    </body>
 </html>
