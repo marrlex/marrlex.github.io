@@ -160,6 +160,11 @@ img {
 </tbody></table>
 <input value="書　込" type="submit" class="submitter">&nbsp;<input value="9時に書込" type="button" onclick="AutoReserve();" class="submitter">&nbsp;<input value="クリア" type="reset"><p></p></form>
 <p id="result">必要事項を入力して「書込」または「9時に書込」を押してください。</p>
+<p style="text-align: left; margin: 0 auto; width: max-content">
+  2023/01/26：もしまだ使用されていましたら、pinkuman46@gmail.comまで連絡いただけますか？<br>
+  2/5あたりまでに連絡がない場合は、もう消しちゃおうと思ってます。<br>
+  まだ使ってるか、まだ動くか、いつ削除したらよいかなど何もわからないので。
+</p>
 <a href="http://m068:Jk2Zax00@s-yoyaku.mie-u.ac.jp/cgi-bin/webcalc3-mieu/webcalc3.cgi?form=2" id="comfirmReserving">予約の確認(予約状況へ)</a>
 <hr>
 <div id="SubmitLeft"></div>
